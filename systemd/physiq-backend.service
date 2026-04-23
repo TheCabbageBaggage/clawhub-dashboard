@@ -1,0 +1,15 @@
+[Unit]
+Description=Physiq CRM Backend API
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/physiq-backend
+Environment=PATH=/usr/bin:/usr/local/bin
+ExecStart=/usr/bin/python3 /var/www/physiq-backend/simple_backend.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Operations Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;
+            background: #0f1117;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 50px; }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .header p { color: #888; font-size: 1rem; }
+        .header .updated { font-size: 0.75rem; color: #555; margin-top: 8px; }
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            margin: 40px 0 20px 0;
+            padding-left: 4px;
+        }
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .app-card {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 16px;
+            padding: 28px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .app-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
+        }
+        .app-card::before {
+            content: \'\';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .app-card:hover::before { opacity: 1; }
+        .app-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+        .app-card h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
+        .app-card p { font-size: 0.85rem; color: #888; line-height: 1.5; }
+        .app-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-top: 14px;
+            font-weight: 500;
+        }
+        .badge-prod {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        .badge-dev {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        .status-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+        }
+        .status-dot.offline { background: #f44336; }
+        .quick-actions {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-top: 20px;
+        }
+        .quick-actions h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #555;
+            margin-bottom: 16px;
+        }
+        .quick-links { display: flex; flex-wrap: wrap; gap: 10px; }
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #252836;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.82rem;
+            transition: all 0.15s;
+        }
+        .quick-link:hover {
+            background: #2a2d3a;
+            color: #fff;
+            border-color: #667eea;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #444;
+            font-size: 0.75rem;
+        }
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.8rem; }
+            .apps-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Operations Hub</h1>
+            <p>Personal command center for Linus Kohl</p>
+            <div class="updated">Last refreshed: <span id="ts"></span></div>
+        </div>
+        
+        <div class="section-label">Applications</div>
+        <div class="apps-grid">
+            <a href="https://claw.lkohl.duckdns.org" class="app-card" target="_blank">
+                <span class="app-icon">🏢</span>
+                <h2>Arca ERP</h2>
+                <p>Business management: Finance, Projects, Contacts, Inventory, Reporting</p>
+                <div class="status-row">
+                    <span class="status-dot" id="arca-dot"></span>
+                    <span class="status-text" id="arca-status">Checking…</span>
+                </div>
+                <span class="app-badge badge-prod">Production</span>
+            </a>
+            
+            <a href="/newsletter/" class="app-card" target="_blank">
+                <span class="app-icon">📧</span>
+                <h2>AI Newsletter</h2>
+                <p>Daily AI news digest — TLDR-style with live sources. Mon–Sat 7:30 AM</p>
+                <div class="status-row">
+                    <span class="status-dot" id="newsletter-dot"></span>
+                    <span class="status-text" id="newsletter-status">Checking…</span>
+                </div>
+                <span class="app-badge badge-prod">Production</span>
+            </a>
+            
+            <a href="/bodycomp" class="app-card" target="_blank">
+                <span class="app-icon">⚖️</span>
+                <h2>Body Composition</h2>
+                <p>BIA scan tracker + US Navy predictor. Upload PDFs, track weight/KFA/BCM trends</p>
+                <div class="status-row">
+                    <span class="status-dot" id="bct-dot"></span>
+                    <span class="status-text" id="bct-status">Checking…</span>
+                </div>
+                <span class="app-badge badge-prod">Oracle Server</span>
+            </a>
+            <a href="https://dashboard.claw.lkohl.duckdns.org/healthhub/" class="app-card" target="_blank">
+                <span class="app-icon">🏥</span>
+                <h2>HealthHub v2</h2>
+                <p>Professional body composition tracking SaaS with JWT auth, measurements, AI predictions</p>
+                <div class="status-row">
+                    <span class="status-dot" id="healthhub-dot"></span>
+                    <span class="status-text" id="healthhub-status">Beta</span>
+                </div>
+                <span class="app-badge badge-beta">Beta</span>
+            </a>
+        </div>
+        
+        <div class="quick-actions">
+            <h3>Quick Access</h3>
+            <div class="quick-links">
+                <a href="https://github.com/TheCabbageBaggage" class="quick-link" target="_blank">📂 GitHub</a>
+                <a href="https://t.me/clowie_claw_assist_bot" class="quick-link" target="_blank">💬 Telegram</a>
+                <a href="https://docs.openclaw.ai" class="quick-link" target="_blank">📖 OpenClaw Docs</a>
+                <a href="http://158.180.60.61:18789" class="quick-link" target="_blank">⚙️ Gateway</a>
+                <a href="https://dashboard.claw.lkohl.duckdns.org/status" class="quick-link" target="_blank">📊 Newsletter Status</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Operations Hub · Clowie · OpenClaw · Oracle VPS
+        </div>
+    </div>
+    
+    <script>
+    function getStatus(url, dotId, textId) {
+        fetch(url, { method: \'HEAD\', mode: \'no-cors\', cache: \'no-cache\' })
+            .then(() => setStatus(dotId, textId, \'Online\', \'online\'))
+            .catch(() => setStatus(dotId, textId, \'Offline\', \'offline\'));
+    }
+    function setStatus(dotId, textId, text, state) {
+        const dot = document.getElementById(dotId);
+        const txt = document.getElementById(textId);
+        if (dot) dot.className = \'status-dot \' + (state === \'offline\' ? \'offline\' : \'\');
+        if (txt) txt.textContent = text;
+    }
+    document.getElementById(\'ts\').textContent = new Date().toLocaleString(\'de-DE\', {
+        weekday: \'short\', year: \'numeric\', month: \'2-digit\', day: \'2-digit\',
+        hour: \'2-digit\', minute: \'2-digit\'
+    });
+    getStatus(\'https://claw.lkohl.duckdns.org/\', \'arca-dot\', \'arca-status\');
+    getStatus(\'https://dashboard.claw.lkohl.duckdns.org/newsletter\', \'newsletter-dot\', \'newsletter-status\');
+    getStatus(\'http://158.180.60.61:8501\', \'bct-dot\', \'bct-status\');
+    setInterval(() => location.reload(), 300000);
+    </script>
+</body>
+</html>

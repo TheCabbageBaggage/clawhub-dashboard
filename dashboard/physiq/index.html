@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhysIQ – Körperkomposition Vorhersage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .primary-color { color: #0066CC; }
+        .primary-bg { background-color: #0066CC; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-6xl mx-auto p-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold primary-color mb-4">PhysIQ</h1>
+            <p class="text-xl text-gray-600">Körperkomposition Vorhersage mit Data Privacy First</p>
+            <p class="text-gray-500 mt-2">Deployed auf dashboard.claw.lkohl.duckdns.org</p>
+        </div>
+
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h3 class="font-bold text-lg mb-3">🔒 Lokaler Rechner</h3>
+                <p class="text-gray-600">Berechnung läuft 100% in Ihrem Browser. Keine Daten werden gesendet.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h3 class="font-bold text-lg mb-3">🤖 ML Algorithmus</h3>
+                <p class="text-gray-600">Wissenschaftliche Körperfett- und Muskelmasse-Vorhersagen.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow">
+                <h3 class="font-bold text-lg mb-3">📊 Dashboard</h3>
+                <p class="text-gray-600">Echtzeit-Statistiken, Waitlist Tracking, CRM Übersicht.</p>
+            </div>
+        </div>
+
+        <!-- Links -->
+        <div class="bg-white p-8 rounded-xl shadow mb-12">
+            <h2 class="text-2xl font-bold mb-6">🔗 Verfügbare Seiten</h2>
+            <div class="space-y-4">
+                <div>
+                    <a href="/dashboard.html" class="text-lg font-medium primary-color hover:underline">
+                        → Haupt-Dashboard (Statistiken & CRM)
+                    </a>
+                    <p class="text-gray-600 ml-6">Waitlist, Berechnungen, ML API Monitoring, Kontakt-Historie</p>
+                </div>
+                <div>
+                    <a href="/physiq/calculator.html" class="text-lg font-medium primary-color hover:underline">
+                        → PhysIQ Rechner (Körperkomposition)
+                    </a>
+                    <p class="text-gray-600 ml-6">Metrische/imperiale Einheiten, lokale Berechnung, Gesundheitshinweise</p>
+                </div>
+                <div>
+                    <a href="/physiq/waitlist.html" class="text-lg font-medium primary-color hover:underline">
+                        → Waitlist Anmeldung
+                    </a>
+                    <p class="text-gray-600 ml-6">Email-Speicherung für BIA-Vorhersagen, DSGVO-konform</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Status -->
+        <div class="bg-gray-100 p-6 rounded-xl">
+            <h3 class="font-bold text-lg mb-4">📡 API Status</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <strong>ML Service:</strong> 
+                    <span id="mlStatus">Prüfe...</span>
+                </div>
+                <div>
+                    <strong>Backend API:</strong> 
+                    <span id="apiStatus">Prüfe...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function checkStatus() {
+            try {
+                // ML API
+                const mlRes = await fetch('/api/ml/health');
+                const mlData = await mlRes.json();
+                document.getElementById('mlStatus').innerHTML = `✅ ${mlData.status} (${mlData.model_version})`;
+            } catch {
+                document.getElementById('mlStatus').innerHTML = '❌ Nicht erreichbar';
+            }
+            
+            try {
+                // Backend API
+                const apiRes = await fetch('/api/dashboard/stats');
+                const apiData = await apiRes.json();
+                document.getElementById('apiStatus').innerHTML = `✅ ${apiData.waitlist?.total || 0} Waitlist, ${apiData.calculations?.total || 0} Berechnungen`;
+            } catch {
+                document.getElementById('apiStatus').innerHTML = '❌ Nicht erreichbar';
+            }
+        }
+        
+        checkStatus();
+    </script>
+</body>
+</html>

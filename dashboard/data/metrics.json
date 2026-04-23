@@ -1,0 +1,38 @@
+{
+  "system": {
+    "last_check": "2026-04-06T15:22:03.263737",
+    "status": "degraded",
+    "uptime_days": 0
+  },
+  "scraping": {
+    "last_success": null,
+    "last_attempt": null,
+    "articles_scraped": 0,
+    "success_rate": 0.0,
+    "avg_duration_seconds": 0
+  },
+  "newsletters": {
+    "daily_ai_tech_news": {
+      "last_generated": null,
+      "articles": 0
+    },
+    "ai_management_bulletin": {
+      "last_generated": null,
+      "articles": 0
+    },
+    "ai_security_update": {
+      "last_generated": null,
+      "articles": 0
+    }
+  },
+  "email": {
+    "last_sent": null,
+    "success_rate": 0.0,
+    "total_sent": 0
+  },
+  "performance": {
+    "avg_scrape_time": 0,
+    "avg_generation_time": 0,
+    "avg_email_time": 0
+  }
+}

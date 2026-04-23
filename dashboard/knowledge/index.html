@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Knowledge Base</title></head>
+<body>
+<h2>Knowledge Base (CFO / SAP HANA / Produktionsplanung)</h2>
+<p id="stats">Lade...</p>
+<input id="q" style="width:420px" value="Was ist SAP HANA?" />
+<button onclick="run()">Suchen</button>
+<pre id="out"></pre>
+<script>
+async function loadStats(){
+  const r=await fetch(/knowledge/proxy/stats);
+  const j=await r.json();
+  document.getElementById(stats).innerText=Dokumente: +j.documents;
+}
+async function run(){
+  const q=document.getElementById(q).value;
+  const r=await fetch(/knowledge/proxy/query,{method:POST,headers:{Content-Type:application/json},body:JSON.stringify({question:q})});
+  const j=await r.json();
+  document.getElementById(out).textContent=JSON.stringify(j,null,2);
+}
+loadStats();
+</script>
+</body></html>

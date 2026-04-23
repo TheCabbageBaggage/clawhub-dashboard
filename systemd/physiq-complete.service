@@ -1,0 +1,29 @@
+[Unit]
+Description=PhysIQ Complete Stack
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=ubuntu
+WorkingDirectory=/home/ubuntu
+ExecStart=/bin/bash -c '
+    # Start ML Service
+    cd /home/ubuntu/healthhub-v2/ml_service_new
+    python3 main.py > /tmp/ml_service.log 2>&1 &
+    
+    # Start Backend
+    cd /var/www/physiq-backend
+    python3 simple_backend.py > /tmp/physiq_backend.log 2>&1 &
+    
+    sleep 3
+    echo "PhysIQ Stack gestartet"
+'
+ExecStop=/bin/bash -c '
+    pkill -f "python3.*main.py"
+    pkill -f "python3.*simple_backend.py"
+    echo "PhysIQ Stack gestoppt"
+'
+
+[Install]
+WantedBy=multi-user.target

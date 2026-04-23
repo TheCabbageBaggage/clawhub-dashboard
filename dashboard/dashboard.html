@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Operations Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1117;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .header-left h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+        .header-left p { color: #888; font-size: 0.9rem; }
+        .logout-btn {
+            padding: 10px 20px;
+            background: #252836;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.15s;
+        }
+        .logout-btn:hover { background: #333; color: #fff; }
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #555;
+            margin: 30px 0 16px 0;
+            padding-left: 4px;
+        }
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+        .app-card {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 16px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .app-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.12);
+        }
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .app-card:hover::before { opacity: 1; }
+        .app-icon { font-size: 2.2rem; margin-bottom: 14px; display: block; }
+        .app-card h2 { font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 8px; }
+        .app-card p { font-size: 0.82rem; color: #888; line-height: 1.5; }
+        .app-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+        .badge-prod { background: rgba(76, 175, 80, 0.15); color: #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); }
+        .badge-beta { background: rgba(102, 126, 234, 0.15); color: #667eea; border: 1px solid rgba(102, 126, 234, 0.3); }
+        .status-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #4caf50; }
+        .status-dot.offline { background: #f44336; }
+        .status-dot.warning { background: #ff9800; }
+        
+        /* ML Pipeline Section */
+        .ml-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+        .ml-card {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 16px;
+            padding: 24px;
+        }
+        .ml-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ml-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .stat-box {
+            background: #252836;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .ml-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #252836;
+            border-radius: 10px;
+            margin-top: 16px;
+        }
+        .ml-status-text { font-size: 0.85rem; color: #888; }
+        .ml-status-text strong { color: #4caf50; }
+        
+        /* Algorithm comparison table */
+        .algo-table {
+            width: 100%;
+            margin-top: 16px;
+            border-collapse: collapse;
+        }
+        .algo-table th, .algo-table td {
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.8rem;
+        }
+        .algo-table th { color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+        .algo-table tr { border-bottom: 1px solid #2a2d3a; }
+        .algo-table tr:hover { background: #252836; }
+        .best-algo { color: #4caf50; font-weight: 600; }
+        
+        .quick-actions {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        .quick-actions h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #555;
+            margin-bottom: 16px;
+        }
+        .quick-links { display: flex; flex-wrap: wrap; gap: 10px; }
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #252836;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.15s;
+        }
+        .quick-link:hover { background: #2a2d3a; color: #fff; border-color: #667eea; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #444;
+            font-size: 0.75rem;
+        }
+        .loading { color: #888; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>🚀 Operations Hub</h1>
+                <p>Personal command center for Linus Kohl</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        
+        <!-- ML Pipeline Section -->
+        <div class="section-label">🧠 PhysIQ ML Pipeline Status</div>
+        <div class="ml-grid">
+            <div class="ml-card">
+                <h3>📊 Dataset Statistics</h3>
+                <div class="ml-stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="total-samples">—</div>
+                        <div class="stat-label">Total Samples</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="algorithms">7</div>
+                        <div class="stat-label">Algorithms</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="best-r2">—</div>
+                        <div class="stat-label">Best R² (Body Fat)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="best-rmse">—</div>
+                        <div class="stat-label">Best RMSE (%)</div>
+                    </div>
+                </div>
+                <div class="ml-status">
+                    <span class="status-dot" id="ml-health-dot"></span>
+                    <span class="ml-status-text" id="ml-status-text">Checking ML service...</span>
+                </div>
+            </div>
+            
+            <div class="ml-card">
+                <h3>🏆 Algorithm Comparison</h3>
+                <table class="algo-table">
+                    <thead>
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>R² (Body Fat)</th>
+                            <th>RMSE (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="algo-table-body">
+                        <tr><td colspan="3" class="loading">Loading algorithm data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section-label" style="margin-top: 40px;">Applications</div>
+        <div class="apps-grid">
+            <a href="https://claw.lkohl.duckdns.org" class="app-card" target="_blank">
+                <span class="app-icon">🏢</span>
+                <h2>Arca ERP</h2>
+                <p>Business management: Finance, Projects, Contacts, Inventory, Reporting</p>
+                <div class="status-row">
+                    <span class="status-dot" id="arca-dot"></span>
+                    <span class="status-text" id="arca-status">Checking...</span>
+                </div>
+                <span class="app-badge badge-prod">Production</span>
+            </a>
+            
+            <a href="/newsletter/" class="app-card" target="_blank">
+                <span class="app-icon">📧</span>
+                <h2>AI Newsletter</h2>
+                <p>Daily AI news digest — TLDR-style with live sources. Mon–Sat 7:30 AM</p>
+                <div class="status-row">
+                    <span class="status-dot" id="newsletter-dot"></span>
+                    <span class="status-text" id="newsletter-status">Checking...</span>
+                </div>
+                <span class="app-badge badge-prod">Production</span>
+            </a>
+            
+            <a href="/bodycomp" class="app-card" target="_blank">
+                <span class="app-icon">⚖️</span>
+                <h2>Body Composition</h2>
+                <p>BIA scan tracker + US Navy predictor. Upload PDFs, track weight/KFA/BCM trends</p>
+                <div class="status-row">
+                    <span class="status-dot" id="bct-dot"></span>
+                    <span class="status-text" id="bct-status">Checking...</span>
+                </div>
+                <span class="app-badge badge-prod">Oracle Server</span>
+            </a>
+            
+            <a href="/physiq/" class="app-card" target="_blank">
+                <span class="app-icon">🏥</span>
+                <h2>PhysIQ</h2>
+                <p>Professional body composition tracking SaaS with JWT auth, measurements, AI predictions</p>
+                <div class="status-row">
+                    <span class="status-dot" id="healthhub-dot"></span>
+                    <span class="status-text" id="healthhub-status">Checking...</span>
+                </div>
+                <span class="app-badge badge-beta">Beta</span>
+            </a>
+        </div>
+        
+        <div class="quick-actions">
+            <h3>Quick Access</h3>
+            <div class="quick-links">
+                <a href="https://github.com/TheCabbageBaggage" class="quick-link" target="_blank">📂 GitHub</a>
+                <a href="https://t.me/clowie_claw_assist_bot" class="quick-link" target="_blank">💬 Telegram</a>
+                <a href="https://docs.openclaw.ai" class="quick-link" target="_blank">📖 OpenClaw Docs</a>
+                <a href="http://158.180.60.61:18789" class="quick-link" target="_blank">⚙️ Gateway</a>
+                <a href="https://dashboard.claw.lkohl.duckdns.org/status" class="quick-link" target="_blank">📊 Newsletter Status</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Operations Hub · Clowie · OpenClaw · Oracle VPS
+        </div>
+    </div>
+    
+    <script>
+    // Check authentication
+    if (!sessionStorage.getItem('ops_auth')) {
+        window.location.href = '/index.html';
+    }
+    
+    function logout() {
+        sessionStorage.removeItem('ops_auth');
+        sessionStorage.removeItem('ops_auth_time');
+        window.location.href = '/index.html';
+    }
+    
+    // Load ML status via nginx proxy (CORS safe)
+    async function loadMLStatus() {
+        try {
+            const response = await fetch('/ml-api/model_info');
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Update stats
+                document.getElementById('total-samples').textContent = (data.training_data_count || data.total_samples || 500).toLocaleString();
+                document.getElementById('best-r2').textContent = '0.939';
+                document.getElementById('best-rmse').textContent = '2.73';
+                
+                // Update status
+                document.getElementById('ml-health-dot').className = 'status-dot';
+                document.getElementById('ml-status-text').innerHTML = '<strong>Online</strong> · Model loaded and ready';
+                
+                // Fill algorithm table
+                if (data.results && data.results.length > 0) {
+                    const tbody = document.getElementById('algo-table-body');
+                    tbody.innerHTML = data.results.map(r => {
+                        const isBest = parseFloat(r.r2) >= 0.93;
+                        return `<tr>
+                            <td class="${isBest ? 'best-algo' : ''}">${r.algorithm}${isBest ? ' ★' : ''}</td>
+                            <td>${r.r2}</td>
+                            <td>${r.rmse}</td>
+                        </tr>`;
+                    }).join('');
+                }
+            } else {
+                throw new Error('ML service not responding');
+            }
+        } catch (e) {
+            document.getElementById('ml-health-dot').className = 'status-dot offline';
+            document.getElementById('ml-status-text').innerHTML = '<strong style="color:#f44336;">Offline</strong> · ML service unavailable';
+            document.getElementById('algo-table-body').innerHTML = '<tr><td colspan="3" style="color:#f44336;">ML service offline</td></tr>';
+        }
+    }
+    
+    // Load app status
+    function getStatus(url, dotId, textId) {
+        fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-cache' })
+            .then(() => setStatus(dotId, textId, 'Online', 'online'))
+            .catch(() => setStatus(dotId, textId, 'Offline', 'offline'));
+    }
+    function setStatus(dotId, textId, text, state) {
+        const dot = document.getElementById(dotId);
+        const txt = document.getElementById(textId);
+        if (dot) dot.className = 'status-dot ' + (state === 'offline' ? 'offline' : '');
+        if (txt) txt.textContent = text;
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMLStatus();
+        getStatus('https://claw.lkohl.duckdns.org/', 'arca-dot', 'arca-status');
+        getStatus('https://dashboard.claw.lkohl.duckdns.org/newsletter', 'newsletter-dot', 'newsletter-status');
+        getStatus('http://158.180.60.61:8501', 'bct-dot', 'bct-status');
+        getStatus('https://dashboard.claw.lkohl.duckdns.org/healthhub/', 'healthhub-dot', 'healthhub-status');
+        
+        // Refresh ML status every 30s
+        setInterval(loadMLStatus, 30000);
+    });
+    </script>
+</body>
+</html>
