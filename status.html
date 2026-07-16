@@ -1,0 +1,83 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Newsletter Pipeline Dashboard</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .status-card { border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin: 10px 0; }
+                .status-healthy { background-color: #d4edda; border-color: #c3e6cb; }
+                .status-degraded { background-color: #fff3cd; border-color: #ffeaa7; }
+                .status-error { background-color: #f8d7da; border-color: #f5c6cb; }
+                .metric { margin: 5px 0; }
+                .metric-label { font-weight: bold; }
+                .error-list { background-color: #f8f9fa; padding: 10px; border-radius: 3px; }
+                .error-item { padding: 5px; border-bottom: 1px solid #eee; }
+            </style>
+        </head>
+        <body>
+            <h1>📊 Newsletter Pipeline Dashboard</h1>
+            <p>Last updated: 2026-07-16T19:00:01.750099</p>
+            
+            <div class="status-card status-healthy">
+                <h2>System Status: HEALTHY</h2>
+                <div class="metric">
+                    <span class="metric-label">Uptime:</span> 0 days
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Oracle Server:</span> 
+                    ✅ Online
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h2>📰 Scraping Metrics</h2>
+                <div class="metric">
+                    <span class="metric-label">Last Success:</span> Never
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Articles Scraped:</span> 0
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Success Rate:</span> 0.0%
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h2>📧 Newsletter Generation</h2>
+        
+                <div class="metric">
+                    <span class="metric-label">Daily Ai Tech News:</span>
+                    Last: Never, Articles: 0
+                </div>
+            
+                <div class="metric">
+                    <span class="metric-label">Ai Management Bulletin:</span>
+                    Last: Never, Articles: 0
+                </div>
+            
+                <div class="metric">
+                    <span class="metric-label">Ai Security Update:</span>
+                    Last: Never, Articles: 0
+                </div>
+            
+            </div>
+            
+            <div class="status-card">
+                <h2>📤 Email Delivery</h2>
+                <div class="metric">
+                    <span class="metric-label">Last Sent:</span> Never
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total Sent:</span> 0
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Success Rate:</span> 0.0%
+                </div>
+            </div>
+        
+        </body>
+        </html>
+        
