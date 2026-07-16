@@ -1,0 +1,75 @@
+{
+  "timestamp": "2026-07-04T20:03:56.757496+00:00",
+  "timestamp_human": "2026-07-04 20:03:56 UTC",
+  "overall": "red",
+  "checks": {
+    "dreaming": {
+      "status": "red",
+      "components": {
+        "light": {
+          "age_hours": 1549.5,
+          "status": "red",
+          "label": "Stale (1549h)"
+        },
+        "rem": {
+          "age_hours": 1549.5,
+          "status": "red",
+          "label": "Stale (1549h)"
+        },
+        "deep": {
+          "age_hours": 1549.4,
+          "status": "red",
+          "label": "Stale (1549h)"
+        }
+      }
+    },
+    "newsletter_vps": {
+      "status": "green",
+      "label": "Reachable",
+      "detail": "SSH OK"
+    },
+    "memory_size": {
+      "status": "green",
+      "label": "Healthy (7,178B)",
+      "size_bytes": 7178
+    },
+    "learnings": {
+      "status": "red",
+      "label": "Stale (1550h)",
+      "age_hours": 1549.5
+    },
+    "ontology": {
+      "status": "green",
+      "label": "Fresh (20h)",
+      "age_hours": 20.1,
+      "size_bytes": 440376
+    },
+    "health_monitor": {
+      "status": "green",
+      "label": "Recent (1h)",
+      "age_hours": 0.7
+    },
+    "morning_briefing": {
+      "status": "green",
+      "label": "Sent today",
+      "detail": "Briefing for 2026-07-04"
+    },
+    "github_sync": {
+      "status": "green",
+      "label": "Recent (1h)",
+      "detail": "feat: MEMORY.md Distillation (58KB\u21927KB) + Live-Status-Dashboard",
+      "age_hours": 0.9,
+      "commit": "4288a114"
+    },
+    "token_refresh": {
+      "status": "yellow",
+      "label": "Gateway issue",
+      "detail": "{'mode': 'local', 'url': 'ws://127.0.0.1:18789', 'urlSource': 'local loopback', 'misconfigured': False, 'reachable': False, 'connectLatencyMs': None, 'self': None, 'error': 'protocol mismatch', 'authW"
+    },
+    "cron_jobs": {
+      "status": "yellow",
+      "label": "15/19 active",
+      "detail": "4 disabled. Weekly AI Newsletter (v2), Heartbeat Runner (alle Checks), Morning Briefing v2, Weekly Memory Distillation, Evening Planner Check..."
+    }
+  }
+}
