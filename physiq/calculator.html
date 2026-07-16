@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PhysIQ Rechner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">PhysIQ Körperkomposition Rechner</h1>
+        
+        <div class="bg-white p-6 rounded shadow mb-8">
+            <h2 class="text-xl font-bold mb-4">Daten eingeben</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block mb-2">Geschlecht</label>
+                    <select id="gender" class="w-full p-2 border rounded">
+                        <option value="male">Männlich</option>
+                        <option value="female">Weiblich</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block mb-2">Alter</label>
+                    <input type="number" id="age" value="35" class="w-full p-2 border rounded">
+                </div>
+                
+                <div>
+                    <label class="block mb-2">Größe (cm)</label>
+                    <input type="number" id="height" value="180" class="w-full p-2 border rounded">
+                </div>
+                
+                <div>
+                    <label class="block mb-2">Gewicht (kg)</label>
+                    <input type="number" id="weight" value="80" class="w-full p-2 border rounded">
+                </div>
+                
+                <div>
+                    <label class="block mb-2">Bauchumfang (cm)</label>
+                    <input type="number" id="abdomen" value="90" class="w-full p-2 border rounded">
+                </div>
+            </div>
+            
+            <button onclick="calculate()" class="mt-6 bg-blue-600 text-white px-6 py-3 rounded font-bold">
+                🔒 Lokal berechnen
+            </button>
+        </div>
+        
+        <div id="results" class="bg-gray-100 p-6 rounded shadow hidden">
+            <h2 class="text-xl font-bold mb-4">Ergebnisse</h2>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+    
+    <script>
+        async function calculate() {
+            const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const abdomen = parseFloat(document.getElementById('abdomen').value);
+            
+            // Show loading
+            document.getElementById('resultContent').innerHTML = 'Berechne...';
+            document.getElementById('results').classList.remove('hidden');
+            
+            try {
+                // Try ML API
+                const response = await fetch(`/api/ml/predict/simple?gender=${gender}&age=${age}&height_cm=${height}&weight_kg=${weight}&abdomen_cm=${abdomen}`);
+                const data = await response.json();
+                
+                document.getElementById('resultContent').innerHTML = `
+                    <div class="space-y-3">
+                        <div><strong>Körperfett:</strong> ${data.body_fat_percent.toFixed(1)}%</div>
+                        <div><strong>Muskelmasse:</strong> ${data.muscle_mass_kg.toFixed(1)} kg</div>
+                        <div><strong>BMI:</strong> ${data.bmi.toFixed(1)}</div>
+                    </div>
+                `;
+                
+                // Log calculation
+                await fetch('/api/calculations/log', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        session_id: 'calc_' + Date.now(),
+                        gender: gender,
+                        age: age,
+                        height_cm: height,
+                        weight_kg: weight,
+                        abdomen_cm: abdomen,
+                        body_fat: data.body_fat_percent,
+                        muscle_mass_kg: data.muscle_mass_kg,
+                        bmi: data.bmi
+                    })
+                });
+                
+            } catch (error) {
+                document.getElementById('resultContent').innerHTML = 'Fehler bei der Berechnung';
+            }
+        }
+    </script>
+</body>
+</html>

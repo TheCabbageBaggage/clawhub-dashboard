@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PhysIQ Waitlist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">PhysIQ Waitlist Anmeldung</h1>
+        
+        <div class="bg-white p-6 rounded shadow mb-8">
+            <p class="mb-6 text-gray-600">
+                Melden Sie sich für personalisierte BIA-Vorhersagen an. 
+                Wir informieren Sie über neue Algorithmen und Features.
+            </p>
+            
+            <form id="waitlistForm">
+                <div class="mb-4">
+                    <label class="block mb-2">Email-Adresse</label>
+                    <input type="email" id="email" required 
+                           class="w-full p-2 border rounded" placeholder="ihre@email.de">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2">BIA-Gerät Zugang?</label>
+                    <select id="bia" class="w-full p-2 border rounded">
+                        <option value="yes">Ja, ich habe ein BIA-Gerät</option>
+                        <option value="no">Nein, aber interessiert</option>
+                        <option value="maybe">Vielleicht später</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" required class="mr-2">
+                        <span class="text-sm">Ich stimme der Datenspeicherung zu (DSGVO-konform)</span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded font-bold">
+                    📧 Für Waitlist anmelden
+                </button>
+            </form>
+            
+            <div id="success" class="mt-6 p-4 bg-green-100 text-green-800 rounded hidden"></div>
+        </div>
+        
+        <div class="text-center text-gray-500 text-sm">
+            <p>Bereits <span id="waitlistCount">0</span> Personen auf der Waitlist</p>
+        </div>
+    </div>
+    
+    <script>
+        // Load waitlist count
+        async function loadCount() {
+            try {
+                const res = await fetch('/api/dashboard/stats');
+                const data = await res.json();
+                document.getElementById('waitlistCount').textContent = data.waitlist?.total || 0;
+            } catch {}
+        }
+        
+        loadCount();
+        
+        // Form submission
+        document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const bia = document.getElementById('bia').value;
+            
+            try {
+                const response = await fetch('/api/waitlist/subscribe', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        email: email,
+                        bia_access: bia
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('success').textContent = 
+                        `✅ Danke! Wir melden uns bei ${email}`;
+                    document.getElementById('success').classList.remove('hidden');
+                    document.getElementById('waitlistForm').reset();
+                    loadCount();
+                }
+            } catch {
+                alert('Fehler bei der Anmeldung');
+            }
+        });
+    </script>
+</body>
+</html>
