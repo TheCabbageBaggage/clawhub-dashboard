@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clawhub-dashboard
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - dashboard-data:/app/data
+      - ./dashboard:/app/dashboard:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    networks:
+      - dashboard-net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3001/api/data"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  dashboard-data:
+
+networks:
+  dashboard-net:
+    name: clawhub-dashboard
+    driver: bridge
