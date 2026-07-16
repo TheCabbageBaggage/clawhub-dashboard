@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan — Operations Hub</title>
+<style>
+:root,
+[data-theme="dark"] {
+  --bg: #0a0e14; --bg2: #11161e; --bg3: #1a2230;
+  --card: #141c26; --card-hover: #1a2432;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.25);
+  --secondary: #1A3440; --accent: #3D8B8B;
+  --accent-glow: rgba(61,139,139,0.2);
+  --text: #e0e4ea; --text2: #8892a8; --text3: #5a6478;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --pending: #6366f1;
+  --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.1);
+  --radius: 16px; --radius-sm: 10px; --radius-xs: 6px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(10,14,20,0.85);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+}
+
+[data-theme="light"] {
+  --bg: #f5f6f8; --bg2: #ffffff; --bg3: #e8ecf1;
+  --card: #ffffff; --card-hover: #f0f3f6;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.12);
+  --secondary: #1A3440; --accent: #2C5F7C;
+  --accent-glow: rgba(44,95,124,0.1);
+  --text: #1a1d27; --text2: #5a6478; --text3: #8892a8;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --pending: #6366f1;
+  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.12);
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(245,246,248,0.9);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.nav {
+  position: sticky; top:0; z-index:100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+}
+.nav-brand { display: flex; align-items: center; gap: 0.6rem; }
+.nav-brand a {
+  text-decoration: none; color: var(--text2); font-size: 1.1rem;
+  padding: 0.3rem 0.5rem; border-radius: 6px; transition: var(--transition);
+}
+.nav-brand a:hover { background: var(--bg3); color: var(--accent); }
+.nav-brand .title { font-size: 1.1rem; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+.nav-right { display: flex; align-items: center; gap: 0.6rem; }
+.theme-toggle {
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--text2); font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.hero {
+  background: var(--hero-gradient); padding: 2.5rem 2rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ''; position: absolute; top: -40%; right: -20%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(61,139,139,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; color: var(--hero-text); letter-spacing: -0.03em; }
+.hero p { font-size: 0.95rem; color: var(--hero-text2); margin-top: 0.5rem; }
+
+.main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* Status Table */
+.status-section { margin-bottom: 2rem; }
+.status-section h2 {
+  font-size: 1rem; font-weight: 600; color: var(--text);
+  margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.status-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.8rem; background: var(--card);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.status-table th {
+  text-align: left; padding: 0.6rem 0.8rem;
+  background: var(--bg3); color: var(--text2);
+  font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.status-table td {
+  padding: 0.5rem 0.8rem; border-top: 1px solid var(--border);
+  color: var(--text2);
+}
+.state-critical { color: var(--danger); font-weight: 600; }
+.state-warn { color: var(--warn); font-weight: 600; }
+.state-ok { color: var(--success); font-weight: 600; }
+.detail { font-size: 0.72rem; color: var(--text3); max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Week layout */
+.week { margin-bottom: 2rem; }
+.week-header {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1rem; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.week-num {
+  font-size: 0.75rem; font-weight: 700; padding: 3px 10px;
+  border-radius: 6px; background: var(--accent); color: #fff;
+}
+.week-label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+
+.day-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+.day-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 1rem;
+  transition: var(--transition);
+}
+.day-card:hover { border-color: var(--accent); }
+.day-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.day-name { font-size: 0.8rem; font-weight: 700; color: var(--text); }
+
+.task-list { list-style: none; }
+.task-item {
+  display: flex; align-items: flex-start; gap: 0.4rem;
+  padding: 0.3rem 0; font-size: 0.75rem; color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.task-item:last-child { border-bottom: none; }
+.task-status {
+  width: 7px; height: 7px; border-radius: 50%; margin-top: 0.3rem;
+  flex-shrink: 0;
+}
+.status-done { background: var(--success); }
+.status-progress { background: var(--warn); }
+.status-todo { background: var(--text3); }
+.task-desc { flex: 1; }
+
+/* Milestones & Summary */
+.section { margin-top: 2rem; }
+.section h2 {
+  font-size: 1rem; font-weight: 600; color: var(--text);
+  margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.8rem; background: var(--card);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.data-table th {
+  text-align: left; padding: 0.6rem 0.8rem;
+  background: var(--bg3); color: var(--text2);
+  font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.data-table td {
+  padding: 0.5rem 0.8rem; border-top: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.footer {
+  text-align: center; padding: 1.5rem; color: var(--text3);
+  font-size: 0.72rem; border-top: 1px solid var(--border); margin-top: 2rem;
+}
+.footer a { color: var(--text3); }
+
+@media (max-width: 600px) {
+  .nav { padding: 0 1rem; }
+  .hero { padding: 1.75rem 1rem; }
+  .main { padding: 1.5rem 1rem; }
+  .day-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <a href="/" title="Back to Command Center">←</a>
+    <span class="title">📋 Plan</span>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle theme">☀️</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Clowie 4-Wochen-Aufgabenplan</h1>
+  <p>Woche 4: 26. Juli – 1. August — Abschluss & Zukunft · Generiert: 04.07.2026, 19:00 · Auto-Update alle 14 Tage</p>
+</div>
+
+<div class="main">
+
+  <!-- STATUS QUO -->
+  <div class="status-section">
+    <h2>📊 System-Status bei Planung</h2>
+    <table class="status-table">
+      <thead><tr><th>System</th><th>Zustand</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Dreaming</td>
+          <td class="state-ok">❌ Still</td>
+          <td class="detail">01.05.2026</td>
+        </tr>
+        <tr>
+          <td>Newsletter VPS</td>
+          <td class="state-ok">❌ Error</td>
+          <td class="detail">Cron-Daily broken</td>
+        </tr>
+        <tr>
+          <td>MEMORY.md</td>
+          <td class="state-warn">🟡 58KB</td>
+          <td class="detail">Ziel: 10-15KB</td>
+        </tr>
+        <tr>
+          <td>Learnings</td>
+          <td class="state-warn">🟡 Stale</td>
+          <td class="detail">Letzter Eintrag Mai</td>
+        </tr>
+        <tr>
+          <td>Ontology Graph</td>
+          <td class="state-ok">🟢 Läuft</td>
+          <td class="detail">Heute aktualisiert</td>
+        </tr>
+        <tr>
+          <td>Agent Mesh</td>
+          <td class="state-warn">🟡 Draft</td>
+          <td class="detail">Q3-Entscheidung offen</td>
+        </tr>
+        <tr>
+          <td>Health Monitor</td>
+          <td class="state-ok">🟢 Grün</td>
+          <td class="detail">v3 aktiv</td>
+        </tr>
+        <tr>
+          <td>Morning Briefing</td>
+          <td class="state-ok">🟢 Grün</td>
+          <td class="detail">Täglich 06:00</td>
+        </tr>
+        <tr>
+          <td>Evening Planner</td>
+          <td class="state-ok">🟢 Grün</td>
+          <td class="detail">Täglich 18-23h</td>
+        </tr>
+        <tr>
+          <td>Calendar</td>
+          <td class="state-ok">🟢 Grün</td>
+          <td class="detail">iCal-Feeds aktiv</td>
+        </tr>
+        <tr>
+          <td>Token Refresh</td>
+          <td class="state-ok">🟢 Grün</td>
+          <td class="detail">Alle 6h</td>
+        </tr>
+        <tr>
+          <td>GitHub Sync</td>
+          <td class="state-ok">🟢 Grün</td>
+          <td class="detail">Alle 15min</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WEEKS -->
+  
+    <div class="week">
+      <div class="week-header">
+        <span class="week-num">W1</span>
+        <span class="week-label">Woche 1: 5.–11. Juli — Reparatur-Offensive</span>
+      </div>
+      <div class="day-grid">
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 1 (Sa 05.07.) — Dreaming-Diagnose + Fix</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Memory-Core Plugin Status prüfen (openclaw.json config)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Dreaming Cron-Job identifizieren/reaktivieren</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Light/REM/Deep Sleep manuell triggern</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Output validieren → 3 Phasen müssen laufen</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 2 (So 06.07.) — Newsletter VPS + Weekly Review</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">SSH auf 158.180.60.61 (Key prüfen: ~/.ssh/id_ed25519_github)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Web-Scraper-Fehler analysieren (cron_pipeline.sh Logs)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Fix implementieren + manuellen Test-Run</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Weekly Distillation: Learnings → MEMORY.md</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">CEO Scorecard (falls scheduled)</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 3 (Mo 07.07.) — MEMORY.md Distillation</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">MEMORY.md analysieren: Duplikate, veraltete Einträge</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Abschnitte auslagern in infra/*.md</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Distillation ausführen (Ziel: <15KB)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Infra-Files auf Aktualität prüfen</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 4 (Di 08.07.) — Learnings-Pipeline</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">LEARNINGS.md analysieren (letzter Eintrag 01.05.)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">daily_review.sh testen + fixen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Tag-Normalisierung (22 unique → 8-10 Kategorien)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Manuell ein Learning loggen → Pipeline testen</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 5 (Mi 09.07.) — Ontology-Graph Refresh</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Graph komplett neu bauen (alle Memory-Files seit Mai)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Entitäten validieren (People, Projects, Tasks)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">KG Use Cases testen (command-center, network map, reengagement radar)</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 6 (Do 10.07.) — Health Monitor Upgrade</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Dreaming-Health-Check in health_monitor.py integrieren</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Newsletter-VPS-Health-Check integrieren</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Dashboard (health_dashboard.html) erweitern</span></li>
+</ul>
+        </div></div>
+    </div>
+    <div class="week">
+      <div class="week-header">
+        <span class="week-num">W2</span>
+        <span class="week-label">Woche 2: 12.–18. Juli — Optimierung</span>
+      </div>
+      <div class="day-grid">
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 8 (Sa 12.07.) — Agent Mesh Entscheidung</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">ARCHITECTURE.md review</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Gap-Analyse: Was fehlt für Phase 1?</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Go/No-Go-Entscheidung für Q3</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Bei Go: Phase-1-Plan mit Meilensteinen</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 9 (So 13.07.) — Weekly Review + Learning-System</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Weekly Distillation</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Auto-Tagging für neue Learnings implementieren</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Pattern-Key-Index auf Duplikate prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Nächste 2 Wochen planen (Auto-Planer Test)</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 10 (Mo 14.07.) — Newsletter VPS Härtung</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">VPS Health Check (Disk, Memory, Cron)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Fallback-Strategie: Lokaler Fallback wenn VPS ausfällt</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">VPS-Monitoring in health_monitor.py</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 11 (Di 15.07.) — Dokumentation</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">AGENTS.md auf veraltete Referenzen prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">TOOLS.md aktualisieren (Modelle, Scripts)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">SOUL.md review (neue Learnings einarbeiten)</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 12 (Mi 16.07.) — Subagent Prompt Optimizer</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Optimizer-Templates (A-E) auf Aktualität prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">A/B-Test-Framework reaktivieren</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Neue Templates für Dreaming/Newsletter-Tasks</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 13 (Do 17.07.) — Memory-System Upgrade</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Vector-Search-Index prüfen (146 Chunks, 22 Files)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Embedding-Cache optimieren (208 entries)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Recall-Store prüfen (92 entries)</span></li>
+</ul>
+        </div></div>
+    </div>
+    <div class="week">
+      <div class="week-header">
+        <span class="week-num">W3</span>
+        <span class="week-label">Woche 3: 19.–25. Juli — Ausbau & Härtung</span>
+      </div>
+      <div class="day-grid">
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 15 (Sa 19.07.) — CI/CD Pipeline Review</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">GitHub Actions Workflow prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Docker Build → Deploy → Verify → Rollback testen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">SSH-Key-Rotation prüfen</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 16 (So 20.07.) — Weekly Review + Security Pre-Check</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Weekly Distillation</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Security-Audit-Vorbereitung (31.07.)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Firewall-Regeln prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">SSH-Config auditieren</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 17 (Mo 21.07.) — Calendar System Upgrade</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">executive_planner.py auf Fehler prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Kalender-Konflikt-Erkennung verbessern</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Runna-Integration testen</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 18 (Di 22.07.) — Email-System Audit</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Gmail API Token-Status prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Clowie eigenes OAuth einrichten (Token ungültig)</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">ACTA-Format-Regeln in Email-Pipeline verankern</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 19 (Mi 23.07.) — Knowledge Graph Use Cases</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Command Center Dashboard testen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Network Map aktualisieren</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Reengagement Radar testen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Neue Use Cases identifizieren</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 20 (Do 24.07.) — Performance-Optimierung</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Cron-Job-Überlappungen prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Docker-Resource-Limits checken</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Token-Tracker auf Auffälligkeiten prüfen</span></li>
+</ul>
+        </div></div>
+    </div>
+    <div class="week">
+      <div class="week-header">
+        <span class="week-num">W4</span>
+        <span class="week-label">Woche 4: 26. Juli – 1. August — Abschluss & Zukunft</span>
+      </div>
+      <div class="day-grid">
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 22 (Sa 26.07.) — Agent Mesh Phase 1 (falls Go)</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Persistente Sessions einrichten</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Message-Passing zwischen Agents testen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Erste Mesh-Topologie deployen</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 23 (So 27.07.) — Weekly Review + 4-Wochen-Retro</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Finale Weekly Distillation</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">4-Wochen-Retrospektive</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Nächster 4-Wochen-Plan (02.–29.08.)</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 24 (Mo 28.07.) — Security-Audit Vorbereitung</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Alle Security-Checks durchlaufen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Firewall, SSH, Exposure prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">MoltGuard-Status checken</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 25 (Di 29.07.) — Dokumentation finalisieren</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Alle Änderungen dokumentieren</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">infra/*.md Files aktualisieren</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">BOOTSTRAP.md auf Aktualität prüfen</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 26 (Mi 30.07.) — Finale Tests</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Dreaming-System: 4-Wochen-Log prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Newsletter: 4-Wochen-Stabilität prüfen</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">MEMORY.md: Größe unter 15KB?</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Alle Cron-Jobs: Status grün?</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 27 (Do 31.07.) — Monthly Security Audit</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Vollständiger Security-Audit</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Report als PDF (ACTA CI) an Linus</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Remediation falls nötig</span></li>
+</ul>
+        </div>
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-name">Tag 28 (Fr 01.08.) — Abschluss + Übergabe</span>
+          </div>
+          <ul class="task-list"><li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Finaler 4-Wochen-Status-Report</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Nächster 4-Wochen-Plan übergeben</span></li>
+<li class="task-item"><span class="task-status status-todo"></span><span class="task-desc">Auto-Planer validieren</span></li>
+</ul>
+        </div></div>
+    </div>
+
+  <!-- MILESTONES -->
+  <div class="section">
+    <h2>🎯 Meilensteine & Exit Criteria</h2>
+    <table class="data-table">
+      <thead><tr><th>Meilenstein</th><th>Deadline</th><th>Kriterium</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>M1</td>
+          <td>Dreaming läuft</td>
+          <td>05.07.</td>
+        </tr>
+        <tr>
+          <td>M2</td>
+          <td>Newsletter fix</td>
+          <td>06.07.</td>
+        </tr>
+        <tr>
+          <td>M3</td>
+          <td>MEMORY.md <15KB</td>
+          <td>07.07.</td>
+        </tr>
+        <tr>
+          <td>M4</td>
+          <td>Learnings aktiv</td>
+          <td>08.07.</td>
+        </tr>
+        <tr>
+          <td>M5</td>
+          <td>Ontology aktuell</td>
+          <td>09.07.</td>
+        </tr>
+        <tr>
+          <td>M6</td>
+          <td>Health v3.1</td>
+          <td>10.07.</td>
+        </tr>
+        <tr>
+          <td>M7</td>
+          <td>Agent Mesh Go/No-Go</td>
+          <td>12.07.</td>
+        </tr>
+        <tr>
+          <td>M8</td>
+          <td>Auto-Planer live</td>
+          <td>13.07.</td>
+        </tr>
+        <tr>
+          <td>M9</td>
+          <td>Security Audit</td>
+          <td>31.07.</td>
+        </tr>
+        <tr>
+          <td>M10</td>
+          <td>4-Wochen-Review</td>
+          <td>01.08.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="section">
+    <h2>📊 Zusammenfassung nach Kategorie</h2>
+    <table class="data-table">
+      <thead><tr><th>Kategorie</th><th>Tasks</th><th>Aufwand</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>🧠 Dreaming</td>
+          <td>Diagnose + Fix + Monitoring</td>
+          <td>2 Tage</td>
+        </tr>
+        <tr>
+          <td>📰 Newsletter</td>
+          <td>VPS-Fix + Härtung + Fallback</td>
+          <td>3 Tage</td>
+        </tr>
+        <tr>
+          <td>🗂️ Memory</td>
+          <td>Distillation + Upgrade</td>
+          <td>2 Tage</td>
+        </tr>
+        <tr>
+          <td>📝 Learnings</td>
+          <td>Pipeline-Fix + Tag-Normalisierung</td>
+          <td>2 Tage</td>
+        </tr>
+        <tr>
+          <td>🔗 Ontology</td>
+          <td>Graph-Refresh + Use Cases</td>
+          <td>2 Tage</td>
+        </tr>
+        <tr>
+          <td>🏥 Health</td>
+          <td>Upgrade v3.1 + Integration</td>
+          <td>2 Tage</td>
+        </tr>
+        <tr>
+          <td>🕸️ Agent Mesh</td>
+          <td>Entscheidung + ggf. Phase 1</td>
+          <td>3 Tage</td>
+        </tr>
+        <tr>
+          <td>🔒 Security</td>
+          <td>Audit + Härtung</td>
+          <td>2 Tage</td>
+        </tr>
+        <tr>
+          <td>📋 Doku/Cleanup</td>
+          <td>AGENTS, TOOLS, SOUL, Hygiene</td>
+          <td>3 Tage</td>
+        </tr>
+        <tr>
+          <td>📊 Rituals</td>
+          <td>4x Weekly Review + Distillation</td>
+          <td>4 Tage</td>
+        </tr>
+        <tr>
+          <td>⚙️ Auto-Planer</td>
+          <td>Script + Cronjob</td>
+          <td>1 Tag</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer">
+  Operations Hub · Clowie · Auto-generiert 16.07.2026 20:20 · <a href="https://github.com/TheCabbageBaggage/openclaw-workspace" target="_blank" rel="noopener">GitHub ↗</a>
+</div>
+
+<script>
+function initTheme() {
+  const saved = localStorage.getItem('dashboard-theme') || 'dark';
+  applyTheme(saved);
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+  localStorage.setItem('dashboard-theme', theme);
+}
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+initTheme();
+</script>
+</body>
+</html>

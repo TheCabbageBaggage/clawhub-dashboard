@@ -1,0 +1,2876 @@
+[
+  {
+    "date": "2026-05-17",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Musk v. Altman week 3: Elon Musk and Sam Altman traded blows over each other’s credibil...",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/15/1137357/musk-v-altman-week-3/"
+        },
+        {
+          "title": "The Download: China’s AI drama factory and the WHO’s missing health targets",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/15/1137341/the-download-china-short-drama-ai-who-health-targets/"
+        },
+        {
+          "title": "The world is on track to miss its health targets",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/15/1137270/the-world-is-on-track-to-miss-its-health-targets/"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "The haves and have nots of the AI gold rush",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/16/the-haves-and-have-nots-of-the-ai-gold-rush/"
+        },
+        {
+          "title": "Marketing operating system Nectar Social raises $30M Series A led by Menlo",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/16/marketing-operating-system-nectar-social-raises-30m-series-a-in-round-led-by-menlo/"
+        },
+        {
+          "title": "Research repository ArXiv will ban authors for a year if they let AI do all the work",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/16/research-repository-arxiv-will-ban-authors-for-a-year-if-they-let-ai-do-all-the-work/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Grafana GitHub Token Breach Led to Codebase Download and Extortion Attempt",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/grafana-github-token-breach-led-to.html"
+        },
+        {
+          "title": "Funnel Builder Flaw Under Active Exploitation Enables WooCommerce Checkout Skimming",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/funnel-builder-flaw-under-active.html"
+        },
+        {
+          "title": "Turla Turns Kazuar Backdoor Into Modular P2P Botnet for Persistent Access",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/turla-turns-kazuar-backdoor-into.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Ten Signs of Fascism. America has all of them",
+          "source": "Hacker News",
+          "link": "https://rutgerbregman.substack.com/p/10-signs-of-fascism-america-has-all"
+        },
+        {
+          "title": "Mozilla to UK regulators: VPNs are essential privacy and security tools",
+          "source": "Hacker News",
+          "link": "https://blog.mozilla.org/netpolicy/2026/05/15/mozilla-to-uk-regulators-vpns-are-essential-privacy-and-security-tools-and-should-not-be-undermined/"
+        },
+        {
+          "title": "Tesla Solar Roof is on life support as it pivot to panels",
+          "source": "Hacker News",
+          "link": "https://electrek.co/2026/05/14/tesla-solar-roof-promise-vs-reality-pivot-panels/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "The haves and have nots of the AI gold rush",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/16/the-haves-and-have-nots-of-the-ai-gold-rush/"
+        },
+        {
+          "title": "Marketing operating system Nectar Social raises $30M Series A led by Menlo",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/16/marketing-operating-system-nectar-social-raises-30m-series-a-in-round-led-by-menlo/"
+        },
+        {
+          "title": "OpenAI co-founder Greg Brockman takes charge of product strategy",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/16/openai-co-founder-greg-brockman-reportedly-takes-charge-of-product-strategy/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-17T22:30:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "IKS Level 3 Tabelle",
+          "start": "2026-05-17T20:30:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-05-17T10:33:04.893550+02:00"
+  },
+  {
+    "date": "2026-05-18",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "DeepSlide: From Artifacts to Presentation Delivery",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.15202"
+        },
+        {
+          "title": "SDOF: Taming the Alignment Tax in Multi-Agent Orchestration with State-Constrained Disp...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.15204"
+        },
+        {
+          "title": "Does Theory of Mind Improvement Really Benefit Human-AI Interactions? Empirical Finding...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.15205"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Apple’s Siri revamp could include auto-deleting chats",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/17/apples-siri-revamp-could-include-auto-deleting-chats/"
+        },
+        {
+          "title": "Why trust is a big question at the Elon Musk-OpenAI trial",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/17/why-trust-is-a-big-question-at-the-elon-musk-openai-trial/"
+        },
+        {
+          "title": "If you’re giving a commencement speech in 2026, maybe don’t mention AI",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/17/if-youre-giving-a-commencement-speech-in-2026-maybe-dont-mention-ai/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Pre-Stuxnet Fast16 Malware Tampered with Nuclear Weapons Simulations",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/pre-stuxnet-fast16-malware-tampered.html"
+        },
+        {
+          "title": "MiniPlasma Windows 0-Day Enables SYSTEM Privilege Escalation on Fully Patched Systems",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/miniplasma-windows-0-day-enables-system.html"
+        },
+        {
+          "title": "NGINX CVE-2026-42945 Exploited in the Wild, Causing Worker Crashes and Possible RCE",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/nginx-cve-2026-42945-exploited-in-wild.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Étienne Ghys: The Shape of Letters: From Leonardo da Vinci to Donald Knuth",
+          "source": "Hacker News",
+          "link": "https://www.youtube.com/watch?v=1OIxzewWilc"
+        },
+        {
+          "title": "It is time to give up the dualism introduced by the debate on consciousness",
+          "source": "Hacker News",
+          "link": "https://www.noemamag.com/there-is-no-hard-problem-of-consciousness/"
+        },
+        {
+          "title": "WriteUp: 16 Bytes of x86 that turn Matrix rain into sound",
+          "source": "Hacker News",
+          "link": "https://hellmood.111mb.de//wake_up_16b_writeup.html"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "The haves and have nots of the AI gold rush",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/16/the-haves-and-have-nots-of-the-ai-gold-rush/"
+        },
+        {
+          "title": "Marketing operating system Nectar Social raises $30M Series A led by Menlo",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/16/marketing-operating-system-nectar-social-raises-30m-series-a-in-round-led-by-menlo/"
+        },
+        {
+          "title": "OpenAI co-founder Greg Brockman takes charge of product strategy",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/16/openai-co-founder-greg-brockman-reportedly-takes-charge-of-product-strategy/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-18T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-18T10:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Abwesend",
+          "start": "2026-05-18T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-18T14:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-18T14:45:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-18T18:30:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "Flight from Vienna, AT (VIE) Terminal 3 to Linate APT, IT (LIN) T",
+          "start": "2026-05-18T12:45:00+02:00",
+          "location": "Vienna, AT (VIE)"
+        }
+      ]
+    },
+    "timestamp": "2026-05-18T11:03:00.585645+02:00"
+  },
+  {
+    "date": "2026-05-19",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "AgentWall: A Runtime Safety Layer for Local AI Agents",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.16265"
+        },
+        {
+          "title": "ANNEAL: Adapting LLM Agents via Governed Symbolic Patch Learning",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.16309"
+        },
+        {
+          "title": "From Prompts to Protocols: An AI Agent for Laboratory Automation",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.16552"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "OSHA probing worker death at SpaceX’s Starbase site",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/18/osha-probing-worker-death-at-spacexs-starbase-site/"
+        },
+        {
+          "title": "SandboxAQ brings its drug discovery models to Claude — no PhD in computing required",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/18/sandboxaq-brings-its-drug-discovery-models-to-claude-no-phd-in-computing-required/"
+        },
+        {
+          "title": "Anthropic has acquired the dev tools startup used by OpenAI, Google, and Cloudflare",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/18/anthropic-has-acquired-the-dev-tools-startup-used-by-openai-google-and-cloudflare/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "INTERPOL Operation Ramz Disrupts MENA Cybercrime Networks with 201 Arrests",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/interpol-operation-ramz-disrupts-mena.html"
+        },
+        {
+          "title": "⚡ Weekly Recap: Exchange 0-Day, npm Worm, Fake AI Repo, Cisco Exploit and More",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/weekly-recap-exchange-0-day-npm-worm.html"
+        },
+        {
+          "title": "How to Reduce Phishing Exposure Before It Turns into Business Disruption",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/how-to-reduce-phishing-exposure-before.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Peter Salus has died",
+          "source": "Hacker News",
+          "link": "https://www.tuhs.org/pipermail/tuhs/2026-May/033750.html"
+        },
+        {
+          "title": "War Game Exposed U.S. Vulnerability to Low-Tech Warfare",
+          "source": "Hacker News",
+          "link": "https://nsarchive.gwu.edu/news/2024-11-01/rigged-war-game-exposed-us-vulnerability-low-tech-warfare"
+        },
+        {
+          "title": "The American Rebellion Against AI Is Gaining Steam",
+          "source": "Hacker News",
+          "link": "https://www.wsj.com/tech/ai/the-american-rebellion-against-ai-is-gaining-steam-94b72529"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "South Korea’s LetinAR is building optics behind AI glasses",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/18/south-koreas-letinar-is-building-the-optics-behind-ai-glasses/"
+        },
+        {
+          "title": "The haves and have-nots of the AI gold rush",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/16/the-haves-and-have-nots-of-the-ai-gold-rush/"
+        },
+        {
+          "title": "Marketing operating system Nectar Social raises $30M Series A led by Menlo",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/16/marketing-operating-system-nectar-social-raises-30m-series-a-in-round-led-by-menlo/"
+        }
+      ]
+    },
+    "calendar": {
+      "Family Calendar": [
+        {
+          "summary": "11:50 Kinderarzt",
+          "start": "2026-05-19T11:30:00+02:00",
+          "location": ""
+        }
+      ],
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-19T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-19T14:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-19T16:30:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "Gents Dinner",
+          "start": "2026-05-19T19:00:00+02:00",
+          "location": "Taverna Filotimo - Josef Wolfik Straße 10, 2000 Stockerau, Öster"
+        }
+      ]
+    },
+    "timestamp": "2026-05-19T06:00:45.554200+02:00"
+  },
+  {
+    "date": "2026-05-20",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Position: Let's Develop Data Probes to Fundamentally Understand How Data Affects LLM Pe...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.18801"
+        },
+        {
+          "title": "Operationalizing Document AI: A Microservice Architecture for OCR and LLM Pipelines in ...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.18818"
+        },
+        {
+          "title": "Evaluating the Utility of Personal Health Records in Personalized Health AI",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.18937"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Google just declared itself a contender in AI design at IO 2026",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/19/ai-design-tools-are-the-next-big-battleground-and-google-is-going-all-in-at-io-2026/"
+        },
+        {
+          "title": "You can now talk to your Gmail inbox, as seen at Google IO 2026",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/19/you-can-now-talk-to-your-gmail-inbox-as-seen-at-google-io-2026/"
+        },
+        {
+          "title": "How to use Google’s new AI agents to go beyond your standard searches",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/19/how-to-use-googles-new-ai-agents-to-go-beyond-your-standard-searches/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Trapdoor Android Ad Fraud Scheme Hit 659 Million Daily Bid Requests Using 455 Apps",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/trapdoor-android-ad-fraud-scheme-hit.html"
+        },
+        {
+          "title": "DirtyDecrypt PoC Released for Linux Kernel CVE-2026-31635 LPE Vulnerability",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/dirtydecrypt-poc-released-for-linux.html"
+        },
+        {
+          "title": "The New Phishing Click: How OAuth Consent Bypasses MFA",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/the-new-phishing-click-how-oauth.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "ShioriCode",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/shioricode"
+        },
+        {
+          "title": "Haystack",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/haystack-editor"
+        },
+        {
+          "title": "Mantle Chat",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/mantle-chat"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "From teen hacker to Iron Dome researcher, this founder raised $28M to fight AI phishing",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/19/from-teen-hacker-to-iron-dome-researcher-this-founder-raised-28m-to-fight-ai-phishing/"
+        },
+        {
+          "title": "Forget the feed: Status AI raises $17M to turn social media into interactive entertainment",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/19/gamified-social-media-network-status-announces-17m-funding-to-help-usher-in-new-era-of-social-networking/"
+        },
+        {
+          "title": "‘Survivor’ stars Kyle Fraser and Kamilla Karthigesu introduce a goal-tracking app, Papr...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/19/survivor-stars-kyle-fraser-and-kamilla-karthigesu-introduce-a-goal-tracking-app-paprclip/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-20T11:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-20T18:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-20T21:30:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-05-20T06:01:21.062386+02:00"
+  },
+  {
+    "date": "2026-05-21",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Position: Let's Develop Data Probes to Fundamentally Understand How Data Affects LLM Pe...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.18801"
+        },
+        {
+          "title": "Operationalizing Document AI: A Microservice Architecture for OCR and LLM Pipelines in ...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.18818"
+        },
+        {
+          "title": "Evaluating the Utility of Personal Health Records in Personalized Health AI",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.18937"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Jensen Huang says he’s found a ‘brand new’ $200B market for Nvidia",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/20/jensen-huang-says-hes-found-a-brand-new-200b-market-for-nvidia/"
+        },
+        {
+          "title": "Anthropic says it’s about to have its first profitable quarter",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/20/anthropic-says-its-about-to-have-its-first-profitable-quarter/"
+        },
+        {
+          "title": "The SpaceX IPO filing is filled with AI bets, Starship dreams, and Elon Musk at the center",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/20/the-spacex-ipo-filing-ai-bets-starship-dreams-elon-musk/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Microsoft Open-Sources RAMPART and Clarity to Secure AI Agents During Development",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/microsoft-open-sources-rampart-and.html"
+        },
+        {
+          "title": "Microsoft Takes Down Malware-Signing Service Behind Ransomware Attacks",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/microsoft-takes-down-malware-signing.html"
+        },
+        {
+          "title": "Webworm Deploys EchoCreep and GraphWorm Backdoors Using Discord and MS Graph API",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/webworm-deploys-echocreep-and-graphworm.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Skilled",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/skilled-2"
+        },
+        {
+          "title": "Contextberg",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/contextberg"
+        },
+        {
+          "title": "Insta360 Mic Pro",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/insta-360"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "Imperagen raises £5 million to use quantum physics, AI on enzyme engineering",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/20/imperagen-raises-5-million-to-redefine-enzyme-engineering/"
+        },
+        {
+          "title": "Clouted wants to take the guesswork out of making short videos go viral",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/20/clouted-wants-to-take-the-guesswork-out-of-making-short-videos-go-viral/"
+        },
+        {
+          "title": "Sam Altman makes ‘mic drop’ offer to every Y Combinator startup",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/20/sam-altman-makes-mic-drop-offer-to-every-y-combinator-startup/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-21T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-21T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Abwesend",
+          "start": "2026-05-21T20:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Abwesend",
+          "start": "2026-05-21T22:00:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "Flight from Linate APT, IT (LIN) Terminal Unknown to Vienna, AT (",
+          "start": "2026-05-21T20:00:00+02:00",
+          "location": "Linate APT, IT (LIN)"
+        }
+      ]
+    },
+    "timestamp": "2026-05-21T06:00:40.924813+02:00"
+  },
+  {
+    "date": "2026-05-22",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "SOLAR: A Self-Optimizing Open-Ended Autonomous Agent for Lifelong Learning and Continua...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.20189"
+        },
+        {
+          "title": "Tool-Augmented Agent for Closed-loop Optimization,Simulation,and Modeling Orchestration",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.20190"
+        },
+        {
+          "title": "OSCToM: RL-Guided Adversarial Generation for High-Order Theory of Mind",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.20423"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Waymo expands pause to four cities as robotaxis keep driving into floods",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/21/waymo-pauses-service-in-four-cities-as-robotaxis-keep-driving-into-floods/"
+        },
+        {
+          "title": "SpaceX scrubs first Starship V3 launch just before liftoff",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/21/spacex-scrubs-first-starship-v3-launch-just-before-liftoff/"
+        },
+        {
+          "title": "Who will benefit most from SpaceX IPO? Mostly Elon — and a few from his inner circle",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/21/who-will-benefit-most-from-spacex-ipo-mostly-elon-and-a-few-from-his-inner-circle/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Showboat Linux Malware Hits Middle East Telecom with SOCKS5 Proxy Backdoor",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/showboat-linux-malware-hits-middle-east.html"
+        },
+        {
+          "title": "ThreatsDay Bulletin: Linux Rootkits, Router 0-Day, AI Intrusions, Scam Kits and 25 New ...",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/threatsday-bulletin-linux-rootkits.html"
+        },
+        {
+          "title": "Microsoft Warns of Two Actively Exploited Defender Vulnerabilities",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/microsoft-warns-of-two-actively.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Coins Stream",
+          "source": "Hacker News",
+          "link": "https://coins.stream"
+        },
+        {
+          "title": "Samsung chip workers will get an average $340k bonus as AI profits soar",
+          "source": "Hacker News",
+          "link": "https://qz.com/samsung-chip-workers-bonus-ai-profits-052126"
+        },
+        {
+          "title": "The IBM-ification of Google?",
+          "source": "Hacker News",
+          "link": "https://zeroshot.bearblog.dev/google-is-shattering-under-its-own-weight-the-ibm-ification-of-google/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "This young startup is taking on a fragrance industry that hasn’t changed in almost half...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/21/a-new-fragrance-company-raises-2-million-to-find-new-scent-molecules/"
+        },
+        {
+          "title": "Maka Kids is redefining kids’ screen time with a streaming app optimized for well-being...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/21/maka-kids-is-redefining-kids-screen-time-with-a-streaming-app-optimized-for-well-being-not-engagement/"
+        },
+        {
+          "title": "Beauty booking startup Fresha hits $1B valuation with KKR backing",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/21/booking-platform-fresha-announces-80m-investment-unicorn-valuation/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-22T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-22T10:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-22T10:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-22T11:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-22T12:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-22T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-22T13:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-22T14:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-22T15:00:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-05-22T06:02:34.739172+02:00"
+  },
+  {
+    "date": "2026-05-23",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "The Download: coding’s future, the ‘Steroid Olympics,’ and AI-driven science",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/22/1137845/the-download-coding-future-steroid-olympics-ai-science/"
+        },
+        {
+          "title": "Google I/O showed how the path for AI-driven science is shifting",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/22/1137813/google-i-o-showed-how-the-path-for-ai-science-is-shifting/"
+        },
+        {
+          "title": "The Enhanced Games fit right in with the rest of 2026’s longevity vibes",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/22/1137753/the-enhanced-games-fit-right-in-with-the-rest-of-2026s-longevity-vibes/"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "AI is being used to resurrect the voices of dead pilots",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/22/ai-is-being-used-to-resurrect-the-voices-of-dead-pilots/"
+        },
+        {
+          "title": "SpaceX launches Starship V3 for the first time, but loses booster on return",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/22/spacex-launches-starship-v3-for-the-first-time-but-loses-booster-on-return/"
+        },
+        {
+          "title": "Blue Origin cleared to fly New Glenn mega-rocket after April mishap",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/22/blue-origin-cleared-to-fly-new-glenn-mega-rocket-after-april-mishap/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "First VPN Dismantled in Global Takedown Over Use by 25 Ransomware Groups",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/first-vpn-dismantled-in-global-takedown.html"
+        },
+        {
+          "title": "Ghostwriter Targets Ukraine Government Entities with Prometheus Phishing Malware",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/ghostwriter-targets-ukraine-government.html"
+        },
+        {
+          "title": "Megalodon GitHub Attack Targets 5,561 Repos with Malicious CI/CD Workflows",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/megalodon-github-attack-targets-5561.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Is AI Profitable Yet?",
+          "source": "Hacker News",
+          "link": "https://isaiprofitable.com/"
+        },
+        {
+          "title": "FBI director's Based Apparel site has been spotted hosting a 'ClickFix' attack",
+          "source": "Hacker News",
+          "link": "https://www.pcmag.com/news/kash-patels-apparel-site-is-trying-to-trick-visitors-into-installing-malware"
+        },
+        {
+          "title": "SpaceX launches Starship v3 rocket",
+          "source": "Hacker News",
+          "link": "https://www.nbcnews.com/now/video/spacex-successfully-launches-prototype-of-starship-rocket-263835205505"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "How VCs and founders use inflated ‘ARR’ to crown AI startups",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/22/how-vcs-and-founders-use-inflated-arr-to-kingmake-ai-startups/"
+        },
+        {
+          "title": "Elon Musk can’t hear you over the sound of his $1.75 trillion IPO",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/podcast/elon-musk-cant-hear-you-over-the-sound-of-his-1-75-trillion-ipo/"
+        },
+        {
+          "title": "This young startup is taking on a fragrance industry that hasn’t changed in almost half...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/21/a-new-fragrance-company-raises-2-million-to-find-new-scent-molecules/"
+        }
+      ]
+    },
+    "calendar": {},
+    "timestamp": "2026-05-23T06:01:40.785771+02:00"
+  },
+  {
+    "date": "2026-05-24",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "The Download: coding’s future, the ‘Steroid Olympics,’ and AI-driven science",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/22/1137845/the-download-coding-future-steroid-olympics-ai-science/"
+        },
+        {
+          "title": "Google I/O showed how the path for AI-driven science is shifting",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/22/1137813/google-i-o-showed-how-the-path-for-ai-science-is-shifting/"
+        },
+        {
+          "title": "The Enhanced Games fit right in with the rest of 2026’s longevity vibes",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/05/22/1137753/the-enhanced-games-fit-right-in-with-the-rest-of-2026s-longevity-vibes/"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "SolarSquare in talks to raise up to $60M as India’s rooftop solar market draws major VC...",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/23/solarsquare-in-talks-to-raise-up-to-60m-as-indias-rooftop-solar-market-draws-major-vc-interest/"
+        },
+        {
+          "title": "These special phone and app features can help protect you from spyware",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/23/you-dont-have-to-click-anything-to-get-hacked-anymore-heres-how-to-fight-back/"
+        },
+        {
+          "title": "Ferrari is using IBM’s AI to create F1 superfans",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/23/ferrari-is-using-ai-to-create-f1-superfans/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "npm Adds 2FA-Gated Publishing and Package Install Controls Against Supply Chain Attacks",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/npm-adds-2fa-gated-publishing-and.html"
+        },
+        {
+          "title": "Packagist Supply Chain Attack Infects 8 Packages Using GitHub-Hosted Linux Malware",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/packagist-supply-chain-attack-infects-8.html"
+        },
+        {
+          "title": "Claude Mythos AI Finds 10,000 High-Severity Flaws in Widely Used Software",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/claude-mythos-ai-finds-10000-high.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Microsoft open-sources \"the earliest DOS source code discovered to date\"",
+          "source": "Hacker News",
+          "link": "https://arstechnica.com/gadgets/2026/04/microsoft-open-sources-the-earliest-dos-source-code-discovered-to-date/"
+        },
+        {
+          "title": "Scammers are abusing an internal Microsoft account to send spam links",
+          "source": "Hacker News",
+          "link": "https://techcrunch.com/2026/05/21/scammers-are-abusing-an-internal-microsoft-account-to-send-spam/"
+        },
+        {
+          "title": "Wake up! 16b",
+          "source": "Hacker News",
+          "link": "https://hellmood.111mb.de/wake_up_16b_writeup.html"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "SolarSquare in talks to raise up to $60M as India’s rooftop solar market draws major VC...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/23/solarsquare-in-talks-to-raise-up-to-60m-as-indias-rooftop-solar-market-draws-major-vc-interest/"
+        },
+        {
+          "title": "Peec, one of Berlin’s rising startups, more than doubled annualized revenue in months t...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/23/peec-one-of-berlins-rising-startups-more-than-doubled-annualized-revenue-in-months-to-10m-sources-say/"
+        },
+        {
+          "title": "How VCs and founders use inflated ‘ARR’ to crown AI startups",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/22/how-vcs-and-founders-use-inflated-arr-to-kingmake-ai-startups/"
+        }
+      ]
+    },
+    "calendar": {},
+    "timestamp": "2026-05-24T06:00:40.950243+02:00"
+  },
+  {
+    "date": "2026-05-25",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "BOHM: Zero-Cost Hierarchical Attribution for Compound AI Systems",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.22866"
+        },
+        {
+          "title": "NeuroNL2LTL: A Neurosymbolic Framework for Natural Language Translation of Linear Tempo...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.22874"
+        },
+        {
+          "title": "RMA: an Agentic System for Research-Level Mathematical Problems",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.22875"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Everyone is navigating AI security in real time — even Google",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/24/everyone-is-navigating-ai-security-in-real-time-even-google/"
+        },
+        {
+          "title": "Xreal, Google’s smartglasses partner, thinks it has finally mastered this notoriously t...",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/24/xreal-googles-smartglasses-partner-thinks-it-has-finally-mastered-this-notoriously-tricky-industry/"
+        },
+        {
+          "title": "6 kitchen gadgets that make adulting feel easier",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/24/6-kitchen-gadgets-that-make-adulting-feel-easier/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "npm Adds 2FA-Gated Publishing and Package Install Controls Against Supply Chain Attacks",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/npm-adds-2fa-gated-publishing-and.html"
+        },
+        {
+          "title": "Packagist Supply Chain Attack Infects 8 Packages Using GitHub-Hosted Linux Malware",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/packagist-supply-chain-attack-infects-8.html"
+        },
+        {
+          "title": "Claude Mythos AI Finds 10,000 High-Severity Flaws in Widely Used Software",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/claude-mythos-ai-finds-10000-high.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "CBP Directive 3340-049B: Border Search of Electronic Devices",
+          "source": "Hacker News",
+          "link": "https://www.cbp.gov/document/directives/cbp-directive-no-3340-049b-border-search-electronic-devices"
+        },
+        {
+          "title": "A fundamental principle of aeronautical engineering has been overturned",
+          "source": "Hacker News",
+          "link": "https://www.wired.com/story/a-fundamental-principle-of-aeronautical-engineering-has-been-overturned/"
+        },
+        {
+          "title": "Defeating Git Rigour Fatigue with Jujutsu",
+          "source": "Hacker News",
+          "link": "https://ikesau.co/blog/defeating-git-rigour-fatigue-with-jujutsu/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "SolarSquare in talks to raise up to $60M as India’s rooftop solar market draws major VC...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/23/solarsquare-in-talks-to-raise-up-to-60m-as-indias-rooftop-solar-market-draws-major-vc-interest/"
+        },
+        {
+          "title": "Peec, one of Berlin’s rising startups, more than doubled annualized revenue in months t...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/23/peec-one-of-berlins-rising-startups-more-than-doubled-annualized-revenue-in-months-to-10m-sources-say/"
+        },
+        {
+          "title": "How VCs and founders use inflated ‘ARR’ to crown AI startups",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/22/how-vcs-and-founders-use-inflated-arr-to-kingmake-ai-startups/"
+        }
+      ]
+    },
+    "calendar": {},
+    "timestamp": "2026-05-25T06:00:44.205105+02:00"
+  },
+  {
+    "date": "2026-05-26",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "In Search of the Ingredients of Open-Endedness: Replicating Picbreeder with Large Visio...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.23908"
+        },
+        {
+          "title": "Confidence Calibration in Large Language Models",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.23909"
+        },
+        {
+          "title": "How Much Thinking is Enough? Quantifying and Understanding Redundancy in LLM Reasoning",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.23926"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "What ClickUp’s mass layoff tells us about the future of work",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/25/what-clickups-mass-layoff-tells-us-about-the-future-of-work/"
+        },
+        {
+          "title": "The pope’s AI encyclical isn’t really about AI",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/25/the-popes-ai-encyclical-isnt-really-about-ai/"
+        },
+        {
+          "title": "The pitch trick that helped an eSports startup raise $20M when VCs only wanted AI",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/25/the-pitch-trick-that-helped-an-esports-startup-raise-20m-when-vcs-only-wanted-ai/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "⚡ Weekly Recap: Linux Flaws, Defender 0-Days, Router Botnets, and Supply Chain Chaos",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/weekly-recap-linux-flaws-defender-0.html"
+        },
+        {
+          "title": "Ghost CMS CVE-2026-26980 Exploited to Hijack 700+ Sites for ClickFix Attacks",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/ghost-cms-cve-2026-26980-exploited-to.html"
+        },
+        {
+          "title": "The Alert Firehose Finally Meets Its Match",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/the-alert-firehose-finally-meets-its.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Why the Smart Home Bubble Popped",
+          "source": "Hacker News",
+          "link": "https://hackaday.com/2026/05/21/why-the-smart-home-bubble-popped/"
+        },
+        {
+          "title": "Does Anybody Actually Like React?",
+          "source": "Hacker News",
+          "link": "https://jsx.lol"
+        },
+        {
+          "title": "Designing for and against the manufactured normalcy field (2012)",
+          "source": "Hacker News",
+          "link": "https://www.urbanhonking.com/ideasfordozens/2012/06/24/designing-for-and-against-the-manufactured-normalcy-field/index.html"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "What ClickUp’s mass layoff tells us about the future of work",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/25/what-clickups-mass-layoff-tells-us-about-the-future-of-work/"
+        },
+        {
+          "title": "The pitch trick that helped an eSports startup raise $20M when VCs only wanted AI",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/25/the-pitch-trick-that-helped-an-esports-startup-raise-20m-when-vcs-only-wanted-ai/"
+        },
+        {
+          "title": "Startup Battlefield 200 applications close in days: Apply before May 27",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/25/startup-battlefield-200-applications-close-in-days-apply-before-may-27/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-26T09:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-26T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-26T11:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-26T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-26T14:30:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-05-26T06:02:23.558564+02:00"
+  },
+  {
+    "date": "2026-05-27",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "BrickAnything: Geometry-Conditioned Buildable Brick Generation with Structure-Aware Tok...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.26182"
+        },
+        {
+          "title": "Can LLMs Introspect? A Reality Check",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.26242"
+        },
+        {
+          "title": "Is Agent Memory a Database? Rethinking Data Foundations for Long-Term AI Agent Memory",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.26252"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "UK Visa Portal spilled thousands of applicants’ passports and selfies online — and hasn...",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/26/uk-visa-portal-spilled-thousands-of-applicants-passports-and-selfies-online-and-hasnt-fixed-the-leak/"
+        },
+        {
+          "title": "What we’re looking for in Startup Battlefield 2026, and how to apply in time for the Ma...",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/26/what-were-looking-for-in-startup-battlefield-2026-and-how-to-apply-in-time-for-the-may-27-deadline/"
+        },
+        {
+          "title": "Trump administration permits Volvo to keep selling connected cars in the US",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/26/trump-administration-permits-volvo-to-keep-selling-connected-cars-in-the-us/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "MuddyWater Uses DLL Side-Loading in Espionage Campaign Targeting 9 Countries",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/muddywater-uses-dll-side-loading-in.html"
+        },
+        {
+          "title": "[THN Webinar] New AI DDoS Attacks Are Smarter. Learn How to Fight Back",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/new-ai-ddos-attacks-are-smarter-learn.html"
+        },
+        {
+          "title": "Microsoft Patches SharePoint RCE Flaw CVE-2026-45659 Across Server Versions",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/microsoft-patches-sharepoint-rce-flaw.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Gear Commit: Dev gadget box personalized from GitHub activity",
+          "source": "Hacker News",
+          "link": "https://gearcommit.nanocorp.app/"
+        },
+        {
+          "title": "Where does next-token prediction leave us?",
+          "source": "Hacker News",
+          "link": "https://pop.rdi.sh/where-does-next-token-prediction-leave-us/"
+        },
+        {
+          "title": "Tunecat: Simple Internet Radio",
+          "source": "Hacker News",
+          "link": "https://codeberg.org/lindenii/tunecat/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "What we’re looking for in Startup Battlefield 2026, and how to apply in time for the Ma...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/26/what-were-looking-for-in-startup-battlefield-2026-and-how-to-apply-in-time-for-the-may-27-deadline/"
+        },
+        {
+          "title": "OpenRouter more than doubles valuation to $1.3B in a year",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/26/openrouter-more-than-doubles-valuation-to-1-3b-in-a-year/"
+        },
+        {
+          "title": "TechCrunch Disrupt 2026 Early Bird ticket rates end May 29",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/26/techcrunch-disrupt-2026-early-bird-ticket-rates-end-may-29/"
+        }
+      ]
+    },
+    "calendar": {
+      "Family Calendar": [
+        {
+          "summary": "Oma & Opa",
+          "start": "2026-05-27T09:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Treffen Julia & Maria",
+          "start": "2026-05-27T19:30:00+02:00",
+          "location": ""
+        }
+      ],
+      "voestalpine Work": [
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-27T08:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-27T11:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-27T14:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-27T15:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-27T17:30:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "🏋️ Fitnessstudio",
+          "start": "2026-05-27T08:00:00+02:00",
+          "location": "AUSTRIA CAMPUS / CAMPUS 2, Jakov-Lind-Straße 2, 1020 Wien"
+        },
+        {
+          "summary": "📚 LinkedIn Learning",
+          "start": "2026-05-27T14:00:00+02:00",
+          "location": "Home Office"
+        },
+        {
+          "summary": "Treffen Produktion Optimization Group",
+          "start": "2026-05-27T19:30:00+02:00",
+          "location": "Wein & Co, 1. Bezirk, Wien"
+        }
+      ]
+    },
+    "timestamp": "2026-05-27T06:02:01.744739+02:00"
+  },
+  {
+    "date": "2026-05-28",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Identifying and Understanding Human Values in Text: A Tailorable LLM-based Architecture",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.27373"
+        },
+        {
+          "title": "Soro: A Lightweight Foundation Model and Chatbot for Tajik",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.27379"
+        },
+        {
+          "title": "On the Origin of Synthetic Information by Means of Steganographic Inheritance",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.27551"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Google engineer charged with insider trading after making $1.2M on Polymarket",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/27/google-engineer-charged-with-insider-trading-after-making-1-2m-on-polymarket/"
+        },
+        {
+          "title": "Why Google’s AI can’t spell Google (or anything else)",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/27/why-googles-ai-cant-spell-google-or-anything-else/"
+        },
+        {
+          "title": "Rivian will deliver the first R2 SUVs on June 9",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/27/rivian-will-deliver-the-first-r2-suvs-on-june-9/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Grandoreiro Malware and BTMOB RAT Campaigns Target Windows and Android Users",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/grandoreiro-malware-and-btmob-rat.html"
+        },
+        {
+          "title": "Malicious npm Package Stole Files From Claude AI User Directory via GitHub",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/malicious-npm-package-stole-files-from.html"
+        },
+        {
+          "title": "5 Steps to Managing Shadow AI Tools Without Slowing Down Employees",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/5-steps-to-managing-shadow-ai-tools.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "RamAIn (YC W26) Is Hiring",
+          "source": "Hacker News",
+          "link": "https://www.ycombinator.com/companies/ramain/jobs/hqvmyKN-founding-gtm-engineer"
+        },
+        {
+          "title": "Google employee charged with $1M Polymarket insider trading bet on search term",
+          "source": "Hacker News",
+          "link": "https://www.cnbc.com/2026/05/27/google-employee-polymarket-insider-trading.html"
+        },
+        {
+          "title": "Can we have the day off?",
+          "source": "Hacker News",
+          "link": "https://mlsu.io/posts/day-off/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "Triomics nabs $22M to bring oncology-specific AI to cancer centers",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/27/triomics-nabs-22m-to-bring-oncology-specific-ai-to-cancer-centers/"
+        },
+        {
+          "title": "Your SEO strategy is optimized for a search engine that no longer exists.",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/podcast/your-seo-strategy-is-optimized-for-a-search-engine-that-no-longer-exists/"
+        },
+        {
+          "title": "AI coding startup Cognition raises $1B at $25B pre-money valuation",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/27/ai-coding-startup-cognition-raises-1b-at-25b-pre-money-valuation/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T10:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T11:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T12:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T15:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T17:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T18:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T19:15:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-28T21:30:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "🚗 Rückfahrt (Direkt)",
+          "start": "2026-05-28T19:15:00+02:00",
+          "location": "Schmidhüttenstraße 5, 3500 Krems → Ernst-Melchior-Gasse 11/3/10,"
+        },
+        {
+          "summary": "💑 Partner Time",
+          "start": "2026-05-28T21:30:00+02:00",
+          "location": "Ernst-Melchior-Gasse 11/3/10, 1020 Wien"
+        }
+      ]
+    },
+    "timestamp": "2026-05-28T06:01:39.482522+02:00"
+  },
+  {
+    "date": "2026-05-29",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Behavior-Induced Mirror-Prox Temporal-Difference Learning for Faster Off-Policy Prediction",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.28849"
+        },
+        {
+          "title": "Behavior-Aware Auxiliary Corrections for Off-Policy Temporal-Difference Prediction",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.28855"
+        },
+        {
+          "title": "The Cognitive Categorical Transformer: Category-Theoretic Inductive Biases for Language...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.28864"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Blue Origin’s New Glenn rocket explodes during testing in Florida",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/28/blue-origins-new-glenn-rocket-explodes-during-testing-in-florida/"
+        },
+        {
+          "title": "Glean’s top line crosses $300M as AI budget-cutting becomes its major selling point",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/28/gleans-top-line-crosses-300m-as-ai-budget-cutting-becomes-its-major-selling-point/"
+        },
+        {
+          "title": "Waymo dominates autonomous vehicle registrations as Tesla trails behind",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/28/waymo-dominates-texas-autonomous-vehicle-registrations-as-tesla-trails-behind/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Critical Gogs RCE Vulnerability Lets Any Authenticated User Execute Arbitrary Code",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/critical-gogs-rce-vulnerability-lets.html"
+        },
+        {
+          "title": "Threat Actors Exploit Critical FortiClient EMS Flaw to Deploy Credential Stealer",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/threat-actors-exploit-critical.html"
+        },
+        {
+          "title": "Microsoft Slams Public Zero-Day Disclosures Amid GitHub Researcher Account Removal",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/microsoft-slams-public-zero-day.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "The most spectacular rocket explosion since N1 just happened in Florida",
+          "source": "Hacker News",
+          "link": "https://arstechnica.com/space/2026/05/blue-origins-new-glenn-rocket-just-exploded-during-a-static-fire-test/"
+        },
+        {
+          "title": "Cars are trying to spy on you, and it's only just the beginning",
+          "source": "Hacker News",
+          "link": "https://www.bbc.com/future/article/20260513-your-car-is-spying-on-you-its-about-to-get-worse"
+        },
+        {
+          "title": "Blue Origin's New Glenn blows up during static fire test",
+          "source": "Hacker News",
+          "link": "https://twitter.com/nasaspaceflight/status/2060164928472854821"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "Glean’s top line crosses $300M as AI budget-cutting becomes its major selling point",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/28/gleans-top-line-crosses-300m-as-ai-budget-cutting-becomes-its-major-selling-point/"
+        },
+        {
+          "title": "How to apply to Startup Battlefield 2026, what you need ahead of the June 8 deadline",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/28/how-to-apply-to-startup-battlefield-2026-what-you-need-ahead-of-the-june-8-deadline/"
+        },
+        {
+          "title": "Bluesky embraces long-form content to counter X Articles",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/28/bluesky-embraces-long-form-content-to-counter-x-articles/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-29T08:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-29T09:20:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-05-29T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-29T10:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-29T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-29T14:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-05-29T15:00:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "Industrial Meta Verse Industrie Bau",
+          "start": "2026-05-29T08:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "🏋️ Fitnessstudio",
+          "start": "2026-05-29T08:00:00+02:00",
+          "location": "AUSTRIA CAMPUS / CAMPUS 2, Jakov-Lind-Straße 2, 1020 Wien"
+        },
+        {
+          "summary": "🚗 Pendeln → Krems (Fr)",
+          "start": "2026-05-29T09:20:00+02:00",
+          "location": "Ernst-Melchior-Gasse 11/3/10, 1020 Wien → Schmidhüttenstraße 5,"
+        }
+      ]
+    },
+    "timestamp": "2026-05-29T06:03:28.310422+02:00"
+  },
+  {
+    "date": "2026-06-01",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "PhyDrawGen: Physically Grounded Diagram Generation from Natural Language",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.30512"
+        },
+        {
+          "title": "Physically Viable World Models: A Case for Query-Conditioned Embodied AI",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.30542"
+        },
+        {
+          "title": "Transforming and Encoding FTS for SAT Solving: What Helps, What Hurts (Extended Version)",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2605.30563"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Erin Brockovich takes aim at data center secrecy",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/31/erin-brockovich-takes-aim-at-data-center-secrecy/"
+        },
+        {
+          "title": "This weekend’s two biggest movies were both directed by YouTubers",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/31/this-weekends-two-biggest-movies-were-both-directed-by-youtubers/"
+        },
+        {
+          "title": "‘This is fine’ artist KC Green reaches agreement with AI startup Artisan",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/05/31/this-is-fine-artist-kc-green-reaches-agreement-with-ai-startup-artisan/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Dutch Authorities Dismantle Botnet Linked to 17 Million Infected Devices",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/dutch-authorities-dismantle-botnet.html"
+        },
+        {
+          "title": "PAN-OS GlobalProtect Authentication Bypass (CVE-2026-0257) Under Active Exploitation",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/pan-os-globalprotect-authentication.html"
+        },
+        {
+          "title": "ChatGPhish Vulnerability Turns ChatGPT Web Summaries Into a Phishing Surface",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/05/chatgphish-vulnerability-turns-chatgpt.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Shift from a Leader-Follower to a Leader-Leader Approach",
+          "source": "Hacker News",
+          "link": "https://www.practicalengineering.management/p/shift-from-a-leader-follower-to-a"
+        },
+        {
+          "title": "Chuwi Minibook X: the netbook we deserve",
+          "source": "Hacker News",
+          "link": "https://tylercipriani.com/blog/2026/05/28/chuwi-minibook-x/"
+        },
+        {
+          "title": "It's Not Just X. It's Y",
+          "source": "Hacker News",
+          "link": "https://mail.cyberneticforests.com/its-not-just-data-its-post-training/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "‘This is fine’ artist KC Green reaches agreement with AI startup Artisan",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/31/this-is-fine-artist-kc-green-reaches-agreement-with-ai-startup-artisan/"
+        },
+        {
+          "title": "Making sense of the debate over AI psychosis",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/31/making-sense-of-the-debate-over-ai-psychosis/"
+        },
+        {
+          "title": "Black founders raise highest amount of quarterly funding since 2022, but there’s a catch",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/05/31/black-founders-raise-highest-amount-of-quarterly-funding-since-2022-but-theres-a-catch/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T08:10:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-06-01T10:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-06-01T12:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T15:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T15:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T16:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T17:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T18:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T18:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-01T19:15:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "🚗 Pendeln → Krems",
+          "start": "2026-06-01T08:10:00+02:00",
+          "location": "Ernst-Melchior-Gasse 11/3/10, 1020 Wien → Schmidhüttenstraße 5,"
+        },
+        {
+          "summary": "🚗 Rückfahrt (Oskar & Hanna)",
+          "start": "2026-06-01T19:15:00+02:00",
+          "location": "Krems → Deutsch-Wagram → Wien (Promenadenweg/Marchfeldkanal, Fran"
+        }
+      ]
+    },
+    "timestamp": "2026-06-01T06:00:30.858845+02:00"
+  },
+  {
+    "date": "2026-06-02",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Position Paper: Post-Solve Robustness in Decision Engines: Feasible Regions and Smoothn...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.00002"
+        },
+        {
+          "title": "Emergent Collaborative Deliberation in Multi-Model AI Systems: A BFT-Derived Protocol f...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.00005"
+        },
+        {
+          "title": "Deliberative Curation: A Protocol for Multi-Agent Knowledge Bases",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.00007"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "How to make the Startup Battlefield Top 20 — and what every company gets regardless",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/01/how-to-make-the-startup-battlefield-top-20-and-what-every-company-gets-regardless/"
+        },
+        {
+          "title": "Alphabet plans to raise $80B to pay for AI buildout",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/01/alphabet-plans-to-raise-80-billion-to-pay-for-ai-buildout/"
+        },
+        {
+          "title": "Defense tech darling Mach Industries hits $1.8B valuation, a 4x jump in a year",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/01/defense-tech-darling-mach-industries-hits-1-8b-valuation-a-4x-jump-in-a-year/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Miasma Supply Chain Attack Compromises Red Hat npm Packages with Credential-Stealing Worm",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/miasma-supply-chain-attack-compromises.html"
+        },
+        {
+          "title": "⚡ Weekly Recap: New Linux Flaw, PAN-OS Exploit, AI-Powered Attacks, OAuth Phishing and ...",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/weekly-recap-new-linux-flaw-pan-os.html"
+        },
+        {
+          "title": "China-Aligned Groups Ramp Up Attacks: Dragon Weave Hits Czech Republic & Taiwan",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/china-aligned-groups-ramp-up-attacks.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "U.S. Midterms Have a Cyber Problem, but It's Not at the Ballot Box",
+          "source": "Hacker News",
+          "link": "https://blog.checkpoint.com/exposure-management/the-2026-u-s-midterms-have-a-cyber-problem-but-its-not-at-the-ballot-box/"
+        },
+        {
+          "title": "macOS needs its grid back",
+          "source": "Hacker News",
+          "link": "https://blog.hopefullyuseful.com/blog/macos-needs-its-grid-back/"
+        },
+        {
+          "title": "Crystal Nights (2008)",
+          "source": "Hacker News",
+          "link": "https://www.gregegan.net/MISC/CRYSTAL/Crystal.html"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "How to make the Startup Battlefield Top 20 — and what every company gets regardless",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/01/how-to-make-the-startup-battlefield-top-20-and-what-every-company-gets-regardless/"
+        },
+        {
+          "title": "Defense tech darling Mach Industries hits $1.8B valuation, a 4x jump in a year",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/01/defense-tech-darling-mach-industries-hits-1-8b-valuation-a-4x-jump-in-a-year/"
+        },
+        {
+          "title": "From the stage to the future: Where are Startup Battlefield’s alumni now?",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/01/from-the-stage-to-the-future-where-are-startup-battlefields-alumni-now/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-02T07:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-02T08:40:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-02T11:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-02T12:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-02T23:00:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "🏃 Morgenlauf",
+          "start": "2026-06-02T07:00:00+02:00",
+          "location": "1020 Wien"
+        },
+        {
+          "summary": "🚗 Pendeln → Krems (Di)",
+          "start": "2026-06-02T08:40:00+02:00",
+          "location": "Ernst-Melchior-Gasse → Krems (50min)"
+        },
+        {
+          "summary": "💻 Coding: Arca/Project",
+          "start": "2026-06-02T23:00:00+02:00",
+          "location": "Home Office / Ernst-Melchior-Gasse"
+        }
+      ]
+    },
+    "timestamp": "2026-06-02T06:01:40.668292+02:00"
+  },
+  {
+    "date": "2026-06-04",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Toward Pre-Deployment Assurance for Enterprise AI Agents: Ontology-Grounded Simulation ...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.04037"
+        },
+        {
+          "title": "Stumbling Into AI Emotional Dependence: How Routine AI Interactions Reshape Human Conne...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.04150"
+        },
+        {
+          "title": "Thinking Through Signs: PEEL as a Semiotic Scaffolding for Epistemically Accountable AI...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.04152"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Benchmark raises its first-ever growth fund as part of $2B capital raise",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/03/benchmark-raises-its-first-ever-growth-fund-as-part-of-2b-capital-raise/"
+        },
+        {
+          "title": "Quick commerce FirstClub doubles valuation to $255M in nine months",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/03/firstclub-doubles-valuation-to-255m-in-nine-months-on-quality-first-grocery-bet/"
+        },
+        {
+          "title": "Lovable signs multiyear deal with Google Cloud to up usage 5x, source says",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/03/lovable-signs-multi-year-deal-with-google-cloud-to-up-usage-5x-source-says/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "WhatsApp, Slack Notifications Could Hijack Google Gemini on Android",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/whatsapp-slack-notifications-could.html"
+        },
+        {
+          "title": "Google DoubleClick Abused in New Malspam Campaign to Deliver DesckVB RAT",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/google-doubleclick-abused-in-new.html"
+        },
+        {
+          "title": "Beyond the Zero-Day: See Your Network Like an Attacker | Webinar with HD Moore",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/beyond-zero-day-see-your-network-like.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "American capitalism has taken an apocalyptic turn",
+          "source": "Hacker News",
+          "link": "https://economist.com/business/2026/06/03/american-capitalism-has-taken-an-apocalyptic-turn"
+        },
+        {
+          "title": "I built a vulnerable app and spent $1,500 seeing if LLMs could hack it",
+          "source": "Hacker News",
+          "link": "https://kasra.blog/blog/i-spent-1500-seeing-if-llms-could-hack-my-app/"
+        },
+        {
+          "title": "U.S. to Dismantle System Tracking Atlantic Currents That Are at Risk of Collapse",
+          "source": "Hacker News",
+          "link": "https://e360.yale.edu/digest/trump-ooi-amoc"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "Quick commerce FirstClub doubles valuation to $255M in nine months",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/03/firstclub-doubles-valuation-to-255m-in-nine-months-on-quality-first-grocery-bet/"
+        },
+        {
+          "title": "Lovable signs multiyear deal with Google Cloud to up usage 5x, source says",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/03/lovable-signs-multi-year-deal-with-google-cloud-to-up-usage-5x-source-says/"
+        },
+        {
+          "title": "These two founders left Goldman and Meta to build voice AI for markets everyone else ov...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/03/these-two-founders-left-goldman-and-meta-to-build-voice-ai-for-markets-everyone-else-overlooked/"
+        }
+      ]
+    },
+    "calendar": {
+      "Family Calendar": [
+        {
+          "summary": "Hanna Cleverfit",
+          "start": "2026-06-04T09:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Schulgarten Kagran",
+          "start": "2026-06-04T10:00:00+02:00",
+          "location": ""
+        }
+      ],
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-04T08:10:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "🚗 Pendeln → Krems (Do)",
+          "start": "2026-06-04T08:10:00+02:00",
+          "location": "Ernst-Melchior-Gasse → Krems (50min)"
+        }
+      ]
+    },
+    "timestamp": "2026-06-04T06:01:20.679381+02:00"
+  },
+  {
+    "date": "2026-06-05",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Toward Pre-Deployment Assurance for Enterprise AI Agents: Ontology-Grounded Simulation ...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.04037"
+        },
+        {
+          "title": "Stumbling Into AI Emotional Dependence: How Routine AI Interactions Reshape Human Conne...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.04150"
+        },
+        {
+          "title": "Thinking Through Signs: PEEL as a Semiotic Scaffolding for Epistemically Accountable AI...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.04152"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Founders Fund launches game show starring Sam Altman, Palmer Luckey, and other tech elites",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/04/founders-fund-launches-game-show-starring-sam-altman-palmer-luckey-and-other-tech-elites/"
+        },
+        {
+          "title": "Ahead of its IPO, Anthropic’s Daniela Amodei shrugs off doubts about AI’s returns",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/04/ahead-of-its-ipo-anthropics-daniela-amodei-shrugs-off-doubts-about-ais-returns/"
+        },
+        {
+          "title": "Airbnb’s Brian Chesky plans to launch a new AI lab",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/04/airbnbs-brian-chesky-plans-to-launch-a-new-ai-lab/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Cisco Patches CVE-2026-20230 in Unified CM as Exploit Code Goes Public",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/cisco-patches-cve-2026-20230-in-unified.html"
+        },
+        {
+          "title": "Claude Code GitHub Action Flaw Let One Malicious Issue Hijack Repositories",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/claude-code-github-action-flaw-let-one.html"
+        },
+        {
+          "title": "Agentic AI Is Transforming Defense, But Only Secure IT Infrastructure Will Maximize It",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/agentic-ai-is-transforming-defense-but.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "The Causes of Long Covid",
+          "source": "Hacker News",
+          "link": "https://www.science.org/content/blog-post/causes-long-covid"
+        },
+        {
+          "title": "CEO to staff: You're not getting a raise. We're spending on AI instead",
+          "source": "Hacker News",
+          "link": "https://www.businessinsider.com/teradata-pauses-raises-employee-compensation-ai-budget-2026-6"
+        },
+        {
+          "title": "Meta enables ADB on deprecated Portal devices [video]",
+          "source": "Hacker News",
+          "link": "https://fb.watch/HxPu0fSyeH/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "Defense tech, AI, and fundraising take center stage at StrictlyVC Los Angeles on June 18",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/04/defense-tech-ai-and-fundraising-take-center-stage-at-strictlyvc-los-angeles-on-june-18/"
+        },
+        {
+          "title": "Startup Battlefield is returning to Australia — here’s what happened the last time we c...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/04/startup-battlefield-is-returning-to-australia-heres-what-happened-the-last-time-we-came-to-sydney/"
+        },
+        {
+          "title": "Helion, the Sam Altman-backed fusion startup, raises $465M to build a power plant for M...",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/04/helion-the-sam-altman-backed-fusion-startup-raises-465m-to-build-a-power-plant-for-microsoft/"
+        }
+      ]
+    },
+    "calendar": {
+      "Family Calendar": [
+        {
+          "summary": "Treatwell Buchung bei Classic Nails by Daniela Mitter",
+          "start": "2026-06-05T14:30:00+02:00",
+          "location": "Im Kosmetikstudio Yasumi, Jakov-Lind-Straße 14, Wien, 2. Bezirk"
+        },
+        {
+          "summary": "Lukas & Maria besuch",
+          "start": "2026-06-05T15:30:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-06-05T06:01:37.049482+02:00"
+  },
+  {
+    "date": "2026-06-08",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Detecting and Mitigating Bias by Treating Fairness as a Symmetry Operation",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.06514"
+        },
+        {
+          "title": "DiBS: Diffusion-Informed Branch Selection",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.06518"
+        },
+        {
+          "title": "SafeGene: Reusable Adapters for Transferable Safety Alignment",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.06519"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Is this the dawn of the Tokenpocalypse?",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/07/is-this-the-dawn-of-the-tokenpocalypse/"
+        },
+        {
+          "title": "Notion restores access to Anthropic after service disruption",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/07/notion-restores-access-to-anthropic-after-service-disruption/"
+        },
+        {
+          "title": "OpenAI is still working on that ‘super app’",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/07/openai-is-still-working-on-that-super-app/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "New ChatGPT Lockdown Mode Limits Tools That Could Enable Data Exfiltration",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/new-chatgpt-lockdown-mode-limits-tools.html"
+        },
+        {
+          "title": "Free Apps Are Quietly Turning Smart TVs Into Web-Scraping Proxies for AI",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/free-apps-are-quietly-turning-smart-tvs.html"
+        },
+        {
+          "title": "CISA Adds Actively Exploited SolarWinds Serv-U DoS Flaw to KEV Catalog",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/cisa-adds-actively-exploited-solarwinds.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Job Postings API",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/free-job-postings-api"
+        },
+        {
+          "title": "Dreambeans by Google Labs",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/google-labs"
+        },
+        {
+          "title": "CabinLink",
+          "source": "Product Hunt",
+          "link": "https://www.producthunt.com/products/cabinlink"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "Beyond Instagram: Introducing the next generation of social apps",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/06/beyond-instagram-introducing-the-next-generation-of-social-apps/"
+        },
+        {
+          "title": "Startup Battlefield 200 applications officially close in 3 days",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/05/startup-battlefield-200-applications-officially-close-in-3-days/"
+        },
+        {
+          "title": "The most interesting startups right now want to get you off your phone",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/video/the-most-interesting-startups-right-now-want-to-get-you-off-your-phone/"
+        }
+      ]
+    },
+    "calendar": {
+      "Family Calendar": [
+        {
+          "summary": "Wickeltasche Eltern",
+          "start": "2026-06-08T18:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Versand Etiketten drucken",
+          "start": "2026-06-08T19:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Fossil Uhr verkauf",
+          "start": "2026-06-08T19:45:00+02:00",
+          "location": ""
+        }
+      ],
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-08T11:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-08T11:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-08T11:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-08T15:00:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-06-08T06:01:28.518593+02:00"
+  },
+  {
+    "date": "2026-06-09",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "PathoSage: Towards Multi-Source Evidence Adjudication in Pathology via Experience-Aware...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.07549"
+        },
+        {
+          "title": "OmniMem: Perturbation-aware Memory Compression for Streaming Audio-Visual LLMs",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.07577"
+        },
+        {
+          "title": "Syll: Open-Source Personal Automation with Cross-Surface Execution",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.07594"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Why Apple’s slow-and-steady AI bet is starting to look pretty smart",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/08/why-apples-slow-and-steady-ai-bet-is-starting-to-look-pretty-smart/"
+        },
+        {
+          "title": "Mercor’s Brendan Foody calls out Sequoia, accusing it of ‘dual-pricing’ valuation tricks",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/08/mercors-brendan-foody-calls-out-sequoia-over-dual-pricing-valuation-tricks/"
+        },
+        {
+          "title": "As OpenAI files for IPO, Sam Altman’s eye-scanning company is doing layoffs, report says",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/08/as-openai-files-for-ipo-sam-altmans-eye-scanning-company-is-doing-layoffs-report-says/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "One-Character Linux Kernel Flaw Enables Local Root Access, Exploits Now Public",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/one-character-linux-kernel-flaw-enables.html"
+        },
+        {
+          "title": "Meta Blocks NSO Group's New WhatsApp Phishing Attack, Files Contempt Order",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/meta-blocks-nso-groups-new-whatsapp.html"
+        },
+        {
+          "title": "Critical Check Point VPN Flaw Exploited to Bypass Passwords in IKEv1 Setups",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/critical-check-point-vpn-flaw-exploited.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "GoGoGrandparent (YC S16) is hiring Back end Engineers",
+          "source": "Hacker News",
+          "link": "https://www.ycombinator.com/companies/gogograndparent/jobs/2vbzAw8-backend-engineer"
+        },
+        {
+          "title": "Job: Head of Stonehenge",
+          "source": "Hacker News",
+          "link": "https://www.english-heritage.org.uk/about/our-people/careers-with-us/job-search/default-job-page/?jobRef=16449"
+        },
+        {
+          "title": "We Think the SpaceX IPO Is Overvalued",
+          "source": "Hacker News",
+          "link": "https://www.morningstar.com/stocks/why-we-think-spacex-ipo-is-overvalued?content_id=20768396545"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "How to apply to Startup Battlefield 2026, what you need ahead of today’s June 8 deadline",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/08/how-to-apply-to-startup-battlefield-2026-what-you-need-ahead-of-todays-june-8-deadline/"
+        },
+        {
+          "title": "Beyond Instagram: Introducing the next generation of social apps",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/06/beyond-instagram-introducing-the-next-generation-of-social-apps/"
+        },
+        {
+          "title": "Startup Battlefield 200 applications officially close in 3 days",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/05/startup-battlefield-200-applications-officially-close-in-3-days/"
+        }
+      ]
+    },
+    "calendar": {
+      "Family Calendar": [
+        {
+          "summary": "12:30 Impfung Oskar",
+          "start": "2026-06-09T12:00:00+02:00",
+          "location": ""
+        }
+      ],
+      "voestalpine Work": [
+        {
+          "summary": "Mit Vorbehalt",
+          "start": "2026-06-09T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-09T12:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-09T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-09T14:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-09T15:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-09T16:15:00+02:00",
+          "location": ""
+        }
+      ],
+      "Linus Personal": [
+        {
+          "summary": "Rigorosum AGA - TUtheFutureRooftop",
+          "start": "2026-06-09T10:00:00+02:00",
+          "location": "Getreidemarkt 9 / Gebäude BF / 5. Stock - TUtheFutureRooftop"
+        }
+      ]
+    },
+    "timestamp": "2026-06-09T06:01:20.560322+02:00"
+  },
+  {
+    "date": "2026-06-10",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "Claude Fable 5 / Mythos 5 — Anthropic's next-gen model released",
+          "source": "Anthropic / Hacker News",
+          "link": "https://www.anthropic.com/news/claude-fable-5-mythos-5"
+        },
+        {
+          "title": "Agentic Monte Carlo: Simulating Reinforcement Learning for Black-Box Agents",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.05296"
+        },
+        {
+          "title": "The Sim-to-Real Gap of Foundation Model Agents: A Unified MDP Perspective",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.07017"
+        },
+        {
+          "title": "ARBOR: Online Process Rewards via a Reusable Rubric Buffer for Search Agents",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.03239"
+        }
+      ],
+      "📊 Markt & Industrie": [
+        {
+          "title": "Apple introduces Siri AI — profoundly more capable, conversational, deeply integrated",
+          "source": "Apple WWDC",
+          "link": "https://www.apple.com/newsroom/2026/06/apple-introduces-siri-ai-a-profoundly-more-capable-and-personal-assistant/"
+        },
+        {
+          "title": "Apple decided not to roll out Siri AI in EU after denied request for exemption",
+          "source": "Reuters / HN",
+          "link": "https://www.reuters.com/business/apple-failed-make-its-ai-tool-comply-eu-regulations-eu-commission-says-2026-06-09/"
+        },
+        {
+          "title": "Google just fired a warning shot in the AI subscription price wars",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/09/google-just-fired-a-warning-shot-in-the-ai-subscription-price-wars/"
+        },
+        {
+          "title": "xAI looks more like a datacentre REIT than a frontier lab",
+          "source": "Hacker News",
+          "link": "https://martinalderson.com/posts/xais-new-rental-business/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "New Windows Defender 0-Day 'RoguePlanet' — SYSTEM-level access",
+          "source": "Cyber Security News",
+          "link": "https://cybersecuritynews.com/windows-defender-0-day-exploit-rogueplanet/"
+        },
+        {
+          "title": "Microsoft open-source tools hacked to steal passwords of AI developers",
+          "source": "TechCrunch / HN",
+          "link": "https://techcrunch.com/2026/06/08/microsofts-open-source-tools-were-hacked-to-steal-passwords-of-ai-developers/"
+        },
+        {
+          "title": "Red Hat NPM packages backdoored through official channel — 32 packages",
+          "source": "Hacker News",
+          "link": "https://news.ycombinator.com/item?id=48366744"
+        },
+        {
+          "title": "CVE-2026-28910: Breaking macOS App Sandbox Data Containers and Hijacking Apps",
+          "source": "CVE / HN",
+          "link": "https://news.ycombinator.com/item?id=48230193"
+        },
+        {
+          "title": "Tenable joins Anthropic's Project Glasswing for AI-era cyber defense",
+          "source": "Tenable",
+          "link": "https://www.tenable.com/blog/anthropic-claude-mythos-tenable-joins-project-glasswing"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "OpenCV 5 Is Here — Biggest leap in years for computer vision",
+          "source": "OpenCV.org / HN",
+          "link": "https://opencv.org/opencv-5/"
+        },
+        {
+          "title": "Gitdot — A better GitHub, open-source, written in Rust",
+          "source": "Show HN",
+          "link": "https://gitdot.io/"
+        }
+      ],
+      "🚀 Start-ups & VC": [
+        {
+          "title": "A Security ($37M) — AI hacking as a venture bet",
+          "source": "Lightspeed / Startup Fortune",
+          "link": "https://startupfortune.com/a-security-turns-ai-hacking-into-a-37-million-venture-bet/"
+        },
+        {
+          "title": "GV makes first-ever French startup bet: MokN ($15M) — identity theft prevention",
+          "source": "Tech Funding News",
+          "link": "https://techfundingnews.com/gv-makes-its-first-ever-french-startup-bet-in-mokn-with-15m-to-stop-identity-theft-before-it-happens/"
+        },
+        {
+          "title": "Standard Bots hits unicorn status ($200M) — AI robots for factory floors",
+          "source": "Tech Funding News",
+          "link": ""
+        },
+        {
+          "title": "PitchBook: AI-native cybersecurity startups outraised late-stage for first time",
+          "source": "PitchBook",
+          "link": "https://pitchbook.com/news/articles/cybersecuritys-ai-startups-are-getting-outsized-attention-and-vc-dollars"
+        }
+      ]
+    },
+    "calendar": {
+      "note": "Live calendar data unavailable (GOG keychain offline). Carried forward from June 9."
+    },
+    "timestamp": "2026-06-10T06:00:00+02:00"
+  },
+  {
+    "date": "2026-06-11",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "From Explicit Elements to Implicit Intent: A Predefined Library for Auditable Behaviora...",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.11207"
+        },
+        {
+          "title": "Position: Hippocampal Explicit Memory Is the Cornerstone for AGI",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.11245"
+        },
+        {
+          "title": "Can AI Agents Synthesize Scientific Conclusions?",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.11337"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Anthropic’s Dario Amodei has just one direct report",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/10/anthropics-dario-amodei-has-just-one-direct-report/"
+        },
+        {
+          "title": "xAI fired an engineer who raised alarms about Grok safety, new lawsuit claims",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/10/xai-fired-an-engineer-who-raised-alarms-about-grok-safety-new-lawsuit-claims/"
+        },
+        {
+          "title": "Why Andrew Yang is building instead of waiting for Washington",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/video/why-andrew-yang-is-building-instead-of-waiting-for-washington/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "China-Linked JDY Botnet Expands to 1,500+ Devices for Cyber Reconnaissance",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/china-linked-jdy-botnet-expands-to-1500.html"
+        },
+        {
+          "title": "Ivanti, Fortinet, and SAP Release Patches for Multiple Critical Vulnerabilities",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/ivanti-fortinet-and-sap-release-patches.html"
+        },
+        {
+          "title": "Unpatched Langflow Flaw CVE-2026-5027 Exploited for Unauthenticated RCE",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/unpatched-langflow-flaw-cve-2026-5027.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "AI agent runs amok in Fedora and elsewhere",
+          "source": "Hacker News",
+          "link": "https://lwn.net/SubscriberLink/1077035/c7e7c14fbd60fae9/"
+        },
+        {
+          "title": "Deficient executive control in transformer attention",
+          "source": "Hacker News",
+          "link": "https://academic.oup.com/pnasnexus/article/5/6/pgag149/8698838"
+        },
+        {
+          "title": "Unix GC Remastered",
+          "source": "Hacker News",
+          "link": "https://mohandacherir.github.io/Qdiv7/posts/unix_new_gc/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "Why Andrew Yang is building instead of waiting for Washington",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/video/why-andrew-yang-is-building-instead-of-waiting-for-washington/"
+        },
+        {
+          "title": "Andrew Yang on Noble Mobile, UBI, and why he’s done waiting for policy to catch up",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/podcast/andrew-yang-on-noble-mobile-ubi-and-why-hes-done-waiting-for-policy-to-catch-up/"
+        },
+        {
+          "title": "Zest launches a restaurant discovery app powered by where people actually eat",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/10/zest-launches-a-restaurant-discovery-app-powered-by-where-people-actually-eat/"
+        }
+      ]
+    },
+    "calendar": {
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-11T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-11T11:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-11T12:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-11T13:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-11T13:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-11T15:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-11T16:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-11T17:30:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-06-11T06:00:51.416050+02:00"
+  },
+  {
+    "date": "2026-06-12",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "ToolSense: A Diagnostic Framework for Auditing Parametric Tool Knowledge in LLMs",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.12451"
+        },
+        {
+          "title": "Arbor: Tree Search as a Cognition Layer for Autonomous Agents",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.12563"
+        },
+        {
+          "title": "Strategic Decision Support for AI Agents",
+          "source": "ArXiv cs.AI",
+          "link": "https://arxiv.org/abs/2606.12587"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Theker just raised $85M to build the factory robot that doesn’t specialize in anything",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/11/theker-just-raised-85m-to-build-the-factory-robot-that-doesnt-specialize-in-anything/"
+        },
+        {
+          "title": "Jeff Bezos’s Prometheus raises $12B to build an ‘artificial general engineer’ for the p...",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/11/jeff-bezoss-prometheus-raises-12b-to-build-an-artificial-general-engineer-for-the-physical-world/"
+        },
+        {
+          "title": "SpaceX officially prices shares at $135 in the largest IPO ever",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/11/spacex-officially-prices-shares-at-135-in-the-largest-ipo-ever/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "ShinyHunters Exploits Oracle PeopleSoft Zero-Day (CVE-2026-35273) to Breach Universities",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/shinyhunters-exploits-oracle-peoplesoft.html"
+        },
+        {
+          "title": "New Attacks Trick OpenClaw AI Agent Into Running Code and Leaking Secrets",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/new-attacks-trick-openclaw-ai-agent.html"
+        },
+        {
+          "title": "New GreatXML Exploit Bypasses Windows BitLocker via Recovery Partition XML Files",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/new-greatxml-exploit-bypasses-windows.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Claude Fable is relentlessly proactive",
+          "source": "Hacker News",
+          "link": "https://simonwillison.net/2026/Jun/11/fable-is-relentlessly-proactive/"
+        },
+        {
+          "title": "Deconstructing Datalog",
+          "source": "Hacker News",
+          "link": "https://www.rntz.net/post/my-thesis.html"
+        },
+        {
+          "title": "Removing 'um' from a recording is harder than it sounds",
+          "source": "Hacker News",
+          "link": "https://doug.sh/posts/erm-a-local-cli-that-strips-ums-uhs-and-erms-from-speech/"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "Theker just raised $85M to build the factory robot that doesn’t specialize in anything",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/11/theker-just-raised-85m-to-build-the-factory-robot-that-doesnt-specialize-in-anything/"
+        },
+        {
+          "title": "Bluesky launches group chats, as company shifts focus to community features",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/11/bluesky-launches-group-chats-as-company-shifts-focus-to-community-features/"
+        },
+        {
+          "title": "Quantum Space’s military SPAC is trying to catch SpaceX’s IPO wave",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/11/quantum-spaces-military-spac-is-trying-to-catch-spacexs-ipo-wave/"
+        }
+      ]
+    },
+    "calendar": {
+      "Family Calendar": [
+        {
+          "summary": "Bruno Marek Allee Straßenfest",
+          "start": "2026-06-12T14:00:00+02:00",
+          "location": ""
+        }
+      ],
+      "voestalpine Work": [
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-12T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-12T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-12T10:20:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-12T11:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-12T12:30:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Gebucht",
+          "start": "2026-06-12T13:00:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-06-12T06:00:49.713953+02:00"
+  },
+  {
+    "date": "2026-06-13",
+    "news": {
+      "🔬 Research & Technik": [
+        {
+          "title": "The Download: “reprogramming” aging, and the hidden sense of interoception",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/06/12/1138899/the-download-reprogramming-reverse-aging-interoception/"
+        },
+        {
+          "title": "You do your own time",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/06/12/1138518/you-do-your-own-time-fiction/"
+        },
+        {
+          "title": "Why “reprogramming” is the buzziest approach to reversing aging right now",
+          "source": "MIT Tech Review",
+          "link": "https://www.technologyreview.com/2026/06/12/1138829/reprogramming-buzziest-approach-reversing-aging-right-now/"
+        }
+      ],
+      "📊 Markt": [
+        {
+          "title": "Anthropic’s safety warnings may have just backfired — the government has pulled the plu...",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/12/anthropics-safety-warnings-may-have-just-backfired-the-government-has-pulled-the-plug-on-its-most-powerful-ai/"
+        },
+        {
+          "title": "SpaceX IPO: Live updates on everything you need to know",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/12/spacex-ipo-live-updates-on-everything-you-need-to-know/"
+        },
+        {
+          "title": "Meta’s months-old AI unit is a soul-crushing gulag, say the engineers stuck inside it",
+          "source": "TechCrunch",
+          "link": "https://techcrunch.com/2026/06/12/metas-months-old-ai-unit-is-a-soul-crushing-gulag-say-the-engineers-stuck-inside-it/"
+        }
+      ],
+      "🔒 Security": [
+        {
+          "title": "Over 400 Arch Linux AUR Packages Hijacked to Deploy Infostealer and eBPF Rootkit",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/over-400-arch-linux-aur-packages.html"
+        },
+        {
+          "title": "Google Sues Chinese Smishing Network Accused of Using Gemini AI in Phishing",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/google-sues-chinese-smishing-network.html"
+        },
+        {
+          "title": "China-Linked Hackers Backdoored Linux Login Software to Hide for Nearly a Decade",
+          "source": "The Hacker News",
+          "link": "https://thehackernews.com/2026/06/china-linked-hackers-backdoored-linux.html"
+        }
+      ],
+      "📱 Applikationen": [
+        {
+          "title": "Open source AI must win",
+          "source": "Hacker News",
+          "link": "https://opensourceaimustwin.com/?share=v2"
+        },
+        {
+          "title": "As a result of a US Government directive, we are suspending access to Fable 5",
+          "source": "Hacker News",
+          "link": "https://twitter.com/ClaudeDevs/status/2065597942602531163"
+        },
+        {
+          "title": "We've suspended access to Claude Mythos 5 and Claude Fable 5",
+          "source": "Hacker News",
+          "link": "https://status.claude.com/incidents/s9w82lp9dcn9"
+        }
+      ],
+      "🚀 Start-ups": [
+        {
+          "title": "It’s hot IPO summer, and the MANGOS are ripe",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/podcast/its-hot-ipo-summer-and-the-mangos-are-ripe/"
+        },
+        {
+          "title": "Theker just raised $85M to build the factory robot that doesn’t specialize in anything",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/11/theker-just-raised-85m-to-build-the-factory-robot-that-doesnt-specialize-in-anything/"
+        },
+        {
+          "title": "Bluesky launches group chats, as company shifts focus to community features",
+          "source": "TechCrunch Startups",
+          "link": "https://techcrunch.com/2026/06/11/bluesky-launches-group-chats-as-company-shifts-focus-to-community-features/"
+        }
+      ]
+    },
+    "calendar": {
+      "Family Calendar": [
+        {
+          "summary": "Willhaben Pakete",
+          "start": "2026-06-13T09:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Hanna & Alina Cleverfit",
+          "start": "2026-06-13T10:00:00+02:00",
+          "location": ""
+        },
+        {
+          "summary": "Essen Wagram",
+          "start": "2026-06-13T15:00:00+02:00",
+          "location": ""
+        }
+      ]
+    },
+    "timestamp": "2026-06-13T06:00:46.387579+02:00"
+  }
+]

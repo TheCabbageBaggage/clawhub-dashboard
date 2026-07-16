@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recherchen — Research Archive</title>
+<style>
+/* ===== ACTA Design System ===== */
+:root,
+[data-theme="dark"] {
+  --bg: #0a0e14; --bg2: #11161e; --bg3: #1a2230;
+  --card: #141c26; --card-hover: #1a2432;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.25);
+  --secondary: #1A3440; --accent: #3D8B8B;
+  --accent-glow: rgba(61,139,139,0.2);
+  --text: #e0e4ea; --text2: #8892a8; --text3: #5a6478;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.1);
+  --radius: 16px; --radius-sm: 10px; --radius-xs: 6px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(10,14,20,0.85);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+  --outline-bg: #0d1117; --outline-border: rgba(255,255,255,0.08);
+  --code-bg: #161b22;
+}
+
+[data-theme="light"] {
+  --bg: #f5f6f8; --bg2: #ffffff; --bg3: #e8ecf1;
+  --card: #ffffff; --card-hover: #f0f3f6;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.12);
+  --secondary: #1A3440; --accent: #2C5F7C;
+  --accent-glow: rgba(44,95,124,0.1);
+  --text: #1a1d27; --text2: #5a6478; --text3: #8892a8;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.12);
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(245,246,248,0.9);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+  --outline-bg: #f8f9fb; --outline-border: rgba(0,0,0,0.08);
+  --code-bg: #f0f2f5;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Navigation ===== */
+.nav {
+  position: sticky; top:0; z-index:100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+}
+.nav-brand { display: flex; align-items: center; gap: 0.6rem; }
+.nav-brand a {
+  text-decoration: none; color: var(--text2); font-size: 1.1rem;
+  padding: 0.3rem 0.5rem; border-radius: 6px; transition: var(--transition);
+}
+.nav-brand a:hover { background: var(--bg3); color: var(--accent); }
+.nav-brand .title { font-size: 1.1rem; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
+.nav-right { display: flex; align-items: center; gap: 0.6rem; }
+.theme-toggle {
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--text2); font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ===== Hero ===== */
+.hero {
+  background: var(--hero-gradient); padding: 2rem 2rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ''; position: absolute; top: -40%; right: -20%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(61,139,139,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero h1 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; color: var(--hero-text); letter-spacing: -0.03em; }
+.hero p { font-size: 0.9rem; color: var(--hero-text2); margin-top: 0.4rem; }
+
+/* ===== Main ===== */
+.main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+/* ===== Stats Bar ===== */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem; margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 1rem 1.2rem;
+  text-align: center; transition: var(--transition);
+}
+.stat-card:hover { border-color: var(--accent); }
+.stat-card .val { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+.stat-card .lbl { font-size: 0.72rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.2rem; }
+
+/* ===== Filters ===== */
+.filters {
+  display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.search-box {
+  flex: 1; min-width: 220px; position: relative;
+}
+.search-box input {
+  width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-xs); color: var(--text);
+  font-size: 0.9rem; transition: var(--transition);
+}
+.search-box input:focus { outline: none; border-color: var(--accent); }
+.search-box input::placeholder { color: var(--text3); }
+.search-box .search-icon {
+  position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+  font-size: 0.9rem; color: var(--text3); pointer-events: none;
+}
+.filter-select {
+  padding: 0.7rem 1rem; background: var(--card);
+  border: 1px solid var(--border); border-radius: var(--radius-xs);
+  color: var(--text); font-size: 0.85rem; cursor: pointer;
+  min-width: 150px; transition: var(--transition);
+}
+.filter-select:focus { outline: none; border-color: var(--accent); }
+
+/* ===== Research Grid ===== */
+.section-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text3); margin: 2rem 0 1rem 0; padding-left: 0.25rem;
+}
+.section-label:first-of-type { margin-top: 0; }
+.research-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+.research-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 1.25rem;
+  cursor: pointer; transition: var(--transition);
+  position: relative; overflow: hidden;
+}
+.research-card:hover {
+  border-color: var(--accent); transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.research-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0; transition: opacity 0.2s;
+}
+.research-card:hover::before { opacity: 1; }
+.research-card .cat-tag {
+  display: inline-block; font-size: 0.65rem; padding: 2px 8px;
+  border-radius: 20px; background: rgba(61,139,139,0.12);
+  color: var(--accent); font-weight: 500; margin-bottom: 0.5rem;
+}
+.research-card h2 {
+  font-size: 1rem; font-weight: 600; color: var(--text);
+  margin-bottom: 0.4rem; line-height: 1.3;
+}
+.research-card .summary {
+  font-size: 0.8rem; color: var(--text2); line-height: 1.5;
+  margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.research-meta {
+  display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+  font-size: 0.72rem; color: var(--text3);
+}
+.research-meta .type-badge {
+  padding: 2px 8px; border-radius: 4px; font-weight: 500;
+  font-size: 0.68rem;
+}
+.type-badge.md { background: rgba(16,185,129,0.1); color: var(--success); }
+.type-badge.html { background: rgba(245,158,11,0.1); color: var(--warn); }
+.type-badge.pdf { background: rgba(239,68,68,0.1); color: var(--danger); }
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.7); z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.modal {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); width: 100%; max-width: 1000px;
+  max-height: 85vh; display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
+  flex-wrap: wrap; gap: 0.75rem;
+}
+.modal-header h3 { font-size: 1.1rem; font-weight: 600; color: var(--text); flex:1; min-width:200px; }
+.modal-header .meta-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.modal-close {
+  padding: 0.5rem 1rem; border-radius: var(--radius-xs);
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--text2); cursor: pointer; font-size: 0.85rem;
+  transition: var(--transition);
+}
+.modal-close:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+.modal-body {
+  padding: 1.5rem; overflow-y: auto; flex: 1;
+  line-height: 1.7; color: var(--text);
+}
+.modal-body h1, .modal-body h2, .modal-body h3, .modal-body h4 {
+  color: var(--text); margin-top: 1.5rem; margin-bottom: 0.5rem;
+}
+.modal-body h1 { font-size: 1.4rem; }
+.modal-body h2 { font-size: 1.15rem; }
+.modal-body h3 { font-size: 1rem; }
+.modal-body p { margin-bottom: 0.75rem; }
+.modal-body ul, .modal-body ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+.modal-body li { margin-bottom: 0.25rem; }
+.modal-body code {
+  background: var(--bg3); padding: 2px 6px; border-radius: 4px; font-size: 0.9em;
+}
+.modal-body pre {
+  background: var(--code-bg); padding: 1rem; border-radius: 8px;
+  overflow-x: auto; margin-bottom: 1rem; font-size: 0.85rem;
+}
+.modal-body table {
+  width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.85rem;
+}
+.modal-body th, .modal-body td {
+  border: 1px solid var(--border); padding: 8px 12px; text-align: left;
+}
+.modal-body th { background: var(--bg3); font-weight: 600; color: var(--text); }
+.modal-body a { color: var(--accent); }
+.modal-body blockquote {
+  border-left: 3px solid var(--accent); padding: 0.5rem 1rem;
+  color: var(--text2); margin: 0.75rem 0;
+}
+.modal-body hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+.modal-body img { max-width: 100%; border-radius: 8px; margin: 0.5rem 0; }
+.modal-body .pdf-container { text-align: center; }
+.modal-body .pdf-container iframe {
+  width: 100%; height: 65vh; border: none; border-radius: 8px;
+  background: #fff;
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center; padding: 1.5rem; color: var(--text3);
+  font-size: 0.72rem; border-top: 1px solid var(--border); margin-top: 2rem;
+}
+.footer a { color: var(--text3); }
+
+/* ===== Loading ===== */
+.loading {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 3rem; color: var(--text2);
+}
+.spinner {
+  width: 36px; height: 36px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin-bottom: 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .nav { padding: 0 1rem; }
+  .hero { padding: 1.5rem 1rem; }
+  .main { padding: 1.5rem 1rem; }
+  .research-grid { grid-template-columns: 1fr; }
+  .filters { flex-direction: column; }
+  .filter-select { min-width: 100%; }
+  .modal { max-height: 95vh; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-brand">
+    <a href="/" title="Back to Command Center">←</a>
+    <span class="title">🔍 Recherchen</span>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle theme">☀️</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>Research Archive</h1>
+  <p>Alle Recherchen, Analysen & Reports — durchsuchbar mit Kurzzusammenfassung und Volltext-Viewer</p>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- Stats Bar -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-card"><div class="val">—</div><div class="lbl">Dokumente</div></div>
+    <div class="stat-card"><div class="val">—</div><div class="lbl">Kategorien</div></div>
+    <div class="stat-card"><div class="val">—</div><div class="lbl">Markdown</div></div>
+    <div class="stat-card"><div class="val">—</div><div class="lbl">HTML</div></div>
+    <div class="stat-card"><div class="val">—</div><div class="lbl">PDF</div></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Recherchen durchsuchen..." oninput="filter()">
+    </div>
+    <select class="filter-select" id="catFilter" onchange="filter()">
+      <option value="">Alle Kategorien</option>
+    </select>
+    <select class="filter-select" id="typeFilter" onchange="filter()">
+      <option value="">Alle Typen</option>
+      <option value="MD">Markdown</option>
+      <option value="HTML">HTML</option>
+      <option value="PDF">PDF</option>
+    </select>
+  </div>
+
+  <!-- Research Grid -->
+  <div id="researchGrid" class="research-grid">
+    <div class="loading"><div class="spinner"></div><p>Lade Recherchen…</p></div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  Research Archive · Clowie · <a href="https://github.com/TheCabbageBaggage/openclaw-workspace" target="_blank" rel="noopener">GitHub ↗</a>
+</div>
+
+<!-- Modal Container -->
+<div id="modalContainer"></div>
+
+<script>
+// ===== DATA =====
+let catalog = [];
+let allItems = [];
+
+async function loadData() {
+  try {
+    const r = await fetch('/api/research');
+    catalog = await r.json();
+    allItems = catalog;
+    renderStats();
+    populateFilters();
+    render(allItems);
+  } catch(e) {
+    document.getElementById('researchGrid').innerHTML =
+      '<div style="text-align:center;padding:3rem;color:var(--text2)">⚠️ Konnte Recherchen-Katalog nicht laden.</div>';
+  }
+}
+
+// ===== STATS =====
+function renderStats() {
+  const cats = new Set(allItems.map(r => r.category));
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card"><div class="val">${allItems.length}</div><div class="lbl">Dokumente</div></div>
+    <div class="stat-card"><div class="val">${cats.size}</div><div class="lbl">Kategorien</div></div>
+    <div class="stat-card"><div class="val">${allItems.filter(r=>r.type==='MD').length}</div><div class="lbl">Markdown</div></div>
+    <div class="stat-card"><div class="val">${allItems.filter(r=>r.type==='HTML').length}</div><div class="lbl">HTML</div></div>
+    <div class="stat-card"><div class="val">${allItems.filter(r=>r.type==='PDF').length}</div><div class="lbl">PDF</div></div>
+  `;
+}
+
+// ===== FILTERS =====
+function populateFilters() {
+  const cats = [...new Set(allItems.map(r => r.category))].sort();
+  document.getElementById('catFilter').innerHTML =
+    '<option value="">Alle Kategorien</option>' +
+    cats.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function filter() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const cat = document.getElementById('catFilter').value;
+  const type = document.getElementById('typeFilter').value;
+
+  let filtered = allItems;
+  if (q) filtered = filtered.filter(r =>
+    r.title.toLowerCase().includes(q) ||
+    (r.summary||'').toLowerCase().includes(q) ||
+    r.category.toLowerCase().includes(q)
+  );
+  if (cat) filtered = filtered.filter(r => r.category === cat);
+  if (type) filtered = filtered.filter(r => r.type === type);
+
+  render(filtered);
+}
+
+// ===== RENDER =====
+function escHtml(s) {
+  if (!s) return '';
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function typeClass(t) {
+  if (t === 'MD') return 'md';
+  if (t === 'HTML') return 'html';
+  if (t === 'PDF') return 'pdf';
+  return '';
+}
+
+function render(items) {
+  const grid = document.getElementById('researchGrid');
+  if (!items.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text2);grid-column:1/-1;">Keine Recherchen gefunden</div>';
+    return;
+  }
+
+  grid.innerHTML = items.map(r => `
+    <div class="research-card" onclick="openDoc('${r.id}')">
+      <span class="cat-tag">${escHtml(r.category)}</span>
+      <h2>${escHtml(r.title)}</h2>
+      <div class="summary">${escHtml(r.summary || 'Keine Zusammenfassung verfügbar.')}</div>
+      <div class="research-meta">
+        <span>📅 ${r.date ? new Date(r.date).toLocaleDateString('de-DE') : '—'}</span>
+        <span class="type-badge ${typeClass(r.type)}">${r.type}</span>
+        <span style="font-size:0.68rem;color:var(--text3);">${escHtml(r.path)}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== MODAL =====
+async function openDoc(id) {
+  const item = allItems.find(r => r.id === id);
+  if (!item) return;
+
+  document.getElementById('modalContainer').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>${escHtml(item.title)}</h3>
+          <div class="meta-row">
+            <span class="cat-tag">${escHtml(item.category)}</span>
+            <span class="type-badge ${typeClass(item.type)}">${item.type}</span>
+            <span style="font-size:0.75rem;color:var(--text3);">${escHtml(item.path)}</span>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+          </div>
+        </div>
+        <div class="modal-body"><div class="loading"><div class="spinner"></div><p>Lade Inhalt…</p></div></div>
+      </div>
+    </div>`;
+
+  const body = document.querySelector('.modal-body');
+
+  try {
+    const resp = await fetch('/api/research/' + encodeURIComponent(item.path));
+    if (!resp.ok) throw new Error('Not found');
+
+    const ct = resp.headers.get('content-type') || '';
+
+    if (ct.includes('application/pdf')) {
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      body.innerHTML = `
+        <div class="pdf-container">
+          <a href="${url}" download="${escHtml(item.title)}.pdf"
+             style="display:inline-block;padding:0.6rem 1.2rem;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text);text-decoration:none;margin-bottom:1rem;">
+             📥 PDF herunterladen
+          </a>
+          <iframe src="${url}"></iframe>
+        </div>`;
+    } else if (ct.includes('text/html')) {
+      const html = await resp.text();
+      const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+      body.innerHTML = `<div style="background:var(--outline-bg);border:1px solid var(--outline-border);border-radius:var(--radius-sm);padding:1.5rem;">${m ? m[1] : html}</div>`;
+    } else {
+      const text = await resp.text();
+      body.innerHTML = renderMarkdown(text);
+    }
+  } catch(e) {
+    body.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--danger);">⚠️ Inhalt konnte nicht geladen werden.<br><small>${escHtml(e.message)}</small></div>`;
+  }
+}
+
+function closeModal() {
+  document.getElementById('modalContainer').innerHTML = '';
+}
+
+// ===== MARKDOWN RENDERER =====
+function renderMarkdown(md) {
+  let h = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  // Code blocks (must be first)
+  h = h.replace(/```(\w*)\n([\s\S]*?)```/g, function(_, lang, code) {
+    return '<pre><code>' + code.trim() + '</code></pre>';
+  });
+
+  // Inline code
+  h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Headers
+  h = h.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+  h = h.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  h = h.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  h = h.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // Bold and italic
+  h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  h = h.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Links
+  h = h.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+  // Images
+  h = h.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+
+  // Horizontal rules
+  h = h.replace(/^---$/gm, '<hr>');
+
+  // Blockquotes
+  h = h.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // Tables
+  h = h.replace(/((?:^\|.+\|$\n?)+)/gm, function(match) {
+    var rows = match.trim().split(/\n/);
+    if (rows.length < 2) return match;
+    var sepIdx = -1;
+    for (var i = 0; i < rows.length; i++) {
+      if (/^\|[\s\-:]+\|$/.test(rows[i]) || /^\|[-:|\s]+$/.test(rows[i])) {
+        sepIdx = i; break;
+      }
+    }
+    if (sepIdx < 0) return match;
+    var headerCells = rows[0].split('|').filter(function(c) { return c.trim(); });
+    var html = '<table><thead><tr>';
+    headerCells.forEach(function(c) { html += '<th>' + c.trim() + '</th>'; });
+    html += '</tr></thead><tbody>';
+    for (var i = sepIdx + 1; i < rows.length; i++) {
+      var cells = rows[i].split('|').filter(function(c) { return c.trim(); });
+      html += '<tr>';
+      cells.forEach(function(c) { html += '<td>' + c.trim() + '</td>'; });
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+    return html;
+  });
+
+  // Unordered lists
+  h = h.replace(/^- (.+)$/gm, '<li>$1</li>');
+  h = h.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+
+  // Ordered lists
+  h = h.replace(/^(\d+)\. (.+)$/gm, '<li>$1. $2</li>');
+  h = h.replace(/((?:<li>\d+\. .*<\/li>\n?)+)/g, '<ol>$1</ol>');
+
+  // Paragraphs
+  h = h.replace(/\n\n+/g, '</p><p>');
+  h = '<p>' + h + '</p>';
+
+  // Cleanup
+  h = h.replace(/<p><\/p>/g, '');
+  h = h.replace(/<p>(<(h[1-4]|pre|hr|blockquote|ul|ol|table)>)/g, '$1');
+  h = h.replace(/(<\/(h[1-4]|pre|blockquote|ul|ol|table)>)(<\/p>)/g, '$1');
+
+  return h;
+}
+
+// ===== THEME =====
+function initTheme() {
+  const saved = localStorage.getItem('dashboard-theme') || 'dark';
+  applyTheme(saved);
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+  localStorage.setItem('dashboard-theme', theme);
+}
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ===== INIT =====
+initTheme();
+loadData();
+</script>
+</body>
+</html>

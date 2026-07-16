@@ -1,0 +1,625 @@
+{
+  "nodes": [
+    {
+      "id": "Linus Kohl",
+      "label": "Linus Kohl",
+      "type": "PERSON",
+      "degree": 1165
+    },
+    {
+      "id": "GitHub",
+      "label": "GitHub",
+      "type": "ORGANIZATION",
+      "degree": 166
+    },
+    {
+      "id": "voestalpine",
+      "label": "voestalpine",
+      "type": "ORGANIZATION",
+      "degree": 158
+    },
+    {
+      "id": "DeepSeek",
+      "label": "DeepSeek",
+      "type": "ORGANIZATION",
+      "degree": 129
+    },
+    {
+      "id": "Oracle",
+      "label": "Oracle",
+      "type": "ORGANIZATION",
+      "degree": 125
+    },
+    {
+      "id": "gmail",
+      "label": "gmail",
+      "type": "PERSON",
+      "degree": 107
+    },
+    {
+      "id": "Kohl Linus",
+      "label": "Kohl Linus",
+      "type": "PERSON",
+      "degree": 75
+    },
+    {
+      "id": "kohl.linus",
+      "label": "kohl.linus",
+      "type": "UNKNOWN",
+      "degree": 75
+    },
+    {
+      "id": "Fraunhofer Austria",
+      "label": "Fraunhofer Austria",
+      "type": "ORGANIZATION",
+      "degree": 67
+    },
+    {
+      "id": "agentmail",
+      "label": "agentmail",
+      "type": "PERSON",
+      "degree": 63
+    },
+    {
+      "id": "email",
+      "label": "email",
+      "type": "PERSON",
+      "degree": 63
+    },
+    {
+      "id": "voestalpine Krems GmbH",
+      "label": "voestalpine Krems GmbH",
+      "type": "ORGANIZATION",
+      "degree": 56
+    },
+    {
+      "id": "--force-consent",
+      "label": "--force-consent",
+      "type": "TOOL",
+      "degree": 51
+    },
+    {
+      "id": "Git",
+      "label": "Git",
+      "type": "PERSON",
+      "degree": 51
+    },
+    {
+      "id": "Token Usage Tracking System",
+      "label": "Token Usage Tracking System",
+      "type": "PROJECT",
+      "degree": 50
+    },
+    {
+      "id": "deepseek/deepseek-chat",
+      "label": "deepseek/deepseek-chat",
+      "type": "TOOL",
+      "degree": 49
+    },
+    {
+      "id": "2026-03-30",
+      "label": "2026-03-30",
+      "type": "EVENT",
+      "degree": 44
+    },
+    {
+      "id": "Hostinger",
+      "label": "Hostinger",
+      "type": "ORGANIZATION",
+      "degree": 43
+    },
+    {
+      "id": "38F9F77503Cc4Bc59E4833F2Ebd8A3B0",
+      "label": "38F9F77503Cc4Bc59E4833F2Ebd8A3B0",
+      "type": "PERSON",
+      "degree": 42
+    },
+    {
+      "id": "158",
+      "label": "158",
+      "type": "PERSON",
+      "degree": 40
+    },
+    {
+      "id": "2026-04-07",
+      "label": "2026-04-07",
+      "type": "EVENT",
+      "degree": 38
+    },
+    {
+      "id": "openclaw.json",
+      "label": "openclaw.json",
+      "type": "TOOL",
+      "degree": 38
+    },
+    {
+      "id": "Technische Universität Wien",
+      "label": "Technische Universität Wien",
+      "type": "ORGANIZATION",
+      "degree": 37
+    },
+    {
+      "id": "Daily Calendar Summary",
+      "label": "Daily Calendar Summary",
+      "type": "PERSON",
+      "degree": 37
+    },
+    {
+      "id": "2026-03-29",
+      "label": "2026-03-29",
+      "type": "EVENT",
+      "degree": 34
+    },
+    {
+      "id": "12:00–12:20",
+      "label": "12:00–12:20",
+      "type": "EVENT",
+      "degree": 32
+    },
+    {
+      "id": "github",
+      "label": "github",
+      "type": "UNKNOWN",
+      "degree": 32
+    },
+    {
+      "id": "config.patch",
+      "label": "config.patch",
+      "type": "TOOL",
+      "degree": 29
+    },
+    {
+      "id": "Updates **Project: Token Usage Tracking System** - Status: Active implementation - Progress: Core files created, integration in progress - Expected: Complete tracking script + dashboard ## Tasks - [x] Review token tracker implementation when complete ✓ - [x] Test the tracking system ✓ - [x] Set up cron job for automatic tracking ✓ - [x] Configure budget alerts ✓ - [x] Integrate with existing OpenClaw workspace ✓ - [x] Process historical token usage data ✓ ## Token Tracker Implementation Complete (10:40 AM) **✅ Project Status: COMPLETE & PRODUCTION READY** ### **What Was Built:** 1. **Core Tracker** (`token_tracker.py`) - Parses session logs, calculates costs, SQLite storage 2. **Web Dashboard** (`usage_dashboard.py`) - Flask interface with Plotly charts 3. **Integration Layer** (`token_tracker_integration.py`) - Cron jobs, automation 4. **Deployment Script** (`deploy_token_tracker.sh`) - One-click setup ### **Historical Data Processed:** - **Sessions:** 231 historical files - **Total Cost:** $4,335.03 (March-April 2026) [score=0.842 recalls=8 avg=0.511 source=memory/2026-04-07.md:1-39]",
+      "label": "Updates **Project: Token Usage Tracking System** - Status: Active implementation - Progress: Core files created, integration in progress - Expected: Complete tracking script + dashboard ## Tasks - [x] Review token tracker implementation when complete ✓ - [x] Test the tracking system ✓ - [x] Set up cron job for automatic tracking ✓ - [x] Configure budget alerts ✓ - [x] Integrate with existing OpenClaw workspace ✓ - [x] Process historical token usage data ✓ ## Token Tracker Implementation Complete (10:40 AM) **✅ Project Status: COMPLETE & PRODUCTION READY** ### **What Was Built:** 1. **Core Tracker** (`token_tracker.py`) - Parses session logs, calculates costs, SQLite storage 2. **Web Dashboard** (`usage_dashboard.py`) - Flask interface with Plotly charts 3. **Integration Layer** (`token_tracker_integration.py`) - Cron jobs, automation 4. **Deployment Script** (`deploy_token_tracker.sh`) - One-click setup ### **Historical Data Processed:** - **Sessions:** 231 historical files - **Total Cost:** $4,335.03 (March-April 2026) [score=0.842 recalls=8 avg=0.511 source=memory/2026-04-07.md:1-39]",
+      "type": "PROJECT",
+      "degree": 28
+    },
+    {
+      "id": "3.2 — openclaw.json optimizations via `config.patch` | Setting | Before | After | Reason | [score=0.",
+      "label": "3.2 — openclaw.json optimizations via `config.patch` | Setting | Before | After | Reason | [score=0.",
+      "type": "TASK",
+      "degree": 28
+    }
+  ],
+  "edges": [
+    {
+      "source": "Christian Jandl",
+      "target": "Hochschule für Angewandte Wissenschaften St Pölten",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Julian Schröder",
+      "target": "Fuxam",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Lukas Altenburger",
+      "target": "SponsorHive",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Kitti Horvath",
+      "target": "OMV",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Mehdi El Mnasri",
+      "target": "AIT Austrian Institute of Technology",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Gabriela Dumitrașcu",
+      "target": "Porsche Holding",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Michael Necemer",
+      "target": "Infineon Technologies",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Adam Lea-Bischinger FIAM",
+      "target": "AR consulting",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Sabine Madritsch",
+      "target": "mad2learn",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Josef Baker-Brunnbauer",
+      "target": "SocialTechLab.eu",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Hermann Erlach",
+      "target": "Microsoft",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Michael Neuberger, MBA",
+      "target": "Förderbuddy",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Roman Sprinzl",
+      "target": "voestalpine Krems GmbH",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Gerald Völk",
+      "target": "Westernacher Consulting",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Marcel Rojahn",
+      "target": "Universität Potsdam",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Markus Nenning",
+      "target": "sclable.",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Ivan Peko",
+      "target": "University of Split",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Ruben Schaller",
+      "target": "BUILDERZ",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Carina Rogl",
+      "target": "ORF",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Benjamin Biesinger",
+      "target": "Fraunhofer IAO",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Johannes Schilcher",
+      "target": "ÖBB",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Georg Weichhart",
+      "target": "Primetals Technologies",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Mario Koplmüller",
+      "target": "epunkt",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Hans-Peter Kranewitter",
+      "target": "KEBA Industrial Automation",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Ursula Kampl",
+      "target": "SAP",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "François Gruber Magitot 🔬",
+      "target": "Alliance Services Plus",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Clemens Handl",
+      "target": "CHG Czernich Rechtsanwälte",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Dominik Steurer",
+      "target": "PREFA Group",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Hannes Binder",
+      "target": "Schneider Electric",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Fatemeh-Shirin Asgari",
+      "target": "ÖBB",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Tobias Schmitz",
+      "target": "United Manufacturing Hub (UMH)",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Michaela Meindl",
+      "target": "Insight",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Daniel Pagnozzi",
+      "target": "voestalpine Automotive Components Group",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Gregor Nussbaumer",
+      "target": "ORBIT Cloud Solutions",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Nils Kern",
+      "target": "Vienesse Consulting",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Josef Dickinger-Neuwirth",
+      "target": "T-Systems Austria",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Lysander Fuchs",
+      "target": "IBM iX DACH",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Dominik Fastner",
+      "target": "voestalpine Krems GmbH",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Antonia Wachter",
+      "target": "Plansee Group",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Sebastian Junker",
+      "target": "TUM School of Management",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Maria Hilmmer",
+      "target": "B2B Own",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Muhammad Suleiman",
+      "target": "REICHLUNDPARTNER Digital",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Dr. Anja Ebert-Steinhübel",
+      "target": "IFC EBERT. Institut für Controlling Prof. Dr. Ebert GmbH",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Fatih Okçu",
+      "target": "Vienesse Consulting",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Stefan Mannsbart",
+      "target": "Wien Energie GmbH",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Sebastian Sav",
+      "target": "SAP",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Nina Hausensteiner",
+      "target": "LSZ - Future Connections",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Christina Schwaiger",
+      "target": "Fraunhofer Austria",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Daniel Kreisbichler",
+      "target": "TRUMPF Maschinen Austria",
+      "weight": 1,
+      "relation": "connected"
+    },
+    {
+      "source": "Prof. Dr. Dr. Oliver Hoffmann",
+      "target": "Theta Venture LLC",
+      "weight": 1,
+      "relation": "connected"
+    }
+  ],
+  "stats": {
+    "nodes": 2351,
+    "edges": 3827,
+    "density": 0.0007
+  },
+  "top_companies": [],
+  "clusters": [
+    {
+      "id": 0,
+      "size": 442,
+      "members": [
+        "Wiener Linien",
+        "Carsten Finke",
+        "Marija Mihajlova",
+        "Martina Markunović",
+        "Fraunhofer-Institut für Betriebsfestigkeit und Systemzuverlässigkeit LBF",
+        "Christopher Mühlich",
+        "Thomas Silberbauer",
+        "Andreas Steiner",
+        "Simon Tkauz",
+        "Lejla Ramic"
+      ]
+    },
+    {
+      "id": 1,
+      "size": 163,
+      "members": [
+        "Enterprise Trends",
+        "2026-04-23",
+        "Next",
+        "Luka Njiric",
+        "memory_get",
+        "Composer Agent",
+        "Regulatory Landscape",
+        "05:45–06:30",
+        "Oracle",
+        "Nice icons for dashboard"
+      ]
+    },
+    {
+      "id": 2,
+      "size": 13,
+      "members": [
+        "Update SOUL.md with ontology discipline",
+        "Create initial entities for Linus and key projects ✓ (2 People, 4 Projects, 5 Tasks, 3 Learnings)",
+        "Updates",
+        "Initialize ontology with executive schema",
+        "Create initial entities for Linus and key projects",
+        "Create weekly distillation script",
+        "John Doe",
+        "Test ontology queries and validation ✓ (comprehensive testing complete)",
+        "Enhance git integration for development awareness",
+        "Update SOUL.md with ontology discipline ✓ (added Behavioral Triggers section)"
+      ]
+    },
+    {
+      "id": 3,
+      "size": 11,
+      "members": [
+        "2026-05-27",
+        "maria",
+        "Maria",
+        "julia",
+        "Maria Antonia Zahlbruckner",
+        "2026-05-28",
+        "learning-hub",
+        "Julia Reisinger",
+        "Julia",
+        "2026-06-07"
+      ]
+    },
+    {
+      "id": 4,
+      "size": 6,
+      "members": [
+        "Infineon Technologies",
+        "Patrick Ott",
+        "Lukas Sommeregger",
+        "Mario Senoner",
+        "Michael Necemer",
+        "Manuela Gasser"
+      ]
+    },
+    {
+      "id": 5,
+      "size": 5,
+      "members": [
+        "Christian Kerschdorfer",
+        "Kitti Horvath",
+        "Dipl.-Ing. Thomas Kainz",
+        "Dipl.-Ing.  Silvi Stasa",
+        "OMV"
+      ]
+    },
+    {
+      "id": 6,
+      "size": 5,
+      "members": [
+        "Marie Theres Raberger",
+        "Johannes Riedl",
+        "AIT Austrian Institute of Technology",
+        "Felix Hochwallner",
+        "Mehdi El Mnasri"
+      ]
+    },
+    {
+      "id": 7,
+      "size": 5,
+      "members": [
+        "Lars Freudenthal",
+        "Hannes Binder",
+        "Philipp Siegl",
+        "Maximilian Schappelwein",
+        "Schneider Electric"
+      ]
+    },
+    {
+      "id": 8,
+      "size": 5,
+      "members": [
+        "Florian Grabi",
+        "Thomas Adolf",
+        "Fraunhofer IPA",
+        "Roman Ungern-Sternberg",
+        "Marco Huber"
+      ]
+    },
+    {
+      "id": 9,
+      "size": 5,
+      "members": [
+        "Manuel Moser",
+        "CANCOM Austria",
+        "Saskya Lipp",
+        "Jürgen Altenriederer",
+        "Andreas Frühwirt"
+      ]
+    }
+  ]
+}

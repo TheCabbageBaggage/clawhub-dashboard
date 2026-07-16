@@ -1,0 +1,140 @@
+[
+  {
+    "date": "2026-06-13",
+    "articles": 15,
+    "events": 3,
+    "delivered": false
+  },
+  {
+    "date": "2026-06-12",
+    "articles": 15,
+    "events": 7,
+    "delivered": false
+  },
+  {
+    "date": "2026-06-11",
+    "articles": 15,
+    "events": 8,
+    "delivered": false
+  },
+  {
+    "date": "2026-06-10",
+    "articles": 19,
+    "events": 83,
+    "delivered": false
+  },
+  {
+    "date": "2026-06-09",
+    "articles": 15,
+    "events": 8,
+    "delivered": true
+  },
+  {
+    "date": "2026-06-08",
+    "articles": 15,
+    "events": 7,
+    "delivered": false
+  },
+  {
+    "date": "2026-06-05",
+    "articles": 15,
+    "events": 2,
+    "delivered": false
+  },
+  {
+    "date": "2026-06-04",
+    "articles": 15,
+    "events": 4,
+    "delivered": false
+  },
+  {
+    "date": "2026-06-02",
+    "articles": 15,
+    "events": 8,
+    "delivered": false
+  },
+  {
+    "date": "2026-06-01",
+    "articles": 15,
+    "events": 14,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-29",
+    "articles": 15,
+    "events": 10,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-28",
+    "articles": 15,
+    "events": 12,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-27",
+    "articles": 15,
+    "events": 10,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-26",
+    "articles": 15,
+    "events": 5,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-25",
+    "articles": 15,
+    "events": 0,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-24",
+    "articles": 15,
+    "events": 0,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-23",
+    "articles": 15,
+    "events": 0,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-22",
+    "articles": 15,
+    "events": 9,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-21",
+    "articles": 15,
+    "events": 5,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-20",
+    "articles": 15,
+    "events": 3,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-19",
+    "articles": 15,
+    "events": 5,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-18",
+    "articles": 15,
+    "events": 8,
+    "delivered": false
+  },
+  {
+    "date": "2026-05-17",
+    "articles": 15,
+    "events": 2,
+    "delivered": false
+  }
+]

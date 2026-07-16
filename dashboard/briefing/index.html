@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clowie Briefing Hub</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+/* ===== ACTA Design System ===== */
+:root,
+[data-theme="dark"] {
+  --bg: #0a0e14;
+  --bg2: #11161e;
+  --bg3: #1a2230;
+  --card: #141c26;
+  --card-hover: #1a2432;
+  --primary: #2C5F7C;
+  --primary-glow: rgba(44,95,124,0.25);
+  --secondary: #1A3440;
+  --accent: #3D8B8B;
+  --accent-glow: rgba(61,139,139,0.2);
+  --text: #e0e4ea;
+  --text2: #8892a8;
+  --text3: #5a6478;
+  --success: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(10,14,20,0.85);
+  --modal-overlay: rgba(0,0,0,0.7);
+  --hero-text: #fff;
+  --hero-text2: rgba(255,255,255,0.6);
+  --hero-text3: rgba(255,255,255,0.5);
+  --hero-glow: rgba(61,139,139,0.15);
+  --live-badge-bg: rgba(16,185,129,0.1);
+  --live-badge-border: rgba(16,185,129,0.2);
+  --kg-link: rgba(255,255,255,0.08);
+  --kg-label: #8892a8;
+}
+
+[data-theme="light"] {
+  --bg: #f5f6f8;
+  --bg2: #ffffff;
+  --bg3: #e8ecf1;
+  --card: #ffffff;
+  --card-hover: #f0f3f6;
+  --primary: #2C5F7C;
+  --primary-glow: rgba(44,95,124,0.15);
+  --secondary: #1A3440;
+  --accent: #2C5F7C;
+  --accent-glow: rgba(44,95,124,0.12);
+  --text: #1a1d27;
+  --text2: #5a6478;
+  --text3: #8892a8;
+  --success: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(245,246,248,0.9);
+  --modal-overlay: rgba(0,0,0,0.4);
+  --hero-text: #ffffff;
+  --hero-text2: rgba(255,255,255,0.75);
+  --hero-text3: rgba(255,255,255,0.6);
+  --hero-glow: rgba(255,255,255,0.2);
+  --live-badge-bg: rgba(16,185,129,0.08);
+  --live-badge-border: rgba(16,185,129,0.2);
+  --kg-link: rgba(0,0,0,0.06);
+  --kg-label: #5a6478;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Navigation ===== */
+.nav {
+  position: sticky; top:0; z-index:100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 1.2rem; font-weight: 700; color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.nav-brand .back-link {
+  text-decoration: none; color: var(--text2);
+  font-size: 1.1rem; padding: 0.3rem 0.5rem;
+  border-radius: 6px; transition: var(--transition);
+  margin-right: 0.25rem;
+}
+.nav-brand .back-link:hover {
+  background: var(--bg3); color: var(--accent);
+}
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(1.3); }
+}
+.nav-tabs {
+  display: flex; gap: 0.25rem;
+  background: var(--bg2); border-radius: 12px; padding: 3px;
+}
+.nav-tab {
+  padding: 0.5rem 1.25rem;
+  border-radius: 10px; border: none; background: transparent;
+  color: var(--text2); font-size: 0.875rem; font-weight: 500;
+  cursor: pointer; transition: var(--transition);
+  font-family: inherit;
+}
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active {
+  background: var(--primary); color: #fff;
+  box-shadow: 0 2px 12px var(--primary-glow);
+}
+.nav-right {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.8rem; color: var(--text3);
+}
+.nav-right .live-badge {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  background: var(--live-badge-bg); border: 1px solid var(--live-badge-border);
+  border-radius: 20px; color: var(--success); font-size: 0.75rem;
+}
+.theme-toggle {
+  width: 36px; height: 36px;
+  border-radius: 10px; border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ===== Main Container ===== */
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+.view { display: none; }
+.view.active { display: block; animation: fadeIn 0.35s ease; }
+@keyframes fadeIn {
+  from { opacity:0; transform: translateY(8px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+/* ===== BRIEFING VIEW — Physiq Tile Grid ===== */
+.briefing-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.hero-date-card {
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+  border-radius: var(--radius);
+  padding: 2rem;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.hero-date-card::after {
+  content: '';
+  position: absolute; top: -50%; right: -30%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, var(--hero-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-date-card .weekday {
+  font-size: 0.9rem; color: var(--hero-text2);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.hero-date-card .date-big {
+  font-size: 2.8rem; font-weight: 700; color: var(--hero-text);
+  letter-spacing: -0.03em; line-height: 1.1;
+}
+.hero-date-card .date-sub {
+  font-size: 0.9rem; color: var(--hero-text3); margin-top: 0.5rem;
+}
+.hero-stats-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  align-items: center;
+}
+.hero-stat {
+  text-align: center;
+}
+.hero-stat .val {
+  font-size: 2rem; font-weight: 700; color: var(--accent);
+}
+.hero-stat .lbl {
+  font-size: 0.75rem; color: var(--text2); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-top: 0.25rem;
+}
+
+/* Category Tiles */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.cat-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+}
+.cat-tile:hover {
+  border-color: var(--border2);
+  box-shadow: var(--shadow);
+}
+.cat-header {
+  padding: 1rem 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600; font-size: 0.95rem;
+}
+.cat-header .icon { font-size: 1.3rem; }
+.cat-header .count {
+  margin-left: auto;
+  font-size: 0.75rem; color: var(--text3);
+  background: var(--bg3); padding: 0.2rem 0.6rem; border-radius: 12px;
+}
+.article-list { padding: 0.5rem 0; }
+.article-item {
+  display: block;
+  padding: 0.85rem 1.25rem;
+  text-decoration: none; color: inherit;
+  border-left: 3px solid transparent;
+  transition: var(--transition);
+  cursor: pointer;
+}
+.article-item:hover {
+  background: var(--card-hover);
+  border-left-color: var(--accent);
+}
+.article-item .art-title {
+  font-size: 0.9rem; font-weight: 500; color: var(--text);
+  line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.article-item .art-source {
+  font-size: 0.75rem; color: var(--text3); margin-top: 0.3rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.article-item .art-source::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--primary);
+}
+
+/* Calendar Section */
+.section-header {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem; font-weight: 600;
+}
+.section-header .icon { font-size: 1.3rem; }
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.cal-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  display: flex; align-items: center; gap: 1rem;
+  transition: var(--transition);
+}
+.cal-card:hover { border-color: var(--border2); }
+.cal-time {
+  font-size: 0.85rem; font-weight: 600; color: var(--accent);
+  min-width: 60px;
+}
+.cal-info .cal-title {
+  font-size: 0.9rem; font-weight: 500;
+}
+.cal-info .cal-cal {
+  font-size: 0.75rem; color: var(--text3);
+}
+
+/* ===== KNOWLEDGE GRAPH VIEW ===== */
+.kg-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  height: calc(100vh - 160px);
+  min-height: 600px;
+}
+.kg-canvas-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+}
+.kg-canvas-wrap svg { width:100%; height:100%; }
+.kg-sidebar {
+  display: flex; flex-direction: column; gap: 1rem;
+  overflow-y: auto;
+}
+.kg-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.kg-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  text-align: center;
+}
+.kg-stat .val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+.kg-stat .lbl { font-size: 0.7rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.kg-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.kg-panel-header {
+  padding: 0.75rem 1rem;
+  font-weight: 600; font-size: 0.85rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--accent);
+}
+.kg-node-list { max-height: 300px; overflow-y: auto; }
+.kg-node-item {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  display: flex; align-items: center; gap: 0.5rem;
+  transition: var(--transition);
+}
+.kg-node-item:hover { background: var(--card-hover); }
+.kg-node-item .rank {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--bg3); display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700; color: var(--text2);
+}
+.kg-node-item .name { flex:1; font-weight: 500; }
+.kg-node-item .deg { color: var(--accent); font-weight: 600; font-size: 0.75rem; }
+.kg-node-item .type-tag {
+  font-size: 0.65rem; padding: 0.15rem 0.4rem; border-radius: 4px;
+  background: var(--bg3); color: var(--text3);
+}
+
+/* ===== ARCHIVE VIEW ===== */
+.archive-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.archive-header h2 { font-size: 1.3rem; font-weight: 600; }
+.archive-search {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-xs); padding: 0.5rem 1rem;
+  color: var(--text); font-size: 0.85rem; width: 240px;
+  font-family: inherit;
+}
+.archive-search::placeholder { color: var(--text3); }
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+.archive-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.archive-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px var(--accent-glow);
+  transform: translateY(-2px);
+}
+.archive-card .arc-date {
+  font-size: 1rem; font-weight: 700; color: var(--text);
+}
+.archive-card .arc-day {
+  font-size: 0.75rem; color: var(--text3); margin-top: 0.15rem;
+}
+.archive-card .arc-stats {
+  display: flex; gap: 0.5rem; justify-content: center;
+  margin-top: 0.75rem;
+}
+.archive-card .arc-stat {
+  font-size: 0.7rem; color: var(--text2);
+  background: var(--bg3); padding: 0.2rem 0.5rem; border-radius: 4px;
+}
+.archive-card .arc-delivered {
+  margin-top: 0.5rem;
+  font-size: 0.7rem; color: var(--success);
+}
+
+/* Archive Detail Modal */
+.modal-overlay {
+  position: fixed; inset:0; z-index:200;
+  background: var(--modal-overlay);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  max-width: 900px; width: 90vw; max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal-header {
+  position: sticky; top:0; z-index:10;
+  background: var(--bg2);
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-header h3 { font-size: 1.1rem; color: var(--accent); }
+.modal-close {
+  background: var(--bg3); border: none; color: var(--text2);
+  width: 32px; height: 32px; border-radius: 8px;
+  cursor: pointer; font-size: 1.1rem; transition: var(--transition);
+}
+.modal-close:hover { background: var(--danger); color: #fff; }
+.modal-body { padding: 1.5rem; }
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .briefing-hero { grid-template-columns: 1fr; }
+  .category-grid { grid-template-columns: 1fr; }
+  .kg-layout { grid-template-columns: 1fr; height: auto; }
+  .kg-canvas-wrap { height: 400px; }
+  .nav { padding: 0 1rem; }
+  .main { padding: 1rem; }
+}
+@media (max-width: 600px) {
+  .hero-stats-card { grid-template-columns: 1fr; }
+  .nav-tab { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+  .archive-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* ===== KG Tooltip ===== */
+.kg-tooltip {
+  position: absolute;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 0.6rem 0.9rem;
+  font-size: 0.8rem; pointer-events: none;
+  opacity: 0; transition: opacity 0.15s;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  z-index: 50;
+}
+.kg-tooltip.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-brand">
+    <a href="/" class="back-link" title="Back to Dashboard">←</a>
+    <div class="dot"></div>
+    Clowie Briefing Hub
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-view="briefing">📰 Briefing</button>
+    <button class="nav-tab" data-view="kg">🧠 Knowledge Graph</button>
+    <button class="nav-tab" data-view="archive">📦 Archive</button>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle theme">☀️</button>
+    <div class="live-badge">● Live</div>
+    <span id="navDate">--</span>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- ===== BRIEFING VIEW ===== -->
+  <div class="view active" id="view-briefing">
+    <div class="briefing-hero" id="briefingHero"></div>
+    <div class="category-grid" id="categoryGrid"></div>
+    <div class="section-header"><span class="icon">📅</span> Today's Calendar</div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+
+  <!-- ===== KNOWLEDGE GRAPH VIEW ===== -->
+  <div class="view" id="view-kg">
+    <div class="kg-layout">
+      <div class="kg-canvas-wrap" id="kgCanvas"></div>
+      <div class="kg-sidebar">
+        <div class="kg-stats" id="kgStats"></div>
+        <div class="kg-panel">
+          <div class="kg-panel-header">🔝 Top Nodes by Degree</div>
+          <div class="kg-node-list" id="kgTopNodes"></div>
+        </div>
+        <div class="kg-panel">
+          <div class="kg-panel-header">🧩 Clusters</div>
+          <div class="kg-node-list" id="kgClusters"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ARCHIVE VIEW ===== -->
+  <div class="view" id="view-archive">
+    <div class="archive-header">
+      <h2>📦 Briefing Archive</h2>
+      <input class="archive-search" type="text" placeholder="Search by date..." id="archiveSearch">
+    </div>
+    <div class="archive-grid" id="archiveGrid"></div>
+  </div>
+
+</div>
+
+<!-- Archive Detail Modal (hidden) -->
+<div id="modalContainer"></div>
+
+<script>
+// ===== DATA LOADING =====
+let briefings = [];
+let archive = [];
+let kgData = { nodes:[], edges:[], stats:{}, clusters:[] };
+let currentBriefingIdx = 0;
+
+async function loadData() {
+  try {
+    const [b, a, k] = await Promise.all([
+      fetch('data/briefings.json').then(r => r.json()),
+      fetch('data/archive.json').then(r => r.json()),
+      fetch('data/kg_data.json').then(r => r.json()),
+    ]);
+    briefings = b;
+    archive = a;
+    kgData = k;
+    currentBriefingIdx = briefings.length - 1; // latest
+    document.getElementById('navDate').textContent =
+      new Date().toLocaleDateString('de-AT', { weekday:'short', day:'numeric', month:'short' });
+    renderBriefing();
+    renderArchive();
+  } catch(e) {
+    console.error('Data load failed:', e);
+    document.querySelector('.main').innerHTML =
+      '<div style="text-align:center;padding:4rem;color:var(--text2)">⚠️ Could not load data. Run <code>build_data.py</code> first.</div>';
+  }
+}
+
+// ===== NAVIGATION =====
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const viewId = tab.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + viewId).classList.add('active');
+    if (viewId === 'kg') renderKG();
+  });
+});
+
+// ===== BRIEFING RENDER =====
+function renderBriefing() {
+  const b = briefings[currentBriefingIdx];
+  if (!b) return;
+
+  const date = new Date(b.date);
+  const weekdays = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+  // Hero
+  let totalArticles = 0;
+  for (const cat in b.news) totalArticles += b.news[cat].length;
+  let totalEvents = 0;
+  for (const cal in b.calendar) totalEvents += b.calendar[cal].length;
+
+  document.getElementById('briefingHero').innerHTML = `
+    <div class="hero-date-card">
+      <div class="weekday">${weekdays[date.getDay()]}</div>
+      <div class="date-big">${date.getDate()}. ${months[date.getMonth()]}</div>
+      <div class="date-sub">${date.getFullYear()} — Morning Briefing</div>
+    </div>
+    <div class="hero-stats-card">
+      <div class="hero-stat"><div class="val">${totalArticles}</div><div class="lbl">Articles</div></div>
+      <div class="hero-stat"><div class="val">${Object.keys(b.news).length}</div><div class="lbl">Categories</div></div>
+      <div class="hero-stat"><div class="val">${totalEvents}</div><div class="lbl">Events</div></div>
+    </div>
+  `;
+
+  // Category tiles
+  const catIcons = {
+    '🔬 Research & Technik': '🔬',
+    '📊 Markt': '📊',
+    '🔒 Security': '🔒',
+    '📱 Applikationen': '📱',
+    '🚀 Start-ups': '🚀',
+  };
+  let catHTML = '';
+  for (const [cat, articles] of Object.entries(b.news)) {
+    const icon = catIcons[cat] || '📌';
+    catHTML += `
+      <div class="cat-tile">
+        <div class="cat-header">
+          <span class="icon">${icon}</span> ${cat}
+          <span class="count">${articles.length}</span>
+        </div>
+        <div class="article-list">
+          ${articles.map(a => `
+            <a href="${a.link}" target="_blank" rel="noopener" class="article-item">
+              <div class="art-title">${escHtml(a.title)}</div>
+              <div class="art-source">${a.source}</div>
+            </a>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+  document.getElementById('categoryGrid').innerHTML = catHTML;
+
+  // Calendar
+  let calHTML = '';
+  for (const [calName, events] of Object.entries(b.calendar)) {
+    for (const ev of events) {
+      const time = ev.start ? new Date(ev.start).toLocaleTimeString('de-AT', {hour:'2-digit',minute:'2-digit'}) : '';
+      calHTML += `
+        <div class="cal-card">
+          <div class="cal-time">${time}</div>
+          <div class="cal-info">
+            <div class="cal-title">${escHtml(ev.summary || 'Event')}</div>
+            <div class="cal-cal">${calName}${ev.location ? ' · ' + ev.location : ''}</div>
+          </div>
+        </div>`;
+    }
+  }
+  document.getElementById('calendarGrid').innerHTML = calHTML || '<div style="color:var(--text3);padding:1rem;">No events today</div>';
+}
+
+// ===== KNOWLEDGE GRAPH RENDER =====
+let kgRendered = false;
+function renderKG() {
+  if (kgRendered) return;
+  kgRendered = true;
+
+  // Stats
+  document.getElementById('kgStats').innerHTML = `
+    <div class="kg-stat"><div class="val">${kgData.stats.nodes || 0}</div><div class="lbl">Nodes</div></div>
+    <div class="kg-stat"><div class="val">${kgData.stats.edges || 0}</div><div class="lbl">Edges</div></div>
+    <div class="kg-stat"><div class="val">${kgData.stats.density || 0}</div><div class="lbl">Density</div></div>
+    <div class="kg-stat"><div class="val">${kgData.clusters.length || 0}</div><div class="lbl">Clusters</div></div>
+  `;
+
+  // Top nodes
+  document.getElementById('kgTopNodes').innerHTML = kgData.nodes.slice(0, 20).map((n, i) => `
+    <div class="kg-node-item">
+      <span class="rank">${i+1}</span>
+      <span class="name">${escHtml(n.label)}</span>
+      <span class="type-tag">${n.type}</span>
+      <span class="deg">${n.degree}</span>
+    </div>
+  `).join('');
+
+  // Clusters
+  document.getElementById('kgClusters').innerHTML = kgData.clusters.map(c => `
+    <div class="kg-node-item">
+      <span class="rank">${c.id+1}</span>
+      <span class="name">Cluster ${c.id+1}</span>
+      <span class="deg">${c.size} nodes</span>
+    </div>
+  `).join('') || '<div class="kg-node-item"><span class="name" style="color:var(--text3)">No clusters detected</span></div>';
+
+  // D3 Force Graph
+  const container = document.getElementById('kgCanvas');
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+  if (W === 0 || H === 0) return;
+
+  const svg = d3.select('#kgCanvas')
+    .append('svg')
+    .attr('viewBox', [0, 0, W, H]);
+
+  // Defs for glow
+  const defs = svg.append('defs');
+  const filter = defs.append('filter').attr('id', 'glow');
+  filter.append('feGaussianBlur').attr('stdDeviation', '2.5').attr('result', 'blur');
+  const feMerge = filter.append('feMerge');
+  feMerge.append('feMergeNode').attr('in', 'blur');
+  feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+  const g = svg.append('g');
+
+  // Zoom
+  const zoom = d3.zoom()
+    .scaleExtent([0.1, 4])
+    .on('zoom', (event) => g.attr('transform', event.transform));
+  svg.call(zoom);
+
+  // Tooltip
+  const tooltip = d3.select('#kgCanvas')
+    .append('div').attr('class', 'kg-tooltip');
+
+  // Prepare data — sample if too large
+  let nodes = kgData.nodes.slice(0, 200);
+  let edges = kgData.edges.filter(e =>
+    nodes.some(n => n.id === e.source) && nodes.some(n => n.id === e.target)
+  ).slice(0, 400);
+
+  // Type → color
+  const typeColors = {
+    person: '#3D8B8B',
+    company: '#2C5F7C',
+    project: '#f59e0b',
+    task: '#10b981',
+    document: '#8b5cf6',
+    event: '#ef4444',
+    unknown: '#5a6478',
+  };
+
+  // Scale node size by degree
+  const maxDeg = Math.max(...nodes.map(n => n.degree), 1);
+  const sizeScale = d3.scaleSqrt().domain([1, maxDeg]).range([3, 18]);
+
+  // Simulation
+  const sim = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(edges).id(d => d.id).distance(80).strength(0.3))
+    .force('charge', d3.forceManyBody().strength(-200))
+    .force('center', d3.forceCenter(W/2, H/2))
+    .force('collision', d3.forceCollide().radius(d => sizeScale(d.degree) + 4));
+
+  // Links — use CSS variable for theme-aware color
+  const linkColor = getComputedStyle(document.documentElement).getPropertyValue('--kg-link').trim() || 'rgba(255,255,255,0.08)';
+  const link = g.append('g')
+    .selectAll('line')
+    .data(edges)
+    .join('line')
+    .attr('stroke', linkColor)
+    .attr('stroke-width', d => Math.min(d.weight, 3) * 0.6);
+
+  // Nodes
+  const node = g.append('g')
+    .selectAll('circle')
+    .data(nodes)
+    .join('circle')
+    .attr('r', d => sizeScale(d.degree))
+    .attr('fill', d => typeColors[d.type] || typeColors.unknown)
+    .attr('stroke', d => d3.color(typeColors[d.type] || typeColors.unknown).brighter(0.5))
+    .attr('stroke-width', 1)
+    .attr('opacity', 0.85)
+    .style('cursor', 'pointer')
+    .on('mouseenter', (event, d) => {
+      tooltip.classed('show', true)
+        .html(`<strong>${escHtml(d.label)}</strong><br><span style="color:var(--text3)">${d.type} · degree ${d.degree}</span>`)
+        .style('left', (event.offsetX + 12) + 'px')
+        .style('top', (event.offsetY - 10) + 'px');
+      d3.select(event.target).attr('opacity', 1).attr('stroke-width', 2.5);
+    })
+    .on('mouseleave', (event) => {
+      tooltip.classed('show', false);
+      d3.select(event.target).attr('opacity', 0.85).attr('stroke-width', 1);
+    })
+    .call(d3.drag()
+      .on('start', (event, d) => {
+        if (!event.active) sim.alphaTarget(0.3).restart();
+        d.fx = d.x; d.fy = d.y;
+      })
+      .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+      .on('end', (event, d) => {
+        if (!event.active) sim.alphaTarget(0);
+        d.fx = null; d.fy = null;
+      })
+    );
+
+  // Labels for top nodes — use CSS variable for theme-aware color
+  const labelColor = getComputedStyle(document.documentElement).getPropertyValue('--kg-label').trim() || '#8892a8';
+  const topNodes = nodes.filter(n => n.degree > maxDeg * 0.3);
+  const labels = g.append('g')
+    .selectAll('text')
+    .data(topNodes)
+    .join('text')
+    .text(d => d.label.length > 18 ? d.label.slice(0,17) + '…' : d.label)
+    .attr('font-size', 9)
+    .attr('fill', labelColor)
+    .attr('text-anchor', 'middle')
+    .attr('dy', d => -sizeScale(d.degree) - 4)
+    .style('pointer-events', 'none');
+
+  sim.on('tick', () => {
+    link
+      .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+    node.attr('cx', d => d.x).attr('cy', d => d.y);
+    labels.attr('x', d => d.x).attr('y', d => d.y);
+  });
+}
+
+// ===== ARCHIVE RENDER =====
+function renderArchive(filter = '') {
+  const grid = document.getElementById('archiveGrid');
+  const filtered = archive.filter(a => a.date.includes(filter));
+  grid.innerHTML = filtered.map(a => {
+    const d = new Date(a.date);
+    const weekdays = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+    return `
+      <div class="archive-card" onclick="openArchiveDetail('${a.date}')">
+        <div class="arc-date">${d.getDate()}. ${d.toLocaleDateString('de-AT',{month:'short'})} ${d.getFullYear()}</div>
+        <div class="arc-day">${weekdays[d.getDay()]}</div>
+        <div class="arc-stats">
+          <span class="arc-stat">📰 ${a.articles}</span>
+          <span class="arc-stat">📅 ${a.events}</span>
+        </div>
+        ${a.delivered ? '<div class="arc-delivered">✓ Delivered</div>' : ''}
+      </div>`;
+  }).join('') || '<div style="color:var(--text3);grid-column:1/-1;text-align:center;padding:2rem;">No matching briefings</div>';
+}
+
+document.getElementById('archiveSearch').addEventListener('input', e => {
+  renderArchive(e.target.value);
+});
+
+// ===== ARCHIVE DETAIL MODAL =====
+function openArchiveDetail(dateStr) {
+  const b = briefings.find(b => b.date === dateStr);
+  if (!b) return;
+
+  const d = new Date(b.date);
+  const weekdays = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+  let totalArticles = 0;
+  for (const cat in b.news) totalArticles += b.news[cat].length;
+
+  const catIcons = {
+    '🔬 Research & Technik': '🔬',
+    '📊 Markt': '📊',
+    '🔒 Security': '🔒',
+    '📱 Applikationen': '📱',
+    '🚀 Start-ups': '🚀',
+  };
+
+  let catHTML = '';
+  for (const [cat, articles] of Object.entries(b.news)) {
+    const icon = catIcons[cat] || '📌';
+    catHTML += `
+      <div class="cat-tile" style="margin-bottom:1rem;">
+        <div class="cat-header">
+          <span class="icon">${icon}</span> ${cat}
+          <span class="count">${articles.length}</span>
+        </div>
+        <div class="article-list">
+          ${articles.map(a => `
+            <a href="${a.link}" target="_blank" rel="noopener" class="article-item">
+              <div class="art-title">${escHtml(a.title)}</div>
+              <div class="art-source">${a.source}</div>
+            </a>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+
+  let calHTML = '';
+  for (const [calName, events] of Object.entries(b.calendar)) {
+    for (const ev of events) {
+      const time = ev.start ? new Date(ev.start).toLocaleTimeString('de-AT', {hour:'2-digit',minute:'2-digit'}) : '';
+      calHTML += `
+        <div class="cal-card" style="margin-bottom:0.5rem;">
+          <div class="cal-time">${time}</div>
+          <div class="cal-info">
+            <div class="cal-title">${escHtml(ev.summary || 'Event')}</div>
+            <div class="cal-cal">${calName}${ev.location ? ' · ' + ev.location : ''}</div>
+          </div>
+        </div>`;
+    }
+  }
+
+  document.getElementById('modalContainer').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>📰 ${weekdays[d.getDay()]}, ${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}</h3>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+            <div class="hero-stat"><div class="val">${totalArticles}</div><div class="lbl">Articles</div></div>
+            <div class="hero-stat"><div class="val">${Object.keys(b.news).length}</div><div class="lbl">Categories</div></div>
+            <div class="hero-stat"><div class="val">${Object.keys(b.calendar).reduce((s,k)=>s+b.calendar[k].length,0)}</div><div class="lbl">Events</div></div>
+          </div>
+          ${catHTML}
+          ${calHTML ? '<div class="section-header"><span class="icon">📅</span> Calendar</div>' + calHTML : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function closeModal() {
+  document.getElementById('modalContainer').innerHTML = '';
+}
+
+// ===== UTILS =====
+function escHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+// ===== THEME TOGGLE =====
+function initTheme() {
+  const saved = localStorage.getItem('briefing-hub-theme') || 'dark';
+  applyTheme(saved);
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+  localStorage.setItem('briefing-hub-theme', theme);
+  // KG needs re-render on theme change
+  kgRendered = false;
+}
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+    // If KG view is active, re-render
+    if (document.getElementById('view-kg').classList.contains('active')) {
+      document.getElementById('kgCanvas').innerHTML = '';
+      renderKG();
+    }
+  });
+});
+
+// ===== INIT =====
+loadData();
+</script>
+<div class="footer" style="text-align:center;padding:1.5rem;color:var(--text3);font-size:0.72rem;border-top:1px solid var(--border);margin-top:2rem;">Clowie Briefing Hub · <a href="https://github.com/TheCabbageBaggage/openclaw-workspace/tree/main/projects/briefing-hub" target="_blank" rel="noopener" style="color:var(--text3);">GitHub ↗</a></div>
+</body>
+</html>
