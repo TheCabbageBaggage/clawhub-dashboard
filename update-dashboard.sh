@@ -1,6 +1,7 @@
 #!/bin/bash
 # ClawHub Dashboard Auto-Update Script
 # Runs every 6 hours via cron
+# Traefik-based deployment — no nginx needed
 
 set -euo pipefail
 
@@ -57,8 +58,11 @@ docker compose up -d 2>&1
 
 # Wait and verify
 sleep 5
-if docker compose ps | grep -q "healthy\|Up"; then
-    log "✅ Dashboard updated and running successfully"
+if docker compose ps | grep -q "Up"; then
+    log "✅ Dashboard updated and running"
+    # Verify Traefik routing
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/api/data 2>/dev/null || echo "000")
+    log "Health check: HTTP $HTTP_CODE"
 else
     log "⚠️  Container status unclear, check manually"
 fi

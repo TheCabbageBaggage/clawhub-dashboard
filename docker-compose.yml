@@ -7,8 +7,9 @@ services:
       dockerfile: Dockerfile
     container_name: clawhub-dashboard
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:3001:3001"
+    # No host port mapping — Traefik routes directly to the container
+    expose:
+      - "3001"
     volumes:
       - dashboard-data:/app/data
       - ./dashboard:/app/dashboard:ro
@@ -16,18 +17,34 @@ services:
       - NODE_ENV=production
       - PORT=3001
     networks:
-      - dashboard-net
+      - traefik-net
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:3001/api/data"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
+    labels:
+      - "traefik.enable=true"
+      # HTTP → HTTPS redirect
+      - "traefik.http.routers.clawhub-dashboard-http.rule=Host(`dashboard.claw.lkohl.duckdns.org`)"
+      - "traefik.http.routers.clawhub-dashboard-http.entrypoints=web"
+      - "traefik.http.routers.clawhub-dashboard-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      # HTTPS router
+      - "traefik.http.routers.clawhub-dashboard.rule=Host(`dashboard.claw.lkohl.duckdns.org`)"
+      - "traefik.http.routers.clawhub-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.clawhub-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.services.clawhub-dashboard.loadbalancer.server.port=3001"
 
 volumes:
   dashboard-data:
 
 networks:
-  dashboard-net:
-    name: clawhub-dashboard
-    driver: bridge
+  traefik-net:
+    # IMPORTANT: Verify the exact Traefik network name on the host:
+    #   docker network ls | grep traefik
+    # Common names: traefik_default, traefik, web
+    # If different, update this name or create with:
+    #   docker network create traefik-net
+    external: true
