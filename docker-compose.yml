@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   dashboard:
     build:
@@ -7,44 +5,26 @@ services:
       dockerfile: Dockerfile
     container_name: clawhub-dashboard
     restart: unless-stopped
-    # No host port mapping — Traefik routes directly to the container
     expose:
       - "3001"
     volumes:
       - dashboard-data:/app/data
       - ./dashboard:/app/dashboard:ro
+      - ./auth.json:/app/data/auth.json:ro
     environment:
       - NODE_ENV=production
       - PORT=3001
     networks:
-      - traefik-net
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3001/api/data"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      - ollama-xwy9_default
     labels:
       - "traefik.enable=true"
-      # HTTP → HTTPS redirect
-      - "traefik.http.routers.clawhub-dashboard-http.rule=Host(`dashboard.claw.lkohl.duckdns.org`)"
-      - "traefik.http.routers.clawhub-dashboard-http.entrypoints=web"
-      - "traefik.http.routers.clawhub-dashboard-http.middlewares=redirect-to-https"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-      # HTTPS router
-      - "traefik.http.routers.clawhub-dashboard.rule=Host(`dashboard.claw.lkohl.duckdns.org`)"
-      - "traefik.http.routers.clawhub-dashboard.entrypoints=websecure"
-      - "traefik.http.routers.clawhub-dashboard.tls.certresolver=letsencrypt"
-      - "traefik.http.services.clawhub-dashboard.loadbalancer.server.port=3001"
+      - "traefik.http.routers.clawhub.rule=Host(`clawhub.cabbagebaggage.net`)"
+      - "traefik.http.routers.clawhub.entrypoints=web"
+      - "traefik.http.services.clawhub.loadbalancer.server.port=3001"
 
 volumes:
   dashboard-data:
 
 networks:
-  traefik-net:
-    # IMPORTANT: Verify the exact Traefik network name on the host:
-    #   docker network ls | grep traefik
-    # Common names: traefik_default, traefik, web
-    # If different, update this name or create with:
-    #   docker network create traefik-net
+  ollama-xwy9_default:
     external: true
