@@ -1,83 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operations Hub — Live Status</title>
+<style>
+/* ===== ACTA Design System ===== */
+:root,
+[data-theme="dark"] {
+  --bg: #0a0e14; --bg2: #11161e; --bg3: #1a2230;
+  --card: #141c26; --card-hover: #1a2432;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.25);
+  --secondary: #1A3440; --accent: #3D8B8B;
+  --accent-glow: rgba(61,139,139,0.2);
+  --text: #e0e4ea; --text2: #8892a8; --text3: #5a6478;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.1);
+  --radius: 16px; --radius-sm: 10px; --radius-xs: 6px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(10,14,20,0.85);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+  --badge-bg: rgba(255,255,255,0.06); --badge-text: #8892a8;
+  --footer-text: #3a4458;
+}
 
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Newsletter Pipeline Dashboard</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                .status-card { border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin: 10px 0; }
-                .status-healthy { background-color: #d4edda; border-color: #c3e6cb; }
-                .status-degraded { background-color: #fff3cd; border-color: #ffeaa7; }
-                .status-error { background-color: #f8d7da; border-color: #f5c6cb; }
-                .metric { margin: 5px 0; }
-                .metric-label { font-weight: bold; }
-                .error-list { background-color: #f8f9fa; padding: 10px; border-radius: 3px; }
-                .error-item { padding: 5px; border-bottom: 1px solid #eee; }
-            </style>
-        </head>
-        <body>
-            <h1>📊 Newsletter Pipeline Dashboard</h1>
-            <p>Last updated: 2026-04-23T21:00:03.836000</p>
-            
-            <div class="status-card status-healthy">
-                <h2>System Status: HEALTHY</h2>
-                <div class="metric">
-                    <span class="metric-label">Uptime:</span> 0 days
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Oracle Server:</span> 
-                    ✅ Online
-                </div>
-            </div>
-            
-            <div class="status-card">
-                <h2>📰 Scraping Metrics</h2>
-                <div class="metric">
-                    <span class="metric-label">Last Success:</span> Never
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Articles Scraped:</span> 0
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Success Rate:</span> 0.0%
-                </div>
-            </div>
-            
-            <div class="status-card">
-                <h2>📧 Newsletter Generation</h2>
-        
-                <div class="metric">
-                    <span class="metric-label">Daily Ai Tech News:</span>
-                    Last: Never, Articles: 0
-                </div>
-            
-                <div class="metric">
-                    <span class="metric-label">Ai Management Bulletin:</span>
-                    Last: Never, Articles: 0
-                </div>
-            
-                <div class="metric">
-                    <span class="metric-label">Ai Security Update:</span>
-                    Last: Never, Articles: 0
-                </div>
-            
-            </div>
-            
-            <div class="status-card">
-                <h2>📤 Email Delivery</h2>
-                <div class="metric">
-                    <span class="metric-label">Last Sent:</span> Never
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Total Sent:</span> 0
-                </div>
-                <div class="metric">
-                    <span class="metric-label">Success Rate:</span> 0.0%
-                </div>
-            </div>
-        
-        </body>
-        </html>
-        
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Navigation ===== */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--nav-bg); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px; display: flex; align-items: center;
+  height: 56px; gap: 24px;
+}
+nav .logo {
+  font-size: 18px; font-weight: 700; color: var(--text);
+  letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px;
+}
+nav .logo .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--success); }
+  50% { opacity: 0.5; box-shadow: 0 0 2px var(--success); }
+}
+nav .logo .dot.warn { background: var(--warn); animation-name: pulse-dot-warn; }
+nav .logo .dot.danger { background: var(--danger); animation-name: pulse-dot-danger; }
+@keyframes pulse-dot-warn { 0%,100%{opacity:1;box-shadow:0 0 6px var(--warn)} 50%{opacity:0.5;box-shadow:0 0 2px var(--warn)} }
+@keyframes pulse-dot-danger { 0%,100%{opacity:1;box-shadow:0 0 6px var(--danger)} 50%{opacity:0.5;box-shadow:0 0 2px var(--danger)} }
+nav a {
+  color: var(--text2); text-decoration: none; font-size: 14px;
+  transition: color var(--transition); font-weight: 500;
+}
+nav a:hover { color: var(--text); }
+nav .spacer { flex: 1; }
+nav .refresh-badge {
+  font-size: 12px; color: var(--text3); background: var(--badge-bg);
+  padding: 4px 10px; border-radius: 20px;
+}
+
+/* ===== Hero ===== */
+.hero {
+  background: var(--hero-gradient); padding: 32px 24px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(61,139,139,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero h1 { font-size: 28px; font-weight: 700; color: var(--hero-text); position: relative; z-index: 1; }
+.hero .subtitle { font-size: 14px; color: var(--hero-text2); margin-top: 6px; position: relative; z-index: 1; }
+.hero .overall-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 16px; padding: 8px 20px; border-radius: 24px;
+  font-size: 14px; font-weight: 600; position: relative; z-index: 1;
+}
+.overall-status.green { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+.overall-status.yellow { background: rgba(245,158,11,0.15); color: var(--warn); border: 1px solid rgba(245,158,11,0.3); }
+.overall-status.red { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+.overall-status .pulse {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.overall-status.green .pulse { background: var(--success); box-shadow: 0 0 8px var(--success); }
+.overall-status.yellow .pulse { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+.overall-status.red .pulse { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+
+/* ===== Grid ===== */
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+/* ===== Cards ===== */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  transition: all var(--transition); position: relative; overflow: hidden;
+}
+.card:hover { border-color: var(--border2); box-shadow: var(--shadow); }
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.card-title { font-size: 15px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.card-icon { font-size: 20px; }
+.status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.status-badge.green { background: rgba(16,185,129,0.12); color: var(--success); }
+.status-badge.yellow { background: rgba(245,158,11,0.12); color: var(--warn); }
+.status-badge.red { background: rgba(239,68,68,0.12); color: var(--danger); }
+.status-badge .indicator {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.status-badge.green .indicator { background: var(--success); }
+.status-badge.yellow .indicator { background: var(--warn); }
+.status-badge.red .indicator { background: var(--danger); }
+
+.card-detail { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.card-detail .metric { display: flex; justify-content: space-between; padding: 4px 0; }
+.card-detail .metric .key { color: var(--text3); }
+.card-detail .metric .val { color: var(--text2); font-weight: 500; }
+.card-detail .metric .val.good { color: var(--success); }
+.card-detail .metric .val.warn { color: var(--warn); }
+.card-detail .metric .val.bad { color: var(--danger); }
+
+/* Sub-components (dreaming) */
+.sub-components { margin-top: 8px; }
+.sub-comp {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 10px; border-radius: var(--radius-xs);
+  background: var(--bg2); margin-bottom: 4px; font-size: 12px;
+}
+.sub-comp .name { color: var(--text2); font-weight: 500; }
+.sub-comp .state { display: flex; align-items: center; gap: 4px; }
+.sub-comp .state.green { color: var(--success); }
+.sub-comp .state.yellow { color: var(--warn); }
+.sub-comp .state.red { color: var(--danger); }
+
+/* ===== Footer ===== */
+footer {
+  text-align: center; padding: 24px; color: var(--footer-text);
+  font-size: 12px; border-top: 1px solid var(--border); margin-top: 24px;
+}
+footer a { color: var(--text3); text-decoration: none; }
+footer a:hover { color: var(--text2); }
+
+/* ===== Loading / Error ===== */
+.loading { text-align: center; padding: 60px 24px; color: var(--text3); }
+.loading .spinner {
+  width: 32px; height: 32px; border: 3px solid var(--border2);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-state { text-align: center; padding: 60px 24px; color: var(--danger); }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 22px; }
+  nav { padding: 0 16px; gap: 12px; }
+  .container { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="logo">
+    <span class="dot" id="nav-dot"></span>
+    Operations Hub
+  </div>
+  <a href="/">← Command Center</a>
+  <a href="/plan.html">Plan</a>
+  <a href="/dashboard.html">Dashboard</a>
+  <a href="/research.html">Research</a>
+  <a href="/medium.html">Medium</a>
+  <div class="spacer"></div>
+  <div class="refresh-badge" id="refresh-badge">Auto-refresh 60s</div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>Live System Status</h1>
+  <p class="subtitle">Real-time health monitoring for all Operations Hub components</p>
+  <div class="overall-status" id="overall-status">
+    <span class="pulse"></span>
+    <span id="overall-text">Checking...</span>
+  </div>
+</div>
+
+<!-- Content -->
+<div class="container">
+  <div class="grid" id="grid">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading status data…</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Operations Hub · <span id="footer-time">--</span> · <a href="/">Command Center</a></p>
+</footer>
+
+<script>
+const STATUS_URL = '/data/status.json';
+const REFRESH_INTERVAL = 60000; // 60 seconds
+
+function statusClass(s) {
+  if (s === 'green') return 'green';
+  if (s === 'yellow') return 'yellow';
+  return 'red';
+}
+
+function statusEmoji(s) {
+  if (s === 'green') return '🟢';
+  if (s === 'yellow') return '🟡';
+  return '🔴';
+}
+
+function renderCard(id, title, icon, check) {
+  const s = check.status || 'red';
+  const cls = statusClass(s);
+  let detailHtml = '';
+
+  if (check.components) {
+    // Dreaming system with sub-components
+    detailHtml = '<div class="sub-components">';
+    for (const [name, comp] of Object.entries(check.components)) {
+      const cs = comp.status || 'red';
+      const ccls = statusClass(cs);
+      detailHtml += `
+        <div class="sub-comp">
+          <span class="name">${name.toUpperCase()}</span>
+          <span class="state ${ccls}">${statusEmoji(cs)} ${comp.label || cs}</span>
+        </div>`;
+    }
+    detailHtml += '</div>';
+  } else {
+    // Simple metrics
+    detailHtml = `<div class="card-detail">`;
+    if (check.label) {
+      detailHtml += `<div class="metric"><span class="key">Status</span><span class="val ${cls}">${check.label}</span></div>`;
+    }
+    if (check.detail) {
+      detailHtml += `<div class="metric"><span class="key">Detail</span><span class="val">${check.detail}</span></div>`;
+    }
+    if (check.age_hours !== undefined && check.age_hours !== null) {
+      const ageCls = check.age_hours > 48 ? 'bad' : check.age_hours > 24 ? 'warn' : 'good';
+      detailHtml += `<div class="metric"><span class="key">Age</span><span class="val ${ageCls}">${check.age_hours}h</span></div>`;
+    }
+    if (check.size_bytes !== undefined) {
+      const kb = (check.size_bytes / 1024).toFixed(1);
+      detailHtml += `<div class="metric"><span class="key">Size</span><span class="val">${kb} KB</span></div>`;
+    }
+    if (check.commit) {
+      detailHtml += `<div class="metric"><span class="key">Commit</span><span class="val">${check.commit}</span></div>`;
+    }
+    detailHtml += `</div>`;
+  }
+
+  return `
+    <div class="card" id="card-${id}">
+      <div class="card-header">
+        <span class="card-title"><span class="card-icon">${icon}</span>${title}</span>
+        <span class="status-badge ${cls}"><span class="indicator"></span>${s.toUpperCase()}</span>
+      </div>
+      ${detailHtml}
+    </div>`;
+}
+
+async function fetchStatus() {
+  try {
+    const resp = await fetch(STATUS_URL, { cache: 'no-store' });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    renderDashboard(data);
+  } catch (err) {
+    document.getElementById('grid').innerHTML = `
+      <div class="error-state">
+        <p>⚠️ Failed to load status data</p>
+        <p style="font-size:12px;color:var(--text3);margin-top:8px;">${err.message}</p>
+      </div>`;
+    updateOverall('red', 'Data Unavailable');
+  }
+}
+
+function renderDashboard(data) {
+  const checks = data.checks || {};
+  const cards = [
+    { id: 'dreaming', title: 'Dreaming System', icon: '🌙', check: checks.dreaming },
+    { id: 'newsletter_vps', title: 'Newsletter VPS', icon: '🖥️', check: checks.newsletter_vps },
+    { id: 'memory_size', title: 'MEMORY.md', icon: '📝', check: checks.memory_size },
+    { id: 'learnings', title: 'Learnings Pipeline', icon: '🧠', check: checks.learnings },
+    { id: 'ontology', title: 'Ontology Graph', icon: '🔗', check: checks.ontology },
+    { id: 'health_monitor', title: 'Health Monitor', icon: '🩺', check: checks.health_monitor },
+    { id: 'morning_briefing', title: 'Morning Briefing', icon: '🌅', check: checks.morning_briefing },
+    { id: 'github_sync', title: 'GitHub Sync', icon: '🔄', check: checks.github_sync },
+    { id: 'token_refresh', title: 'Token / Gateway', icon: '🔑', check: checks.token_refresh },
+    { id: 'cron_jobs', title: 'Cron Jobs', icon: '⏰', check: checks.cron_jobs },
+  ];
+
+  let html = '';
+  for (const c of cards) {
+    if (c.check) {
+      html += renderCard(c.id, c.title, c.icon, c.check);
+    }
+  }
+  document.getElementById('grid').innerHTML = html;
+
+  // Update overall
+  const overall = data.overall || 'green';
+  updateOverall(overall, data.timestamp_human || data.timestamp);
+
+  // Update nav dot
+  const dot = document.getElementById('nav-dot');
+  dot.className = 'dot';
+  if (overall === 'yellow') dot.classList.add('warn');
+  if (overall === 'red') dot.classList.add('danger');
+
+  // Update footer
+  document.getElementById('footer-time').textContent =
+    `Last update: ${data.timestamp_human || data.timestamp || '--'}`;
+}
+
+function updateOverall(status, time) {
+  const el = document.getElementById('overall-status');
+  el.className = `overall-status ${statusClass(status)}`;
+  const labels = { green: 'All Systems Operational', yellow: 'Degraded Performance', red: 'Issues Detected' };
+  document.getElementById('overall-text').textContent = labels[status] || status.toUpperCase();
+}
+
+// Initial fetch
+fetchStatus();
+
+// Auto-refresh
+setInterval(fetchStatus, REFRESH_INTERVAL);
+
+// Update refresh badge countdown
+let countdown = REFRESH_INTERVAL / 1000;
+setInterval(() => {
+  countdown--;
+  if (countdown <= 0) countdown = REFRESH_INTERVAL / 1000;
+  document.getElementById('refresh-badge').textContent = `Refresh in ${countdown}s`;
+}, 1000);
+</script>
+
+</body>
+</html>

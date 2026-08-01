@@ -132,9 +132,13 @@ def check_health_monitor() -> dict:
 def check_morning_briefing() -> dict:
     """Check if morning briefing was sent today."""
     today = NOW.strftime("%Y-%m-%d")
-    briefing = WORKSPACE / ".state" / "briefings" / f"{today}-briefing.json"
-    if briefing.exists():
+    today = NOW.strftime("%Y-%m-%d")
+    briefing_json = WORKSPACE / ".state" / "briefings" / f"{today}-briefing.json"
+    briefing_md = WORKSPACE / ".state" / "briefings" / f"{today}-briefing.md"
+    if briefing_json.exists():
         return {"status": "green", "label": "Sent today", "detail": f"Briefing for {today}"}
+    if briefing_md.exists():
+        return {"status": "green", "label": "Sent today (MD)", "detail": f"Briefing for {today} (markdown)"}
     # Check if there's a memory file for today (might indicate activity)
     mem_today = WORKSPACE / "memory" / f"{today}.md"
     if mem_today.exists():
@@ -187,27 +191,52 @@ def check_token_refresh() -> dict:
 
 
 def check_cron_jobs() -> dict:
-    """Check if cron jobs are active by reading jobs.json directly."""
-    jobs_path = os.path.expanduser("~/.openclaw/cron/jobs.json")
+    """Check if cron jobs are active via gateway API, with file fallback."""
+    # Try gateway API first
     try:
-        if not os.path.exists(jobs_path):
-            return {"status": "red", "label": "No jobs file", "detail": "~/.openclaw/cron/jobs.json missing"}
-        with open(jobs_path) as f:
-            data = json.load(f)
-        jobs = data.get("jobs", [])
-        if not jobs:
-            return {"status": "yellow", "label": "No jobs", "detail": "0 jobs configured"}
-        active = [j for j in jobs if j.get("enabled", True)]
-        disabled = len(jobs) - len(active)
-        # Build detail: list active job names
-        job_names = [j.get("name", "?")[:40] for j in active]
-        detail = ", ".join(job_names[:5]) + ("..." if len(job_names) > 5 else "")
-        if disabled == 0:
-            return {"status": "green", "label": f"{len(active)} active", "detail": detail}
-        else:
-            return {"status": "yellow", "label": f"{len(active)}/{len(jobs)} active", "detail": f"{disabled} disabled. {detail}"}
-    except Exception as e:
-        return {"status": "red", "label": "Read error", "detail": str(e)[:200]}
+        r = subprocess.run(
+            ["openclaw", "cron", "list", "--json"],
+            capture_output=True, text=True, timeout=10
+        )
+        if r.returncode == 0:
+            data = json.loads(r.stdout)
+            jobs = data.get("jobs", [])
+            if not jobs:
+                return {"status": "yellow", "label": "No jobs", "detail": "0 jobs via gateway"}
+            active = [j for j in jobs if j.get("enabled", True)]
+            disabled = len(jobs) - len(active)
+            job_names = [j.get("name", "?")[:40] for j in active]
+            detail = ", ".join(job_names[:5]) + ("..." if len(job_names) > 5 else "")
+            if disabled == 0:
+                return {"status": "green", "label": f"{len(active)} active", "detail": detail}
+            else:
+                return {"status": "yellow", "label": f"{len(active)}/{len(jobs)} active", "detail": f"{disabled} disabled. {detail}"}
+    except Exception:
+        pass  # Fall through to file-based check
+    # Fallback: check jobs.json files (legacy format)
+    for path_candidate in [
+        os.path.expanduser("~/.openclaw/cron/jobs.json"),
+        os.path.expanduser("~/.openclaw/cron/jobs.json.migrated"),
+    ]:
+        try:
+            if not os.path.exists(path_candidate):
+                continue
+            with open(path_candidate) as f:
+                data = json.load(f)
+            jobs = data.get("jobs", [])
+            if not jobs:
+                return {"status": "yellow", "label": "No jobs", "detail": f"0 jobs in {os.path.basename(path_candidate)}"}
+            active = [j for j in jobs if j.get("enabled", True)]
+            disabled = len(jobs) - len(active)
+            job_names = [j.get("name", "?")[:40] for j in active]
+            detail = ", ".join(job_names[:5]) + ("..." if len(job_names) > 5 else "")
+            if disabled == 0:
+                return {"status": "green", "label": f"{len(active)} active (legacy)", "detail": detail}
+            else:
+                return {"status": "yellow", "label": f"{len(active)}/{len(jobs)} active (legacy)", "detail": f"{disabled} disabled. {detail}"}
+        except Exception:
+            continue
+    return {"status": "red", "label": "No jobs data", "detail": "Could not read cron state from gateway or files"}
 
 
 def compute_overall(checks: dict) -> str:

@@ -1,0 +1,821 @@
+[
+  {
+    "id": "reports_competitor-analysis_executive-summary-with-urls_md",
+    "title": "executive summary with urls",
+    "category": "Other",
+    "date": "April 3, 2026*",
+    "summary": "- **Education Platform**: https://www.therundown.ai/university - **Twitter/X**: https://twitter.com/therundownai (1.5M+ followers) - **LinkedIn**: https://www.linkedin.com/company/therundownai/ - Partnership potential: Implementation guides for AWS AI services 3. **Microsoft Azure AI**: https://azur",
+    "path": "reports/competitor-analysis/executive-summary-with-urls.md",
+    "type": "MD"
+  },
+  {
+    "id": "reports_competitor-analysis_executive-summary_md",
+    "title": "executive summary",
+    "category": "Other",
+    "date": "April 3, 2026*",
+    "summary": "- **34.59% open rates** for technical newsletters (vs. general email) - **Significant gaps** in implementation depth and career development content - ✅ Strengths: Massive scale, high engagement (51.7% open rate), exclusive content - ❌ Weaknesses: US-centric, surface-level content, unclear premium va",
+    "path": "reports/competitor-analysis/executive-summary.md",
+    "type": "MD"
+  },
+  {
+    "id": "business-plans_gesamt-business-plan-master_html",
+    "title": "gesamt business plan master",
+    "category": "Business Planning",
+    "date": "</strong> April 22, 2026</span>",
+    "summary": "",
+    "path": "business-plans/gesamt-business-plan-master.html",
+    "type": "HTML"
+  },
+  {
+    "id": "projects_agent-mesh_OPERATIONS_md",
+    "title": "OPERATIONS",
+    "category": "Other",
+    "date": "2026-06-14T00:17:32.601189",
+    "summary": "> **Purpose:** Day-to-day operations, troubleshooting, and maintenance of the Federated Agent Mesh 4. [Agent Lifecycle Management](#4-agent-lifecycle-management) | `agent-code` | Code-Agent | Lazy | `sessions_spawn(label=\"agent-code\", ...)` | | `agent-research` | Research-Agent | Lazy | `sessions_sp",
+    "path": "projects/agent-mesh/OPERATIONS.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_agent-mesh_ARCHITECTURE_md",
+    "title": "ARCHITECTURE",
+    "category": "Other",
+    "date": "2026-06-14T00:17:18.178293",
+    "summary": "> **Context:** Migration from monolithic single-agent model to persistent multi-agent mesh > **Current baseline:** OpenClaw 2026-06 (subagent spawn via `sessions_spawn`, no persistent agents) > **Build progress:** 80% buildable today ✅ | Protocol helper tested ✅ | Core infrastructure deployed ✅ 1. [",
+    "path": "projects/agent-mesh/ARCHITECTURE.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_briefing-hub_hub-index_html",
+    "title": "hub index",
+    "category": "Briefing Systems",
+    "date": "2026-06-13T21:50:35.095181",
+    "summary": "",
+    "path": "projects/briefing-hub/hub-index.html",
+    "type": "HTML"
+  },
+  {
+    "id": "projects_briefing-hub_medium_html",
+    "title": "medium",
+    "category": "Content & Publishing",
+    "date": "2026-06-13T21:49:45.386515",
+    "summary": "",
+    "path": "projects/briefing-hub/medium.html",
+    "type": "HTML"
+  },
+  {
+    "id": "projects_briefing-hub_index_html",
+    "title": "index",
+    "category": "Other",
+    "date": "2026-06-13T21:00:22.886006",
+    "summary": "",
+    "path": "projects/briefing-hub/index.html",
+    "type": "HTML"
+  },
+  {
+    "id": "projects_briefing-hub_plan_html",
+    "title": "plan",
+    "category": "Other",
+    "date": "2026-06-13T21:00:17.732045",
+    "summary": "",
+    "path": "projects/briefing-hub/plan.html",
+    "type": "HTML"
+  },
+  {
+    "id": "projects_agent-mesh_PROTOCOL_SPEC_md",
+    "title": "PROTOCOL SPEC",
+    "category": "Other",
+    "date": "2026-06-13T09:01:46.646624",
+    "summary": "> **Buildable today:** ~95% — pure JSON/script layer, no OpenClaw changes required This document specifies the wire protocol for agent-to-agent communication in the Federated Agent Mesh. It defines envelope schemas, type contracts, routing semantics, delivery guarantees, and error codes. All communi",
+    "path": "projects/agent-mesh/PROTOCOL_SPEC.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_token-audit_token-audit-june-2026_md",
+    "title": "token audit june 2026",
+    "category": "Token & Cost Analysis",
+    "date": "2026-06-12T01:05:22.395854",
+    "summary": "**Data sources:** `token_tracker.db` (v2), session logs, `token_usage_actual.db` **LLM usage in June 2026 is running entirely on free Ollama cloud models at zero cost.** After a costly April with Anthropic Claude Opus and Sonnet (totaling ~$6.78 in list costs for just 10 days of April activity), the",
+    "path": "projects/token-audit/token-audit-june-2026.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_ambient-intelligence_HOWTO_md",
+    "title": "HOWTO",
+    "category": "Other",
+    "date": "2026-06-07T21:22:27.907639",
+    "summary": "> **Skill level:** Comfortable with terminal, Arduino flashing. No soldering required. > **Result:** Fully sovereign home automation — climate monitoring, mold prediction, blind control, garden sensor. No clouds. - ✅ **DIRIGERA Hub** — IKEA smart home gateway, Zigbee + Matter - ✅ **IKEA Temperature/",
+    "path": "projects/ambient-intelligence/HOWTO.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_ambient-intelligence_README_md",
+    "title": "README",
+    "category": "Other",
+    "date": "2026-06-07T21:08:32.887295",
+    "summary": "> Temperature, humidity, mold risk prediction, blind control, garden monitoring. ┌─WOHNUNG─────────────────────────────────────────────────────────┐ │                                                                  │ │  DIRIGERA Hub ──REST──► Raspberry Pi 5 ──MQTT(TLS)──► VPS      │ │  (Sensors, Li",
+    "path": "projects/ambient-intelligence/README.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_briefing-und-projektplan_md",
+    "title": "briefing und projektplan",
+    "category": "Briefing Systems",
+    "date": "2026-06-07T19:38:20.527798",
+    "summary": "**Status:** Research-Phase abgeschlossen, wartet auf Linus-Feedback | **Stil** | Economist-Ästhetik: präzise, analytisch, kein \"Ich\" als Default, aber First-Person als narratives Element erlaubt. Kurze Sätze, aktive Stimme, keine Floskeln, keine Prätention. | | **Kernthema** | Digitale Souveränität ",
+    "path": "projects/medium-articles/briefing-und-projektplan.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_PROJECT_PLAN_md",
+    "title": "PROJECT PLAN",
+    "category": "Other",
+    "date": "2026-06-07T19:38:20.524798",
+    "summary": "Dein `acta/principles.md` (28. März 2026) enthält eine vollständige Content-Strategie: > *\"Explain AI in practical, understandable ways. Local AI vs. Cloud, Agent Systems, Industrial AI cases. Clear, non-academic language. No hype, just facts. Bridge theory → real-world application.\"* > **Founder-Po",
+    "path": "projects/medium-articles/PROJECT_PLAN.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_article-1-draft_md",
+    "title": "article 1 draft",
+    "category": "Content & Publishing",
+    "date": "2026-06-07T10:35:28.255788",
+    "summary": "*Real-world cost and performance analysis across four model providers — €101 total spend, 39.5× ROI* Most discussions about AI infrastructure costs rely on vendor price sheets, not production data. I conducted a 30-day audit of 188 million tokens routed through four model providers — Ollama Cloud (f",
+    "path": "projects/medium-articles/article-1-draft.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_article-2-draft_md",
+    "title": "article 2 draft",
+    "category": "Content & Publishing",
+    "date": "2026-06-07T10:35:28.255788",
+    "summary": "*Lessons from a three-month project that turned an old desktop and a newborn into a declaration of digital independence* Digital sovereignty is widely discussed as a geopolitical concept. It is rarely discussed as a personal engineering decision. This article argues that personal AI infrastructure —",
+    "path": "projects/medium-articles/article-2-draft.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_article-2-outline_md",
+    "title": "article 2 outline",
+    "category": "Content & Publishing",
+    "date": "2026-06-06T21:51:18.546083",
+    "summary": "> **Status:** Ready for writing | **Target:** 2,500–3,500 words **The Case for Personal AI Infrastructure — Built During Paternity Leave** *Lessons from a three-month project that turned an old desktop and a newborn into a declaration of digital independence* Digital sovereignty is widely discussed ",
+    "path": "projects/medium-articles/article-2-outline.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_article-1-outline_md",
+    "title": "article 1 outline",
+    "category": "Content & Publishing",
+    "date": "2026-06-06T21:50:18.160534",
+    "summary": "> **Status:** Ready for writing | **Target:** 2,500–3,500 words **What 188 Million Tokens of AI Traffic Actually Cost — A 30-Day Production Audit** *Real-world cost and performance analysis across four model providers — €101 total spend, 39.5× ROI* Most discussions about AI infrastructure costs rely",
+    "path": "projects/medium-articles/article-1-outline.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_article-template_md",
+    "title": "article template",
+    "category": "Content & Publishing",
+    "date": "2026-06-06T21:49:32.526876",
+    "summary": "> **Usage:** Copy this template, fill in each section, delete comments in `<!-- -->` brackets before publishing. > **Target:** 2,000–3,500 words | **Tone:** Economist meets Nature — authoritative, calm, no hype. TITLE RULES (v3 Hybrid — Scientific Credibility + Medium CTR): - First part: the intelle",
+    "path": "projects/medium-articles/article-template.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_digital-sovereignty-storyline_pdf",
+    "title": "digital sovereignty storyline",
+    "category": "Other",
+    "date": "2026-06-05T21:50:56.712400",
+    "summary": "",
+    "path": "projects/medium-articles/digital-sovereignty-storyline.pdf",
+    "type": "PDF"
+  },
+  {
+    "id": "projects_medium-blog_PROJECT_PLAN_md",
+    "title": "PROJECT PLAN",
+    "category": "Other",
+    "date": "2026-06-02T20:56:43.007232",
+    "summary": "Dein `acta/principles.md` (28. März 2026) enthält eine vollständige Content-Strategie: > *\"Explain AI in practical, understandable ways. Local AI vs. Cloud, Agent Systems, Industrial AI cases. Clear, non-academic language. No hype, just facts. Bridge theory → real-world application.\"* > **Founder-Po",
+    "path": "projects/medium-blog/PROJECT_PLAN.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-blog_briefing-und-projektplan_md",
+    "title": "briefing und projektplan",
+    "category": "Briefing Systems",
+    "date": "2026-06-02T08:53:51.928692",
+    "summary": "**Status:** Research-Phase abgeschlossen, wartet auf Linus-Feedback | **Stil** | Economist-Ästhetik: präzise, analytisch, kein \"Ich\" als Default, aber First-Person als narratives Element erlaubt. Kurze Sätze, aktive Stimme, keine Floskeln, keine Prätention. | | **Kernthema** | Digitale Souveränität ",
+    "path": "projects/medium-blog/briefing-und-projektplan.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_sap-finance-curriculum_index_md",
+    "title": "index",
+    "category": "Other",
+    "date": "2026-05-27T11:08:04.170506",
+    "summary": "**Zweck:** Deine Finanz- und SAP-Kompetenz gezielt auf Vorstands-Niveau heben. **Zeitrahmen:** 3–4h pro Woche | **Start:** 28. Mai 2026 | **Ende:** 23. Juli 2026 **Lernziel:** Finance-Kompetenz 4/10 → 7/10 | SAP S/4HANA Finance sicher lesen & interpretieren können > 📋 **Quick Reference Card:** Alle ",
+    "path": "projects/sap-finance-curriculum/index.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_sap-finance-curriculum_quick-reference_md",
+    "title": "quick reference",
+    "category": "Other",
+    "date": "2026-05-27T11:07:40.976736",
+    "summary": "*Alle Links auf einen Blick. Drucken oder als Browser-Bookmark speichern.* *Stand: 27. Mai 2026 | Projekt: `projects/sap-finance-curriculum/`* **[Finance for Non-Financial Managers](https://www.linkedin.com/learning/finance-for-non-financial-managers-23778630)** **[Discovering Finance](https://learn",
+    "path": "projects/sap-finance-curriculum/quick-reference.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_ai-newsletter-v3_PLAN_TRACKING_md",
+    "title": "PLAN TRACKING",
+    "category": "Other",
+    "date": "2026-05-25T11:26:30.222458",
+    "summary": "| US-0.1: Project Structure | ✅ Done | `feat(epic-0): project foundation + delivery backend registry` | | US-0.2: Configuration | ✅ Done | `feat(epic-0): project foundation + delivery backend registry` | | US-0.3: SQLite Schema | ✅ Done | `feat(epic-0): project foundation + delivery backend registry",
+    "path": "projects/ai-newsletter-v3/PLAN_TRACKING.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_ai-newsletter-v3_PLAN_md",
+    "title": "PLAN",
+    "category": "Other",
+    "date": "2026-05-25T10:55:30.809798",
+    "summary": "> This file is the source of truth for project status. Keep it current after every commit. - Time-poor: reads newsletter at 7:30 AM on phone during commute - Highly technical background; reads papers, evaluates systems - Feeds full of noise (289+ ArXiv entries/day is overwhelming) - Missed important",
+    "path": "projects/ai-newsletter-v3/PLAN.md",
+    "type": "MD"
+  },
+  {
+    "id": "reports_self-assessment-2026-05-15_md",
+    "title": "self assessment 2026 05 15",
+    "category": "Reports & Assessments",
+    "date": "2026-05-15T21:38:11.754391",
+    "summary": "**Datum:** 2026-05-15 | **Autor:** Clowie Claw (Self-Review) | **Version:** 1.0 This self-assessment evaluates Clowie's operational health across five dimensions: Heartbeat Routines, Skill Utilization, Memory Management, Workspace Organization, and Self-Improvement Discipline. The assessment draws o",
+    "path": "reports/self-assessment-2026-05-15.md",
+    "type": "MD"
+  },
+  {
+    "id": "business-plans_physiq-ml-paper-deepseek_tex",
+    "title": "physiq ml paper deepseek",
+    "category": "Product Analysis",
+    "date": "2026-04-22T15:12:16.697206",
+    "summary": "\\title{\\textbf{Body Composition Prediction Using Bioelectric Impedance Analysis and Machine Learning}\\\\[4pt] \\large A Comparative Study of Algorithms for Estimating Body Fat Percentage and Muscle Mass} Accurate body composition assessment is critical for health monitoring, athletic training, and cli",
+    "path": "business-plans/physiq-ml-paper-deepseek.tex",
+    "type": "TEX"
+  },
+  {
+    "id": "business-plans_physiq-ml-paper-arxiv_tex",
+    "title": "physiq ml paper arxiv",
+    "category": "Product Analysis",
+    "date": "2026-04-22T15:04:19.421370",
+    "summary": "\\title{\\textbf{Body Composition Prediction Using Bioelectric Impedance Analysis and Machine Learning}\\\\[4pt] \\large A Comparative Study of Algorithms for Estimating Body Fat Percentage and Muscle Mass} Accurate body composition assessment is critical for health monitoring, athletic training, and cli",
+    "path": "business-plans/physiq-ml-paper-arxiv.tex",
+    "type": "TEX"
+  },
+  {
+    "id": "business-plans_cfo-master-report-html_html",
+    "title": "cfo master report html",
+    "category": "Reports & Assessments",
+    "date": "2026-04-22T12:47:34.998608",
+    "summary": "",
+    "path": "business-plans/cfo-master-report-html.html",
+    "type": "HTML"
+  },
+  {
+    "id": "business-plans_cfo-master-report-final_tex",
+    "title": "cfo master report final",
+    "category": "Reports & Assessments",
+    "date": "2026-04-22T12:45:41.197668",
+    "summary": "\\title{\\textbf{Combined CFO Report: Portfolio Financial Analysis}\\\\[4pt] This report presents a consolidated financial analysis of four ventures under development: Physiq (B2B body-composition SaaS for dietitians), Arca (micro-ERP via Telegram for 1--5 employee companies in DACH), an AI-executive ne",
+    "path": "business-plans/cfo-master-report-final.tex",
+    "type": "TEX"
+  },
+  {
+    "id": "business-plans_cfo-master-report_tex",
+    "title": "cfo master report",
+    "category": "Reports & Assessments",
+    "date": "2026-04-22T12:18:04.740720",
+    "summary": "\\title{\\textbf{Combined CFO Report: Portfolio Financial Analysis}\\\\[4pt] This report presents a consolidated financial analysis of four ventures under development: Physiq (B2B body-composition SaaS for dietitians), Arca (micro-ERP via Telegram for 1--5 employee companies in DACH), an AI-executive ne",
+    "path": "business-plans/cfo-master-report.tex",
+    "type": "TEX"
+  },
+  {
+    "id": "business-plans_physiq-paper-arxiv_tex",
+    "title": "physiq paper arxiv",
+    "category": "Product Analysis",
+    "date": "2026-04-22T11:52:20.343084",
+    "summary": "\\title{Physiq: Feature Migration Analysis from HealthHub V1 to V2} We present a comprehensive analysis of Physiq (formerly HealthHub), a body composition analysis platform that exists in two versions: V1 is a single-user Streamlit application with PDF-based data ingestion and hybrid ML predictions; ",
+    "path": "business-plans/physiq-paper-arxiv.tex",
+    "type": "TEX"
+  },
+  {
+    "id": "business-plans_gesamt-business-plan-master_pdf",
+    "title": "gesamt business plan master",
+    "category": "Business Planning",
+    "date": "2026-04-22T10:18:31.855042",
+    "summary": "",
+    "path": "business-plans/gesamt-business-plan-master.pdf",
+    "type": "PDF"
+  },
+  {
+    "id": "business-plans_physiq-business-plan_pdf",
+    "title": "physiq business plan",
+    "category": "Business Planning",
+    "date": "2026-04-22T09:59:37.283826",
+    "summary": "",
+    "path": "business-plans/physiq-business-plan.pdf",
+    "type": "PDF"
+  },
+  {
+    "id": "business-plans_physiq-business-plan_html",
+    "title": "physiq business plan",
+    "category": "Business Planning",
+    "date": "2026-04-22T09:59:21.927948",
+    "summary": "",
+    "path": "business-plans/physiq-business-plan.html",
+    "type": "HTML"
+  },
+  {
+    "id": "business-plans_medium-business-plan_pdf",
+    "title": "medium business plan",
+    "category": "Business Planning",
+    "date": "2026-04-22T09:56:45.416191",
+    "summary": "",
+    "path": "business-plans/medium-business-plan.pdf",
+    "type": "PDF"
+  },
+  {
+    "id": "business-plans_medium-business-plan_html",
+    "title": "medium business plan",
+    "category": "Business Planning",
+    "date": "2026-04-22T09:56:36.855259",
+    "summary": "",
+    "path": "business-plans/medium-business-plan.html",
+    "type": "HTML"
+  },
+  {
+    "id": "business-plans_arca-erp-business-plan_pdf",
+    "title": "arca erp business plan",
+    "category": "Business Planning",
+    "date": "2026-04-22T09:56:29.132321",
+    "summary": "",
+    "path": "business-plans/arca-erp-business-plan.pdf",
+    "type": "PDF"
+  },
+  {
+    "id": "business-plans_arca-erp-business-plan_html",
+    "title": "arca erp business plan",
+    "category": "Business Planning",
+    "date": "2026-04-22T09:56:05.546508",
+    "summary": "",
+    "path": "business-plans/arca-erp-business-plan.html",
+    "type": "HTML"
+  },
+  {
+    "id": "business-plans_newsletter-business-plan_pdf",
+    "title": "newsletter business plan",
+    "category": "Business Planning",
+    "date": "2026-04-22T09:54:30.847257",
+    "summary": "",
+    "path": "business-plans/newsletter-business-plan.pdf",
+    "type": "PDF"
+  },
+  {
+    "id": "business-plans_newsletter-business-plan_html",
+    "title": "newsletter business plan",
+    "category": "Business Planning",
+    "date": "2026-04-22T09:53:55.257539",
+    "summary": "",
+    "path": "business-plans/newsletter-business-plan.html",
+    "type": "HTML"
+  },
+  {
+    "id": "research_austrian_funding_quick_reference_md",
+    "title": "austrian funding quick reference",
+    "category": "Funding & Grants",
+    "date": "2026-04-22T07:16:26.596057",
+    "summary": "2. **Show Austrian impact** - Job creation, economic contribution",
+    "path": "research/austrian_funding_quick_reference.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_austrian_funding_summary_2026_md",
+    "title": "austrian funding summary 2026",
+    "category": "Funding & Grants",
+    "date": "2026-04-22T07:15:43.940387",
+    "summary": "- **Purpose:** Support for investments in tangible/intangible assets - **URL:** https://www.aws.at/foerderungen/investitionspraemie/ - **Purpose:** Business foundation and early-stage development - **Eligibility:** New companies (< 3 years), innovative ideas - **URL:** https://www.aws.at/foerderunge",
+    "path": "research/austrian_funding_summary_2026.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_austrian_grants_funding_2026_md",
+    "title": "austrian grants funding 2026",
+    "category": "Funding & Grants",
+    "date": "2026-04-22T07:14:37.117903",
+    "summary": "This document provides a comprehensive overview of Austrian funding programs available in 2026 for tech startups, self-employed individuals, and small businesses. The Austrian funding landscape is structured around federal agencies (aws, FFG), EU programs, regional initiatives, and specialized grant",
+    "path": "research/austrian_grants_funding_2026.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_consumer_hardware_analysis_md",
+    "title": "consumer hardware analysis",
+    "category": "Infrastructure",
+    "date": "2026-04-10T19:50:25.375622",
+    "summary": "- **Cloud options are cheaper** for this scale unless you can batch heavily. - **DeepSeek API** ($87/month) costs **$0.06 per million tokens**. - **Ollama Pro** ($20/month) is cheapest but likely has usage limits (unknown if supports 1.45B tokens/month). - **Consumer hardware** can be competitive on",
+    "path": "business/consumer_hardware_analysis.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_cloud_vs_buy_analysis_md",
+    "title": "cloud vs buy analysis",
+    "category": "Infrastructure",
+    "date": "2026-04-10T19:26:30.031258",
+    "summary": "- **Model**: 7B parameter LLM (e.g., Llama 3.1 7B, Mistral 7B) - **Throughput (with batching)**: RTX 4090: 200 tokens/sec, A100: 400 tokens/sec, H100: 800 tokens/sec - **Cloud pricing**: Lambda Labs (April 2026), RunPod, Vast.ai estimates - **Managed services**: DeepSeek API ($0.14/M input, $0.28/M ",
+    "path": "business/cloud_vs_buy_analysis.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_20260406_210622_Perfect_personal_assistant_strategies:_time_optimi_executive_summary_md",
+    "title": "executive summary",
+    "category": "Other",
+    "date": "2026-04-06T21:06:22.233856",
+    "summary": "1. **Growing Interest**: Significant increase in discussions about this topic in recent months 2. **Practical Focus**: Most discussions center on implementation and real-world use cases 3. **Integration Challenges**: Key pain points around system integration and workflow optimization - Need for clea",
+    "path": "research/20260406_210622_Perfect_personal_assistant_strategies:_time_optimi/executive_summary.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_perfect_personal_assistant_analysis_md",
+    "title": "perfect personal assistant analysis",
+    "category": "Personal Assistant Strategy",
+    "date": "2026-04-06T21:05:34.924256",
+    "summary": "Linus Kohl (CEO/CTO, father of newborn Oskar, partner Hanna) wants to optimize time across four key domains: 1. **Family** – Quality time with partner Hanna and son Oskar (~2 months old) 3. **Learning** – Skill development and knowledge acquisition 4. **Side Business** – Building entrepreneurial ven",
+    "path": "business/perfect_personal_assistant_analysis.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_openai_codex_subscription_setup_md",
+    "title": "openai codex subscription setup",
+    "category": "AI Tools & Models",
+    "date": "2026-04-06T20:14:08.165558",
+    "summary": "**Source:** https://lumadock.com/tutorials/openclaw-openai-codex-chatgpt-subscription **Priority:** High (Corrects earlier misunderstanding about subscription usage) **OpenAI explicitly supports ChatGPT subscription OAuth in OpenClaw.** This means: - **ChatGPT Plus ($20/month)** or **Pro ($200/month",
+    "path": "research/openai_codex_subscription_setup.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_free_ai_models_openclaw_md",
+    "title": "free ai models openclaw",
+    "category": "AI Tools & Models",
+    "date": "2026-04-06T19:28:52.523176",
+    "summary": "**Source:** https://lumadock.com/tutorials/free-ai-models-openclaw - **Pros:** Privacy, no usage limits, predictable cost (hardware) - **Examples:** Qwen OAuth, OpenRouter free models, Groq free tier - **Challenge:** Hardware dependent, smaller models struggle with complex reasoning **Ollama Caveat:",
+    "path": "research/free_ai_models_openclaw.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_20260406_181708_Codex_usage_via_OpenClaw_with_OpenAI_subscription_executive_summary_md",
+    "title": "executive summary",
+    "category": "Other",
+    "date": "2026-04-06T18:17:08.836692",
+    "summary": "1. **Growing Interest**: Significant increase in discussions about this topic in recent months 2. **Practical Focus**: Most discussions center on implementation and real-world use cases 3. **Integration Challenges**: Key pain points around system integration and workflow optimization - Need for clea",
+    "path": "research/20260406_181708_Codex_usage_via_OpenClaw_with_OpenAI_subscription/executive_summary.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_MICRO_BUSINESS_VALIDATION_READY_md",
+    "title": "MICRO BUSINESS VALIDATION READY",
+    "category": "Micro Business Validation",
+    "date": "2026-04-05T20:49:11.423873",
+    "summary": "2. **GitHub Exporter:** http://158.180.60.61:8080/github.html **Title:** Built a simple GitHub Activity Log Exporter for SOC2 compliance - 100x cheaper than Vanta/Drata After the Delve scandal (YC W24 startup caught running fake SOC2 reports), I realized startups need transparent, verifiable complia",
+    "path": "business/MICRO_BUSINESS_VALIDATION_READY.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_micro_business_validation_plan_md",
+    "title": "micro business validation plan",
+    "category": "Business Planning",
+    "date": "2026-04-05T20:45:28.111846",
+    "summary": "Validate 3 micro-business ideas by collecting 10+ paying customers for each BEFORE building. - **Price:** $29/month (First 10: 50% off forever = $14.50/month) - **Email Collection:** POST to http://158.180.60.61:5000/api/signup **Title:** Built a simple GitHub Activity Log Exporter for SOC2 complian",
+    "path": "business/micro_business_validation_plan.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_reddit_posts_md",
+    "title": "reddit posts",
+    "category": "Micro Business Validation",
+    "date": "2026-04-05T20:44:09.520555",
+    "summary": "**Title:** Built a simple GitHub Activity Log Exporter for SOC2 compliance - 100x cheaper than Vanta/Drata After the Delve scandal (YC W24 startup caught running fake SOC2 reports), I realized startups need transparent, verifiable compliance tools they can actually trust. - Automatically exports Git",
+    "path": "research/reddit_posts.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_micro_business_ideas_md",
+    "title": "micro business ideas",
+    "category": "Micro Business Validation",
+    "date": "2026-04-05T20:27:58.448751",
+    "summary": "1. **TRULY MICRO** - Can be built in <1 week by a single AI agent 2. **AUTONOMOUS** - Runs with minimal human intervention once built 3. **PASSIVE INCOME** - Generates recurring revenue with little maintenance 5. **ORACLE-FRIENDLY** - Runs on Oracle free tier (1GB RAM max initially) - **Description:",
+    "path": "business/micro_business_ideas.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_reddit_pain_points_analysis_md",
+    "title": "reddit pain points analysis",
+    "category": "Micro Business Validation",
+    "date": "2026-04-05T20:22:11.816550",
+    "summary": "Based on analysis of top posts and comments from r/startups, r/Entrepreneur, r/SideProject, r/Programming, r/webdev, r/SaaS, r/automation, r/Productivity, r/smallbusiness (April 2026). Data gathered via Reddit JSON API for top monthly posts and targeted searches for phrases like “I’d pay for”, “wish",
+    "path": "research/reddit_pain_points_analysis.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_phase3_analysis_summary_md",
+    "title": "phase3 analysis summary",
+    "category": "Research & Analysis",
+    "date": "2026-04-05T18:25:43.610847",
+    "summary": "Based on comprehensive business analysis of the top 3 ideas from Phase 2 research, **AgentAudit Trail API** emerges as the strongest opportunity with an overall recommendation score of **8.2/10**, followed by AgentCost Guardian (7.2/10) and Research-to-Brief API (7.0/10). 1. **AgentAudit Trail API**",
+    "path": "research/phase3_analysis_summary.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_risk_mitigation_plan_research_to_brief_api_md",
+    "title": "risk mitigation plan research to brief api",
+    "category": "Risk Analysis",
+    "date": "2026-04-05T18:25:05.729125",
+    "summary": "| Risk Category | Likelihood | Impact | Overall Risk | Mitigation Strategy | |---------------|------------|--------|--------------|---------------------| | **Competition from Established Players** | High | High | High | Quality differentiation, vertical focus | | **Academic Resistance to AI Summariz",
+    "path": "business/risk_mitigation_plan_research_to_brief_api.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_risk_mitigation_plan_agentcost_guardian_md",
+    "title": "risk mitigation plan agentcost guardian",
+    "category": "Financial Analysis",
+    "date": "2026-04-05T18:24:13.514506",
+    "summary": "| Risk Category | Likelihood | Impact | Overall Risk | Mitigation Strategy | |---------------|------------|--------|--------------|---------------------| | **Competition from Cloud Providers** | High | High | High | Multi-cloud focus, framework agnostic | | **Open-Source Commoditization** | Medium |",
+    "path": "business/risk_mitigation_plan_agentcost_guardian.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_risk_mitigation_plan_agentaudit_trail_api_md",
+    "title": "risk mitigation plan agentaudit trail api",
+    "category": "Risk Analysis",
+    "date": "2026-04-05T18:23:21.695879",
+    "summary": "| Risk Category | Likelihood | Impact | Overall Risk | Mitigation Strategy | |---------------|------------|--------|--------------|---------------------| | **Regulatory Changes** | Medium | High | High | Continuous monitoring, legal advisory board | | **Technical Complexity** | High | High | High | ",
+    "path": "business/risk_mitigation_plan_agentaudit_trail_api.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_go_to_market_roadmap_research_to_brief_api_md",
+    "title": "go to market roadmap research to brief api",
+    "category": "Market & Competition",
+    "date": "2026-04-05T18:22:35.466250",
+    "summary": "- Enterprise features (team collaboration, workflow integration)",
+    "path": "business/go_to_market_roadmap_research_to_brief_api.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_go_to_market_roadmap_agentcost_guardian_md",
+    "title": "go to market roadmap agentcost guardian",
+    "category": "Financial Analysis",
+    "date": "2026-04-05T18:21:43.481680",
+    "summary": "- Enterprise features (SSO, audit logs, advanced permissions)",
+    "path": "business/go_to_market_roadmap_agentcost_guardian.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_go_to_market_roadmap_agentaudit_trail_api_md",
+    "title": "go to market roadmap agentaudit trail api",
+    "category": "Market & Competition",
+    "date": "2026-04-05T18:20:52.880100",
+    "summary": "- Cryptographic core implementation (hash chains, digital signatures)",
+    "path": "business/go_to_market_roadmap_agentaudit_trail_api.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_financial_model_research_to_brief_api_md",
+    "title": "financial model research to brief api",
+    "category": "Financial Analysis",
+    "date": "2026-04-05T18:20:08.568467",
+    "summary": "| Year | Customers | Avg Revenue/Customer | Total Revenue | Growth | |------|-----------|---------------------|---------------|--------| | 1    | 30        | €10,000             | €300          | -      | | 2    | 90        | €10,000             | €900          | 200%   | | 3    | 180       | €10,00",
+    "path": "business/financial_model_research_to_brief_api.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_financial_model_agentcost_guardian_md",
+    "title": "financial model agentcost guardian",
+    "category": "Financial Analysis",
+    "date": "2026-04-05T18:19:25.843821",
+    "summary": "| Year | Customers | Avg Revenue/Customer | Total Revenue | Growth | |------|-----------|---------------------|---------------|--------| | 1    | 500       | €500                | €250          | -      | | 2    | 1,500     | €500                | €750          | 200%   | | 3    | 3,000     | €500  ",
+    "path": "business/financial_model_agentcost_guardian.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_financial_model_agentaudit_trail_api_md",
+    "title": "financial model agentaudit trail api",
+    "category": "Financial Analysis",
+    "date": "2026-04-05T18:18:47.073142",
+    "summary": "| Year | Customers | Avg Revenue/Customer | Total Revenue | Growth | |------|-----------|---------------------|---------------|--------| | 1    | 50        | €10,000             | €500          | -      | | 2    | 150       | €10,000             | €1,500        | 200%   | | 3    | 300       | €10,00",
+    "path": "business/financial_model_agentaudit_trail_api.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_comparative_analysis_matrix_md",
+    "title": "comparative analysis matrix",
+    "category": "Market & Competition",
+    "date": "2026-04-05T18:18:11.035441",
+    "summary": "Each category scored 1-10 based on research findings, with weighting applied for overall recommendation. | Market Timing Advantage | 20% | Urgency, regulatory deadlines, market readiness | | Technical Feasibility | 20% | Complexity, OpenClaw integration, development risk | | Revenue Potential | 25% ",
+    "path": "business/comparative_analysis_matrix.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_business_case_research_to_brief_api_md",
+    "title": "business case research to brief api",
+    "category": "Business Planning",
+    "date": "2026-04-05T18:17:32.463760",
+    "summary": "Professionals in research-intensive industries (pharma, tech, finance) face information overload from thousands of research papers, reports, and articles. Manual summarization is time-consuming, inconsistent, and fails to extract actionable business insights. Existing tools provide basic summarizati",
+    "path": "business/business_case_research_to_brief_api.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_business_case_agentcost_guardian_md",
+    "title": "business case agentcost guardian",
+    "category": "Business Planning",
+    "date": "2026-04-05T18:16:46.877138",
+    "summary": "AI agent developers and operators face unpredictable costs due to \"runaway loops\" and unconstrained API consumption. Current solutions offer only post-execution monitoring, leaving organizations vulnerable to budget overruns that can reach thousands of dollars per incident. The lack of real-time cos",
+    "path": "business/business_case_agentcost_guardian.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_business_case_agentaudit_trail_api_md",
+    "title": "business case agentaudit trail api",
+    "category": "Business Planning",
+    "date": "2026-04-05T18:16:02.686504",
+    "summary": "Organizations deploying high-risk AI systems face urgent compliance requirements under the EU AI Act (August 2026 deadline). They need immutable, tamper-evident audit trails for AI agent decisions but lack specialized tools that integrate seamlessly with modern agent frameworks. Current solutions ar",
+    "path": "business/business_case_agentaudit_trail_api.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_competitor_analysis_tables_md",
+    "title": "competitor analysis tables",
+    "category": "Market & Competition",
+    "date": "2026-04-05T18:13:23.907820",
+    "summary": "| Competitor | Type | Pricing Model | Key Features | Weaknesses | |------------|------|---------------|--------------|------------| | **AgentBudget** | Direct (Open Source) | Free | Budget-as-code, real-time enforcement, multi-provider | Limited enterprise features, self-hosted | | **AgentGuard** | ",
+    "path": "business/competitor_analysis_tables.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_research_summary_phase2_md",
+    "title": "research summary phase2",
+    "category": "Research & Analysis",
+    "date": "2026-04-05T18:12:47.671121",
+    "summary": "Based on extensive research conducted through web searches, Austrian government portals, and industry analysis, here are the findings for each of the 5 ideas. The research covers market validation, technical feasibility, regulatory landscape, monetization potential, and Austrian-specific factors. - ",
+    "path": "research/research_summary_phase2.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_phase2_summary_for_main_agent_md",
+    "title": "phase2 summary for main agent",
+    "category": "Research & Analysis",
+    "date": "2026-04-05T14:47:53.749279",
+    "summary": "1. **Comprehensive Gap Analysis** across all three API categories 2. **Identified Overlap Opportunities** between OpenClaw, Austrian Data, and Research APIs 3. **Technical Feasibility Assessment** for each potential service 5. **Competitive Advantage Mapping** leveraging Linus's background 1. **5 Co",
+    "path": "research/phase2_summary_for_main_agent.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_research_summary_phase1_md",
+    "title": "research summary phase1",
+    "category": "Research & Analysis",
+    "date": "2026-04-05T14:43:13.393621",
+    "summary": "**Three API Service Categories Analyzed for 2025-2026 Market Trends** 1. **Security Vulnerabilities:** CVE-2026-25253 RCE, 340+ malicious skills 3. **Enterprise Features:** Missing multi-tenant, monitoring, collaboration 4. **API Limitations:** Strict rate limiting (120/min metadata, 20/min download",
+    "path": "research/research_summary_phase1.md",
+    "type": "MD"
+  },
+  {
+    "id": "reports_competitor-analysis_business-marketing-plan_md",
+    "title": "business marketing plan",
+    "category": "Business Planning",
+    "date": "2026-04-03T17:38:32.164658",
+    "summary": "**Product**: AI Tech Radar - Implementation-focused newsletter for AI professionals **Differentiation**: Implementation depth + career development + critical analysis - Cross-post to Hacker News, Reddit (r/MachineLearning, r/artificial)",
+    "path": "reports/competitor-analysis/business-marketing-plan.md",
+    "type": "MD"
+  },
+  {
+    "id": "reports_competitor-analysis_ai-newsletter-competitor-analysis-2026-04-03_md",
+    "title": "ai newsletter competitor analysis 2026 04 03",
+    "category": "Market & Competition",
+    "date": "2026-04-03T16:34:44.923991",
+    "summary": "The AI newsletter market is experiencing explosive growth with 378M projected users in 2025. Current leaders (The Rundown AI: 2M+ subscribers, TLDR: 7M+ across newsletters) have established successful models but leave significant gaps in technical depth, implementation guidance, and career developme",
+    "path": "reports/competitor-analysis/ai-newsletter-competitor-analysis-2026-04-03.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_research_analysis_phase2_md",
+    "title": "research analysis phase2",
+    "category": "Research & Analysis",
+    "date": "** April 5, 2026",
+    "summary": "**Objective:** Transform Phase 1 research into actionable API service ideas 1. **CVE-2026-25253 RCE Vulnerability** - Unpatched systems remain exposed 2. **Supply Chain Attacks** - 13.4%-20% malicious skill rate pre-cleanup 3. **Default Binding Issues** - `0.0.0.0:18789` exposes API to all interface",
+    "path": "research/research_analysis_phase2.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_research_report_phase1_md",
+    "title": "research report phase1",
+    "category": "Research & Analysis",
+    "date": "** April 5, 2026",
+    "summary": "This research report analyzes three distinct API service categories with significant commercial potential in the 2025-2026 timeframe: 1. **OpenClaw Web API Ecosystem** - A rapidly growing open-source AI agent framework market 2. **Austrian Public Data APIs** - Government open data portals with emerg",
+    "path": "research/research_report_phase1.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_final_research_report_phase2_md",
+    "title": "final research report phase2",
+    "category": "Research & Analysis",
+    "date": "** April 5, 2026",
+    "summary": "**Methodology:** Web searches, Austrian government portal analysis, competitor research, market size estimation After comprehensive research on all 5 ideas, the **AgentAudit Trail API** emerges as the highest-priority opportunity due to the **EU AI Act compliance deadline (August 2026)** creating ur",
+    "path": "research/final_research_report_phase2.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_phase3_comprehensive_business_analysis_report_md",
+    "title": "phase3 comprehensive business analysis report",
+    "category": "Research & Analysis",
+    "date": "** April 5, 2026",
+    "summary": "**Task:** Analyze research findings and create business cases for top 3 ideas 2. [Comparative Analysis Matrix](#comparative-analysis-matrix) 3. [AgentAudit Trail API Business Case](#agentaudit-trail-api-business-case) 4. [AgentCost Guardian Business Case](#agentcost-guardian-business-case) 5. [Resea",
+    "path": "research/phase3_comprehensive_business_analysis_report.md",
+    "type": "MD"
+  },
+  {
+    "id": "business_api_service_ideas_evaluation_md",
+    "title": "api service ideas evaluation",
+    "category": "API Services",
+    "date": "** April 5, 2026",
+    "summary": "**Core Value:** Enterprise-grade security wrapper for OpenClaw **Target:** OpenClaw enterprise users, security-conscious organizations | **Market Size** | 8/10 | $9.14B+ AI agent market with security focus | | **Development Complexity** | 4/10 | 2 weeks MVP, existing OpenClaw codebase | | **Revenue ",
+    "path": "business/api_service_ideas_evaluation.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_headline-analysis_md",
+    "title": "headline analysis",
+    "category": "Research & Analysis",
+    "date": "** 2026-06-06",
+    "summary": "- Analysis of 485 top-performing Medium headlines (20M+ claps, 2026) - AI/tech headline pattern analysis (Write a Catalyst, 2025–2026) | **Clarity over cleverness** | Readers scan, don't search. They need to know *exactly* what they'll get in under 2 seconds. | Every headline must convey the specifi",
+    "path": "projects/medium-articles/headline-analysis.md",
+    "type": "MD"
+  },
+  {
+    "id": "projects_medium-articles_headline-analysis-v2_md",
+    "title": "headline analysis v2",
+    "category": "Research & Analysis",
+    "date": "** 2026-06-06",
+    "summary": "**Format:** Popular-scientific paper (Abstract → Introduction → State of Technology → Methodology → Results → Discussion → References) **Tone:** Nature/Science for educated general audience — Economist precision, no clickbait Weighted for scientific paper format — credibility and clarity outweigh cu",
+    "path": "projects/medium-articles/headline-analysis-v2.md",
+    "type": "MD"
+  },
+  {
+    "id": "business-plans_hostinger-vs-oracle-analysis_md",
+    "title": "hostinger vs oracle analysis",
+    "category": "Infrastructure",
+    "date": "** 2026-04-22",
+    "summary": "> **Context:** Linus considering moving all products (Physiq V1/V2, Arca ERP, Newsletter, Medium) from Oracle Cloud to Hostinger or hybrid setup. All plans use **AMD EPYC processors + NVMe storage**. Prices shown are the promotional rate (2-year commitment) / renewal rate. | Plan | vCPU | RAM | NVMe",
+    "path": "business-plans/hostinger-vs-oracle-analysis.md",
+    "type": "MD"
+  },
+  {
+    "id": "business-plans_odoo-agentf-arca-analysis_md",
+    "title": "odoo agentf arca analysis",
+    "category": "Research & Analysis",
+    "date": "** 2026-04-22",
+    "summary": "> **Context:** Competitive landscape analysis for Arca ERP — a proposed Telegram/WhatsApp-first ERP for Einzelunternehmen and small teams (1-5 employees) in the DACH region. **Finding: \"Agent F\" is not a known product in the ERP or business software space.** Extensive searches returned no meaningful",
+    "path": "business-plans/odoo-agentf-arca-analysis.md",
+    "type": "MD"
+  },
+  {
+    "id": "business-plans_task-tracking-recommendation_md",
+    "title": "task tracking recommendation",
+    "category": "Other",
+    "date": "** 2026-04-22",
+    "summary": "**Context:** Multi-project oversight (Physiq, Arca, Newsletter, Medium) with 5-10h/week time budget You already have 80% of what you need. The recommendation is **not** to add a new tool — it's to **connect the tools you already use** into a lightweight, AI-driven workflow. | Free with GitHub accoun",
+    "path": "business-plans/task-tracking-recommendation.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_perfect_personal_assistant_strategy_md",
+    "title": "perfect personal assistant strategy",
+    "category": "Personal Assistant Strategy",
+    "date": "** 2026-04-06",
+    "summary": "**Goal:** Optimize time across family, sports, learning, and side business while maintaining health and happiness with partial calendar access An **executive chief of staff** that proactively orchestrates time, intelligently synthesizes calendars (despite business calendar unavailability), guards he",
+    "path": "research/perfect_personal_assistant_strategy.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_google_calendar_proactive_scheduling_md",
+    "title": "google calendar proactive scheduling",
+    "category": "Personal Assistant Strategy",
+    "date": "** 2026-04-06",
+    "summary": "**Goal:** Enable AI assistant to access Google Calendar, detect conflicts, optimize scheduling, and schedule proactively - ✅ **Read-only access** to 3 calendars (Runna, Family, Personal) - ❌ **No business calendar** access (unavailable for sharing) - ❌ **No proactive scheduling** (buffer management,",
+    "path": "research/google_calendar_proactive_scheduling.md",
+    "type": "MD"
+  },
+  {
+    "id": "research_phase4_critique_report_md",
+    "title": "phase4 critique report",
+    "category": "Research & Analysis",
+    "date": "** 2026-04-05",
+    "summary": "**Verdict Summary:** AgentAudit has the strongest case but with critical EU AI Act misunderstandings. AgentCost Guardian faces existential competition risk. Research-to-Brief is likely a dead end. This report challenges every optimistic assumption. The source business cases were produced under favor",
+    "path": "research/phase4_critique_report.md",
+    "type": "MD"
+  }
+]

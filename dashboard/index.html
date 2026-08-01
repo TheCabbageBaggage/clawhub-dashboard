@@ -1,78 +1,436 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClawHub Dashboard</title>
+<title>Clowie Dashboard</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0d1117;color:#c9d1d9;display:flex;justify-content:center;align-items:center;min-height:100vh}
-.login-container{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:40px;width:100%;max-width:400px;text-align:center}
-h1{color:#f0f6fc;font-size:1.5rem;margin-bottom:8px}
-.subtitle{color:#8b949e;font-size:.9rem;margin-bottom:24px}
-.form-group{margin-bottom:20px;text-align:left}
-label{display:block;margin-bottom:6px;font-size:.85rem;color:#8b949e;text-transform:uppercase;letter-spacing:.05em}
-input[type="password"]{width:100%;padding:10px 14px;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;font-size:1rem;outline:none;transition:border-color .2s}
-input[type="password"]:focus{border-color:#58a6ff}
-.login-btn{width:100%;padding:10px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .2s}
-.login-btn:hover{background:#2ea043}
-.error{color:#f85149;font-size:.85rem;margin-bottom:12px;display:none}
-.loading{display:none;color:#8b949e;font-size:.85rem;margin-bottom:12px}
+/* ===== ACTA Design System ===== */
+:root,
+[data-theme="dark"] {
+  --bg: #0a0e14; --bg2: #11161e; --bg3: #1a2230;
+  --card: #141c26; --card-hover: #1a2432;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.25);
+  --secondary: #1A3440; --accent: #3D8B8B;
+  --accent-glow: rgba(61,139,139,0.2);
+  --text: #e0e4ea; --text2: #8892a8; --text3: #5a6478;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.1);
+  --radius: 16px; --radius-sm: 10px; --radius-xs: 6px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(10,14,20,0.85);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+  --badge-bg: rgba(255,255,255,0.06); --badge-text: #8892a8;
+  --footer-text: #3a4458;
+}
+
+[data-theme="light"] {
+  --bg: #f5f6f8; --bg2: #ffffff; --bg3: #e8ecf1;
+  --card: #ffffff; --card-hover: #f0f3f6;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.12);
+  --secondary: #1A3440; --accent: #2C5F7C;
+  --accent-glow: rgba(44,95,124,0.1);
+  --text: #1a1d27; --text2: #5a6478; --text3: #8892a8;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.12);
+  --radius: 16px; --radius-sm: 10px; --radius-xs: 6px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(245,246,248,0.9);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+  --badge-bg: rgba(0,0,0,0.05); --badge-text: #5a6478;
+  --footer-text: #8892a8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Navigation ===== */
+.nav {
+  position: sticky; top:0; z-index:100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 1.1rem; font-weight: 700; color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.nav-brand .dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.5; transform:scale(1.3); }
+}
+.nav-right {
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.theme-toggle {
+  width: 34px; height: 34px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--text2); font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.nav-date {
+  font-size: 0.78rem; color: var(--text3);
+  padding: 0.3rem 0.6rem; background: var(--bg3); border-radius: 6px;
+}
+
+/* ===== Hero ===== */
+.hero {
+  background: var(--hero-gradient);
+  padding: 3rem 2rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ''; position: absolute; top: -40%; right: -20%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(61,139,139,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700; color: var(--hero-text);
+  letter-spacing: -0.03em; margin-bottom: 0.5rem;
+}
+.hero p {
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  color: var(--hero-text2); max-width: 500px; margin: 0 auto;
+}
+
+/* ===== Main Grid ===== */
+.main {
+  max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;
+}
+.section-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--text3); margin: 2rem 0 1rem; padding-left: 4px;
+}
+.section-label:first-of-type { margin-top: 0; }
+
+/* App Tiles */
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.app-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem;
+  text-decoration: none; color: inherit;
+  transition: var(--transition); position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.app-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px var(--accent-glow);
+}
+.app-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0; transition: opacity 0.2s;
+}
+.app-card:hover::before { opacity: 1; }
+.app-icon {
+  font-size: 2rem; margin-bottom: 0.75rem;
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--bg3); display: flex; align-items: center; justify-content: center;
+}
+.app-card h2 {
+  font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem;
+}
+.app-card .desc {
+  font-size: 0.8rem; color: var(--text2); line-height: 1.5; flex: 1;
+}
+.app-meta {
+  display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.app-badge {
+  font-size: 0.65rem; padding: 0.2rem 0.6rem; border-radius: 12px;
+  font-weight: 500;
+}
+.badge-active { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+.badge-beta  { background: rgba(61,139,139,0.12); color: var(--accent); border: 1px solid rgba(61,139,139,0.2); }
+.badge-external { background: var(--badge-bg); color: var(--badge-text); }
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--success);
+  flex-shrink: 0;
+}
+.status-dot.offline { background: var(--danger); }
+
+/* Quick Links */
+.quick-links {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem;
+}
+.quick-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 1rem; background: var(--card);
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text2); text-decoration: none; font-size: 0.78rem;
+  transition: var(--transition);
+}
+.quick-link:hover { border-color: var(--accent); color: var(--text); }
+
+/* Footer */
+.footer {
+  text-align: center; padding: 2rem; color: var(--footer-text);
+  font-size: 0.72rem; border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .nav { padding: 0 1rem; height: 54px; }
+  .nav-brand { font-size: 1rem; }
+  .hero { padding: 2rem 1rem; }
+  .main { padding: 1.5rem 1rem; }
+  .apps-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+  .app-card { padding: 1.2rem; }
+  .app-icon { width: 40px; height: 40px; font-size: 1.6rem; }
+}
+@media (max-width: 480px) {
+  .apps-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .app-card { padding: 1rem; border-radius: var(--radius-sm); }
+  .app-card h2 { font-size: 0.9rem; }
+  .app-card .desc { font-size: 0.72rem; }
+  .hero h1 { font-size: 1.5rem; }
+  .quick-links { flex-direction: column; }
+  .quick-link { width: 100%; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
 </style>
 </head>
 <body>
-<div class="login-container">
-    <h1>ClawHub Dashboard</h1>
-    <p class="subtitle">Enter password to access the dashboard</p>
-    <div class="error" id="error-msg">Incorrect password. Please try again.</div>
-    <div class="loading" id="loading-msg">Authenticating...</div>
-    <form id="login-form" onsubmit="return handleLogin(event)">
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter password" required autofocus>
-        </div>
-        <button type="submit" class="login-btn">Login</button>
-    </form>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="dot"></div>
+    Clowie Dashboard
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">☀️</button>
+    <span class="nav-date" id="navDate"></span>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Personal Command Center</h1>
+  <p>AI Briefings · Knowledge Graph · Newsletter · PhysIQ · ERP — all in one place</p>
+</div>
+
+<div class="main">
+
+  <div class="section-label">📰 News & Intelligence</div>
+  <div class="apps-grid">
+    <a href="/briefing/" class="app-card">
+      <div class="app-icon">📰</div>
+      <h2>AI Briefing Hub</h2>
+      <p class="desc">Daily AI news in PhysIQ-style tiles. Knowledge Graph with 2,351 nodes. Full archive.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-briefing"></span>
+        <span class="app-badge badge-active">Active</span>
+      </div>
+    </a>
+    <a href="/newsletter/" class="app-card">
+      <div class="app-icon">📧</div>
+      <h2>AI Newsletter</h2>
+      <p class="desc">Daily AI digest — TLDR-style with live sources. Delivered Mon–Sat 7:30 AM.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-newsletter"></span>
+        <span class="app-badge badge-active">Active</span>
+      </div>
+    </a>
+    <a href="/status.html" class="app-card">
+      <div class="app-icon">📊</div>
+      <h2>Newsletter Status</h2>
+      <p class="desc">Pipeline health dashboard. Uptime, articles scraped, delivery success rate.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-nlstatus"></span>
+        <span class="app-badge badge-active">Active</span>
+      </div>
+    </a>
+    <a href="/knowledge.html" class="app-card">
+      <div class="app-icon">📚</div>
+      <h2>Knowledge Base</h2>
+      <p class="desc">CFO, SAP HANA, production planning reference. Semantic search over documents.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-kb"></span>
+        <span class="app-badge badge-beta">Reference</span>
+      </div>
+    </a>
+    <a href="/medium.html" class="app-card">
+      <div class="app-icon">✍️</div>
+      <h2>Medium Articles</h2>
+      <p class="desc">Applied AI Publication — 7 Artikel zu Token Costs, Personal AI Infra, Mold Prediction, Ambient Intelligence & Book Reviews.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-medium"></span>
+        <span class="app-badge badge-active">7 Articles</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-label">🏥 Health & Fitness</div>
+  <div class="apps-grid">
+    <a href="/physiq/" class="app-card">
+      <div class="app-icon">🏥</div>
+      <h2>PhysIQ</h2>
+      <p class="desc">Body composition tracking. ML-powered predictions, measurements, progress charts.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-physiq"></span>
+        <span class="app-badge badge-beta">Beta</span>
+      </div>
+    </a>
+    <a href="/bodycomp/" class="app-card">
+      <div class="app-icon">⚖️</div>
+      <h2>Body Composition</h2>
+      <p class="desc">BIA scan tracker + US Navy predictor. Upload PDFs, track weight/KFA/BCM trends.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-bodycomp"></span>
+        <span class="app-badge badge-active">Active</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-label">💼 Business & Tools</div>
+  <div class="apps-grid">
+    <a href="https://claw.lkohl.duckdns.org" class="app-card" target="_blank" rel="noopener">
+      <div class="app-icon">🏢</div>
+      <h2>Arca ERP ↗</h2>
+      <p class="desc">Business management: Finance, Projects, Contacts, Inventory, Reporting.</p>
+      <div class="app-meta">
+        <span class="app-badge badge-external">External</span>
+      </div>
+    </a>
+    <a href="https://influencer.claw.lkohl.duckdns.org" class="app-card" target="_blank" rel="noopener">
+      <div class="app-icon">🏷️</div>
+      <h2>Influencer Codes ↗</h2>
+      <p class="desc">Discount codes from fitness athletes — auto-extracted and searchable.</p>
+      <div class="app-meta">
+        <span class="app-badge badge-external">External</span>
+      </div>
+    </a>
+    <a href="/dashboard.html" class="app-card">
+      <div class="app-icon">🚀</div>
+      <h2>Operations Hub</h2>
+      <p class="desc">ML pipeline status, algorithm comparison, system health monitoring.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-ops"></span>
+        <span class="app-badge badge-active">Active</span>
+      </div>
+    </a>
+    <a href="/research.html" class="app-card">
+      <div class="app-icon">🔍</div>
+      <h2>Recherchen</h2>
+      <p class="desc">Alle Recherchen, Analysen & Reports — durchsuchbar mit Kurzzusammenfassung und Volltext-Viewer.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-research"></span>
+        <span class="app-badge badge-active">91 Docs</span>
+      </div>
+    </a>
+  </div>
+
+    <div class="section-label">🛠 Projects</div>
+  <div class="apps-grid">
+    <a href="/plan.html" class="app-card">
+      <div class="app-icon">🌙</div>
+      <h2>Evening Projects</h2>
+      <p class="desc">2-Week Plan: Night Shift Content + Self-Improvement Track. Mold Model, Dashboard v2, Architecture Article, Token Audit, Agent Mesh.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-plan"></span>
+        <span class="app-badge badge-active">10 Tasks</span>
+      </div>
+    </a>
+    <a href="/briefing/" class="app-card">
+      <div class="app-icon">📋</div>
+      <h2>Task Board</h2>
+      <p class="desc">Paperclip Agent Mesh: 6 agents, 23 issues, 2 routines. Budget €20. Orchestrator, Code, Research, Calendar, Mail, Knowledge agents.</p>
+      <div class="app-meta">
+        <span class="status-dot" id="dot-tasks"></span>
+        <span class="app-badge badge-beta">Active</span>
+      </div>
+    </a>
+  </div>
+
+<div class="quick-links">
+    <a href="https://github.com/TheCabbageBaggage" class="quick-link" target="_blank" rel="noopener">📂 GitHub</a>
+    <a href="https://t.me/clowie_claw_assist_bot" class="quick-link" target="_blank" rel="noopener">💬 Telegram</a>
+    <a href="https://docs.openclaw.ai" class="quick-link" target="_blank" rel="noopener">📖 OpenClaw Docs</a>
+  </div>
+</div>
+
+<div class="footer">
+  Clowie Dashboard · Oracle Free Tier · <span id="footerYear"></span>
 </div>
 
 <script>
-async function handleLogin(event) {
-    event.preventDefault();
-    const password = document.getElementById('password').value;
-    const errorEl = document.getElementById('error-msg');
-    const loadingEl = document.getElementById('loading-msg');
-    
-    errorEl.style.display = 'none';
-    loadingEl.style.display = 'block';
-    
-    try {
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            sessionStorage.setItem('ops_auth', 'true');
-            sessionStorage.setItem('ops_auth_time', Date.now().toString());
-            sessionStorage.setItem('ops_token', data.token);
-            window.location.href = '/dashboard.html';
-        } else {
-            errorEl.textContent = 'Incorrect password. Please try again.';
-            errorEl.style.display = 'block';
-            document.getElementById('password').value = '';
-            document.getElementById('password').focus();
-        }
-    } catch (e) {
-        errorEl.textContent = 'Connection error. Please try again.';
-        errorEl.style.display = 'block';
-    }
-    
-    loadingEl.style.display = 'none';
-    return false;
+// ===== THEME =====
+function initTheme() {
+  const saved = localStorage.getItem('dashboard-theme') || 'dark';
+  applyTheme(saved);
 }
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('themeToggle');
+  if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+  localStorage.setItem('dashboard-theme', theme);
+}
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+});
+
+// ===== DATE =====
+document.getElementById('navDate').textContent =
+  new Date().toLocaleDateString('de-AT', { weekday:'short', day:'numeric', month:'short' });
+document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+// ===== QUICK STATUS CHECKS =====
+function ping(url, dotId) {
+  fetch(url, { method: 'HEAD', mode: 'no-cors', cache: 'no-cache' })
+    .then(() => { const d = document.getElementById(dotId); if (d) d.classList.remove('offline'); })
+    .catch(() => { const d = document.getElementById(dotId); if (d) d.classList.add('offline'); });
+}
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  ping('/briefing/', 'dot-briefing');
+  ping('/newsletter/', 'dot-newsletter');
+  ping('/status.html', 'dot-nlstatus');
+  ping('/knowledge.html', 'dot-kb');
+  ping('/physiq/', 'dot-physiq');
+  ping('/bodycomp/', 'dot-bodycomp');
+  ping('/dashboard.html', 'dot-ops');
+  ping('/research.html', 'dot-research');
+  ping('/plan.html', 'dot-plan');
+  ping('/briefing/', 'dot-tasks');
+  ping('/medium.html', 'dot-medium');
+});
 </script>
 </body>
 </html>

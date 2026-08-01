@@ -303,7 +303,7 @@
                 <span class="app-badge badge-prod">Oracle Server</span>
             </a>
             
-            <a href="/physiq/" class="app-card" target="_blank">
+            <a href="https://influencer.claw.lkohl.duckdns.org" class="app-card" target="_blank">                <span class="app-icon">🏷️</span>                <h2>Influencer Code Finder</h2>                <p>Rabattcodes von Fitness-Athleten — automatisch extrahiert und durchsuchbar</p>                <div class="status-row">                    <span class="status-dot" id="influencer-dot" style="background: #3D8B8B"></span>                    <span class="status-text">Live</span>                </div>                <span class="app-badge badge-prod">Production</span>            </a>            <a href="/physiq/" class="app-card" target="_blank">
                 <span class="app-icon">🏥</span>
                 <h2>PhysIQ</h2>
                 <p>Professional body composition tracking SaaS with JWT auth, measurements, AI predictions</p>
@@ -312,6 +312,17 @@
                     <span class="status-text" id="healthhub-status">Checking...</span>
                 </div>
                 <span class="app-badge badge-beta">Beta</span>
+            </a>
+
+            <a href="/research.html" class="app-card">
+                <span class="app-icon">🔍</span>
+                <h2>Recherchen</h2>
+                <p>Alle Recherchen, Analysen & Reports — durchsuchbar mit Kurzzusammenfassung und Volltext-Viewer</p>
+                <div class="status-row">
+                    <span class="status-dot" id="research-dot"></span>
+                    <span class="status-text" id="research-status">91 Dokumente</span>
+                </div>
+                <span class="app-badge badge-prod">Production</span>
             </a>
         </div>
         
@@ -400,7 +411,7 @@
         getStatus('https://claw.lkohl.duckdns.org/', 'arca-dot', 'arca-status');
         getStatus('https://dashboard.claw.lkohl.duckdns.org/newsletter', 'newsletter-dot', 'newsletter-status');
         getStatus('http://158.180.60.61:8501', 'bct-dot', 'bct-status');
-        getStatus('https://dashboard.claw.lkohl.duckdns.org/healthhub/', 'healthhub-dot', 'healthhub-status');
+        getStatus('https://influencer.claw.lkohl.duckdns.org/', 'influencer-dot', 'influencer-status');        getStatus('https://dashboard.claw.lkohl.duckdns.org/healthhub/', 'healthhub-dot', 'healthhub-status');
         
         // Refresh ML status every 30s
         setInterval(loadMLStatus, 30000);

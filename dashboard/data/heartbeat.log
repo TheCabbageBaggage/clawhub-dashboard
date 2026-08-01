@@ -1,0 +1,3 @@
+[HEARTBEAT_OK] 2026-07-16T22:55:24Z — Status RED: dreaming unreachable, learnings stale (1840h). Monitor saved to status.json.
+[HEARTBEAT_OK] 2026-07-19T07:24:05Z — Status RED (stale learnings: 1897h). All other checks nominal.
+[2026-07-31T03:14:11Z] HEARTBEAT_OK — Status RED: dreaming=?, learnings=223h stale

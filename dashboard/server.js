@@ -4,9 +4,9 @@ const path = require('path');
 const url = require('url');
 const crypto = require('crypto');
 
-const PORT = 3001;
+const PORT = 8080;
 const DASHBOARD_DIR = __dirname;
-const WORKSPACE_DIR = path.join(DASHBOARD_DIR, 'data', 'research-files');
+const WORKSPACE_DIR = '/data/.openclaw/workspace';
 
 // === SECURE AUTH CONFIG ===
 // Set via environment variable, fallback to file
