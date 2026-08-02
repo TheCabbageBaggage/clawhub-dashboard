@@ -4,7 +4,7 @@ const path = require('path');
 const url = require('url');
 const crypto = require('crypto');
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3001;
 const DASHBOARD_DIR = __dirname;
 const WORKSPACE_DIR = '/data/.openclaw/workspace';
 

@@ -344,14 +344,23 @@
     
     <script>
     // Check authentication
-    async function checkAuth() { try { const r = await fetch("/api/check-auth?token=" + sessionStorage.getItem("ops_token")); const d = await r.json(); if (!d.authenticated) {
-        window.location.href = "/index.html"; } } catch(e) { window.location.href = "/index.html"; } }; checkAuth();
+    async function checkAuth() {
+        try {
+            const r = await fetch("/api/check-auth?token=" + sessionStorage.getItem("ops_token"));
+            const d = await r.json();
+            if (!d.authenticated) {
+                window.location.href = "/index.html";
+            }
+        } catch(e) {
+            window.location.href = "/index.html";
+        }
     }
+    checkAuth();
     
     function logout() {
         sessionStorage.removeItem('ops_auth');
         sessionStorage.removeItem('ops_auth_time');
-        window.location.href = "/index.html"; } } catch(e) { window.location.href = "/index.html"; } }; checkAuth();
+        window.location.href = "/index.html";
     }
     
     // Load ML status via nginx proxy (CORS safe)
