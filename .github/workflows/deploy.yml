@@ -23,11 +23,11 @@ jobs:
         run: |
           ssh ubuntu@158.180.60.61 "
             set -e
-            cd /root/clawhub-dashboard
+            cd /data/clawhub-dashboard
             echo '📦 Pulling latest code...'
-            git pull origin master
+            sudo git pull origin master
             echo '🔨 Rebuilding container...'
-            docker compose up -d --build
+            sudo docker compose up -d --build
             echo '✅ Deployment complete!'
-            docker ps --filter name=clawhub-dashboard --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+            sudo docker ps --filter name=clawhub-dashboard --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
           "
