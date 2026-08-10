@@ -281,17 +281,6 @@
                 <span class="app-badge badge-prod">Production</span>
             </a>
             
-            <a href="/newsletter/" class="app-card" target="_blank">
-                <span class="app-icon">📧</span>
-                <h2>AI Newsletter</h2>
-                <p>Daily AI news digest — TLDR-style with live sources. Mon–Sat 7:30 AM</p>
-                <div class="status-row">
-                    <span class="status-dot" id="newsletter-dot"></span>
-                    <span class="status-text" id="newsletter-status">Checking...</span>
-                </div>
-                <span class="app-badge badge-prod">Production</span>
-            </a>
-            
             <a href="/bodycomp" class="app-card" target="_blank">
                 <span class="app-icon">⚖️</span>
                 <h2>Body Composition</h2>
@@ -418,7 +407,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         loadMLStatus();
         getStatus('https://claw.lkohl.duckdns.org/', 'arca-dot', 'arca-status');
-        getStatus('https://dashboard.claw.lkohl.duckdns.org/newsletter', 'newsletter-dot', 'newsletter-status');
         getStatus('http://158.180.60.61:8501', 'bct-dot', 'bct-status');
         getStatus('https://influencer.claw.lkohl.duckdns.org/', 'influencer-dot', 'influencer-status');        getStatus('https://dashboard.claw.lkohl.duckdns.org/healthhub/', 'healthhub-dot', 'healthhub-status');
         

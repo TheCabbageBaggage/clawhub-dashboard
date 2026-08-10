@@ -249,24 +249,6 @@ body {
 
   <div class="section-label">📰 News & Intelligence</div>
   <div class="apps-grid">
-    <a href="/briefing/" class="app-card">
-      <div class="app-icon">📰</div>
-      <h2>AI Briefing Hub</h2>
-      <p class="desc">Daily AI news in PhysIQ-style tiles. Knowledge Graph with 2,351 nodes. Full archive.</p>
-      <div class="app-meta">
-        <span class="status-dot" id="dot-briefing"></span>
-        <span class="app-badge badge-active">Active</span>
-      </div>
-    </a>
-    <a href="/newsletter/" class="app-card">
-      <div class="app-icon">📧</div>
-      <h2>AI Newsletter</h2>
-      <p class="desc">Daily AI digest — TLDR-style with live sources. Delivered Mon–Sat 7:30 AM.</p>
-      <div class="app-meta">
-        <span class="status-dot" id="dot-newsletter"></span>
-        <span class="app-badge badge-active">Active</span>
-      </div>
-    </a>
     <a href="/status.html" class="app-card">
       <div class="app-icon">📊</div>
       <h2>Newsletter Status</h2>
@@ -368,7 +350,7 @@ body {
         <span class="app-badge badge-active">10 Tasks</span>
       </div>
     </a>
-    <a href="/briefing/" class="app-card">
+    <a href="/plan.html" class="app-card">
       <div class="app-icon">📋</div>
       <h2>Task Board</h2>
       <p class="desc">Paperclip Agent Mesh: 6 agents, 23 issues, 2 routines. Budget €20. Orchestrator, Code, Research, Calendar, Mail, Knowledge agents.</p>
@@ -420,8 +402,6 @@ function ping(url, dotId) {
 }
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
-  ping('/briefing/', 'dot-briefing');
-  ping('/newsletter/', 'dot-newsletter');
   ping('/status.html', 'dot-nlstatus');
   ping('/knowledge.html', 'dot-kb');
   ping('/physiq/', 'dot-physiq');
@@ -429,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ping('/dashboard.html', 'dot-ops');
   ping('/research.html', 'dot-research');
   ping('/plan.html', 'dot-plan');
-  ping('/briefing/', 'dot-tasks');
+  ping('/plan.html', 'dot-tasks');
   ping('/medium.html', 'dot-medium');
 });
 </script>
