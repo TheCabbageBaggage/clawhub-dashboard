@@ -32,8 +32,9 @@ let taskDb = null;
 function getTaskDb() {
     if (taskDb) return taskDb;
     try {
-        taskDb = new Database(TASK_DB_PATH, { readonly: true });
+        taskDb = new Database(TASK_DB_PATH);
         taskDb.pragma('journal_mode = WAL');
+        ensureScrumTables(taskDb);
         console.log(`Task DB opened: ${TASK_DB_PATH}`);
     } catch (e) {
         console.error('Task DB not available:', e.message);
@@ -244,12 +245,116 @@ function getTasksByWeek() {
     const db = getTaskDb();
     if (!db) return [];
     try {
-        return db.prepare(`
-            SELECT id, title, status, category, priority, week, planned_date,
-                   started_at, completed_at, estimated_minutes
-            FROM tasks ORDER BY week, category, priority
+        const tasks = db.prepare(`
+            SELECT t.id, t.title, t.status, t.category, t.priority, t.week, t.planned_date,
+                   t.started_at, t.completed_at, t.estimated_minutes,
+                   t.story_id,
+                   s.title as story_title,
+                   s.epic_id,
+                   e.title as epic_title,
+                   e.color as epic_color
+            FROM tasks t
+            LEFT JOIN user_stories s ON t.story_id = s.id
+            LEFT JOIN epics e ON s.epic_id = e.id
+            ORDER BY t.week, t.category, t.priority
         `).all();
+        // Attach labels for each task
+        const labelsStmt = db.prepare(`
+            SELECT l.id, l.name, l.color
+            FROM labels l
+            JOIN task_labels tl ON l.id = tl.label_id
+            WHERE tl.task_id = ?
+        `);
+        for (const task of tasks) {
+            try {
+                task.labels = labelsStmt.all(task.id);
+            } catch (_) {
+                task.labels = [];
+            }
+        }
+        return tasks;
     } catch (e) { console.error('Tasks by week:', e.message); return []; }
+}
+
+function getEpics() {
+    const db = getTaskDb();
+    if (!db) return [];
+    try {
+        return db.prepare(`
+            SELECT e.*, COUNT(s.id) as story_count
+            FROM epics e
+            LEFT JOIN user_stories s ON s.epic_id = e.id
+            GROUP BY e.id
+            ORDER BY e.created_at DESC
+        `).all();
+    } catch (e) { console.error('Get epics:', e.message); return []; }
+}
+
+function getStories() {
+    const db = getTaskDb();
+    if (!db) return [];
+    try {
+        return db.prepare(`
+            SELECT s.*, e.title as epic_title, e.color as epic_color,
+                   COUNT(t.id) as task_count
+            FROM user_stories s
+            LEFT JOIN epics e ON s.epic_id = e.id
+            LEFT JOIN tasks t ON t.story_id = s.id
+            GROUP BY s.id
+            ORDER BY s.priority DESC, s.created_at DESC
+        `).all();
+    } catch (e) { console.error('Get stories:', e.message); return []; }
+}
+
+function getLabels() {
+    const db = getTaskDb();
+    if (!db) return [];
+    try {
+        return db.prepare(`SELECT * FROM labels ORDER BY name`).all();
+    } catch (e) { console.error('Get labels:', e.message); return []; }
+}
+
+function ensureScrumTables(db) {
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS epics (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            description TEXT DEFAULT '',
+            status TEXT DEFAULT 'open',
+            color TEXT DEFAULT '#3D8B8B',
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        );
+        CREATE TABLE IF NOT EXISTS user_stories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            description TEXT DEFAULT '',
+            epic_id INTEGER,
+            status TEXT DEFAULT 'open',
+            priority INTEGER DEFAULT 0,
+            acceptance_criteria TEXT DEFAULT '',
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now')),
+            FOREIGN KEY (epic_id) REFERENCES epics(id)
+        );
+        CREATE TABLE IF NOT EXISTS labels (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            color TEXT DEFAULT '#6366f1',
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+        CREATE TABLE IF NOT EXISTS task_labels (
+            task_id INTEGER NOT NULL,
+            label_id INTEGER NOT NULL,
+            PRIMARY KEY (task_id, label_id),
+            FOREIGN KEY (task_id) REFERENCES tasks(id),
+            FOREIGN KEY (label_id) REFERENCES labels(id)
+        );
+    `);
+    // Add story_id column to tasks if not exists
+    try {
+        db.exec(`ALTER TABLE tasks ADD COLUMN story_id INTEGER REFERENCES user_stories(id)`);
+    } catch (_) { /* column already exists */ }
 }
 
 function getRecentRuns(limit = 10) {
@@ -373,6 +478,191 @@ const server = http.createServer(async (req, res) => {
         if (pathname === '/api/tasks/runs') {
             const runs = getRecentRuns(20);
             jsonResponse(res, 200, runs);
+            return;
+        }
+
+        // === KANBAN / SCRUM ENDPOINTS ===
+
+        // --- EPICS ---
+        if (pathname === '/api/epics' && req.method === 'GET') {
+            const epics = getEpics();
+            jsonResponse(res, 200, epics);
+            return;
+        }
+        if (pathname === '/api/epics' && req.method === 'POST') {
+            let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
+            if (!body.title) { jsonResponse(res, 400, { error: 'Title is required' }); return; }
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                const result = db.prepare('INSERT INTO epics (title, description, status, color) VALUES (?, ?, ?, ?)').run(
+                    body.title, body.description || '', body.status || 'open', body.color || '#3D8B8B'
+                );
+                jsonResponse(res, 201, { id: result.lastInsertRowid, title: body.title });
+            } catch (e) { console.error('Create epic:', e.message); jsonResponse(res, 500, { error: 'Failed to create epic' }); }
+            return;
+        }
+        if (pathname.match(/^\/api\/epics\/\d+$/) && req.method === 'PUT') {
+            const id = parseInt(pathname.split('/').pop());
+            let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                const fields = [];
+                const values = [];
+                if (body.title !== undefined) { fields.push('title = ?'); values.push(body.title); }
+                if (body.description !== undefined) { fields.push('description = ?'); values.push(body.description); }
+                if (body.status !== undefined) { fields.push('status = ?'); values.push(body.status); }
+                if (body.color !== undefined) { fields.push('color = ?'); values.push(body.color); }
+                if (fields.length === 0) { jsonResponse(res, 400, { error: 'No fields to update' }); return; }
+                fields.push("updated_at = datetime('now')");
+                values.push(id);
+                db.prepare(`UPDATE epics SET ${fields.join(', ')} WHERE id = ?`).run(...values);
+                jsonResponse(res, 200, { success: true });
+            } catch (e) { console.error('Update epic:', e.message); jsonResponse(res, 500, { error: 'Failed to update epic' }); }
+            return;
+        }
+        if (pathname.match(/^\/api\/epics\/\d+$/) && req.method === 'DELETE') {
+            const id = parseInt(pathname.split('/').pop());
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                db.prepare('UPDATE user_stories SET epic_id = NULL WHERE epic_id = ?').run(id);
+                db.prepare('DELETE FROM epics WHERE id = ?').run(id);
+                jsonResponse(res, 200, { success: true });
+            } catch (e) { console.error('Delete epic:', e.message); jsonResponse(res, 500, { error: 'Failed to delete epic' }); }
+            return;
+        }
+
+        // --- USER STORIES ---
+        if (pathname === '/api/stories' && req.method === 'GET') {
+            const stories = getStories();
+            jsonResponse(res, 200, stories);
+            return;
+        }
+        if (pathname === '/api/stories' && req.method === 'POST') {
+            let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
+            if (!body.title) { jsonResponse(res, 400, { error: 'Title is required' }); return; }
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                const result = db.prepare('INSERT INTO user_stories (title, description, epic_id, status, priority, acceptance_criteria) VALUES (?, ?, ?, ?, ?, ?)').run(
+                    body.title, body.description || '', body.epic_id || null, body.status || 'open', body.priority || 0, body.acceptance_criteria || ''
+                );
+                jsonResponse(res, 201, { id: result.lastInsertRowid, title: body.title });
+            } catch (e) { console.error('Create story:', e.message); jsonResponse(res, 500, { error: 'Failed to create story' }); }
+            return;
+        }
+        if (pathname.match(/^\/api\/stories\/\d+$/) && req.method === 'PUT') {
+            const id = parseInt(pathname.split('/').pop());
+            let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                const fields = [];
+                const values = [];
+                if (body.title !== undefined) { fields.push('title = ?'); values.push(body.title); }
+                if (body.description !== undefined) { fields.push('description = ?'); values.push(body.description); }
+                if (body.epic_id !== undefined) { fields.push('epic_id = ?'); values.push(body.epic_id); }
+                if (body.status !== undefined) { fields.push('status = ?'); values.push(body.status); }
+                if (body.priority !== undefined) { fields.push('priority = ?'); values.push(body.priority); }
+                if (body.acceptance_criteria !== undefined) { fields.push('acceptance_criteria = ?'); values.push(body.acceptance_criteria); }
+                if (fields.length === 0) { jsonResponse(res, 400, { error: 'No fields to update' }); return; }
+                fields.push("updated_at = datetime('now')");
+                values.push(id);
+                db.prepare(`UPDATE user_stories SET ${fields.join(', ')} WHERE id = ?`).run(...values);
+                jsonResponse(res, 200, { success: true });
+            } catch (e) { console.error('Update story:', e.message); jsonResponse(res, 500, { error: 'Failed to update story' }); }
+            return;
+        }
+        if (pathname.match(/^\/api\/stories\/\d+$/) && req.method === 'DELETE') {
+            const id = parseInt(pathname.split('/').pop());
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                db.prepare('UPDATE tasks SET story_id = NULL WHERE story_id = ?').run(id);
+                db.prepare('DELETE FROM user_stories WHERE id = ?').run(id);
+                jsonResponse(res, 200, { success: true });
+            } catch (e) { console.error('Delete story:', e.message); jsonResponse(res, 500, { error: 'Failed to delete story' }); }
+            return;
+        }
+
+        // --- LABELS ---
+        if (pathname === '/api/labels' && req.method === 'GET') {
+            const labels = getLabels();
+            jsonResponse(res, 200, labels);
+            return;
+        }
+        if (pathname === '/api/labels' && req.method === 'POST') {
+            let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
+            if (!body.name) { jsonResponse(res, 400, { error: 'Name is required' }); return; }
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                const result = db.prepare('INSERT INTO labels (name, color) VALUES (?, ?)').run(
+                    body.name, body.color || '#6366f1'
+                );
+                jsonResponse(res, 201, { id: result.lastInsertRowid, name: body.name });
+            } catch (e) {
+                if (e.message && e.message.includes('UNIQUE')) { jsonResponse(res, 409, { error: 'Label name already exists' }); }
+                else { console.error('Create label:', e.message); jsonResponse(res, 500, { error: 'Failed to create label' }); }
+            }
+            return;
+        }
+        if (pathname.match(/^\/api\/labels\/\d+$/) && req.method === 'PUT') {
+            const id = parseInt(pathname.split('/').pop());
+            let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                const fields = [];
+                const values = [];
+                if (body.name !== undefined) { fields.push('name = ?'); values.push(body.name); }
+                if (body.color !== undefined) { fields.push('color = ?'); values.push(body.color); }
+                if (fields.length === 0) { jsonResponse(res, 400, { error: 'No fields to update' }); return; }
+                values.push(id);
+                db.prepare(`UPDATE labels SET ${fields.join(', ')} WHERE id = ?`).run(...values);
+                jsonResponse(res, 200, { success: true });
+            } catch (e) { console.error('Update label:', e.message); jsonResponse(res, 500, { error: 'Failed to update label' }); }
+            return;
+        }
+        if (pathname.match(/^\/api\/labels\/\d+$/) && req.method === 'DELETE') {
+            const id = parseInt(pathname.split('/').pop());
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                db.prepare('DELETE FROM task_labels WHERE label_id = ?').run(id);
+                db.prepare('DELETE FROM labels WHERE id = ?').run(id);
+                jsonResponse(res, 200, { success: true });
+            } catch (e) { console.error('Delete label:', e.message); jsonResponse(res, 500, { error: 'Failed to delete label' }); }
+            return;
+        }
+
+        // --- TASK PATCH (Kanban drag & drop, story assignment, labels) ---
+        if (pathname.match(/^\/api\/tasks\/[0-9a-f-]+$/) && req.method === 'PATCH') {
+            const id = parseInt(pathname.split('/')[3]);
+            let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
+            const db = getTaskDb();
+            if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
+            try {
+                const fields = [];
+                const values = [];
+                if (body.status !== undefined) { fields.push('status = ?'); values.push(body.status); }
+                if (body.story_id !== undefined) { fields.push('story_id = ?'); values.push(body.story_id === null ? null : body.story_id); }
+                if (fields.length > 0) {
+                    db.prepare(`UPDATE tasks SET ${fields.join(', ')} WHERE id = ?`).run(...values, id);
+                }
+                if (body.labels !== undefined) {
+                    db.prepare('DELETE FROM task_labels WHERE task_id = ?').run(id);
+                    if (Array.isArray(body.labels) && body.labels.length > 0) {
+                        const insertStmt = db.prepare('INSERT INTO task_labels (task_id, label_id) VALUES (?, ?)');
+                        for (const labelId of body.labels) {
+                            try { insertStmt.run(id, labelId); } catch (_) { /* skip invalid label */ }
+                        }
+                    }
+                }
+                jsonResponse(res, 200, { success: true, id });
+            } catch (e) { console.error('Patch task:', e.message); jsonResponse(res, 500, { error: 'Failed to update task' }); }
             return;
         }
 

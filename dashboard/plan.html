@@ -73,7 +73,7 @@ body {
 }
 .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
 .hero {
-  background: var(--hero-gradient); padding: 2.5rem 2rem; text-align: center;
+  background: var(--hero-gradient); padding: 2rem 2rem 1.5rem; text-align: center;
   position: relative; overflow: hidden;
 }
 .hero::after {
@@ -82,73 +82,201 @@ body {
   background: radial-gradient(circle, rgba(61,139,139,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
-.hero h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; color: var(--hero-text); letter-spacing: -0.03em; }
-.hero p { font-size: 0.95rem; color: var(--hero-text2); margin-top: 0.5rem; }
-.main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+.hero h1 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; color: var(--hero-text); letter-spacing: -0.03em; }
+.hero p { font-size: 0.85rem; color: var(--hero-text2); margin-top: 0.3rem; }
+.main { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
 
 /* Stats bar */
 .stats-bar {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.75rem; margin-bottom: 2rem;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.6rem; margin-bottom: 1.25rem;
 }
 .stat-card {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 1rem; text-align: center;
+  border-radius: var(--radius-sm); padding: 0.75rem; text-align: center;
 }
-.stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-.stat-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.25rem; }
+.stat-value { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+.stat-label { font-size: 0.65rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.15rem; }
 
-/* Week layout */
-.week { margin-bottom: 2rem; }
-.week-header {
-  display: flex; align-items: center; gap: 0.75rem;
-  margin-bottom: 1rem; padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
+/* Filter bar */
+.filter-bar {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;
+  align-items: center;
 }
-.week-num {
-  font-size: 0.75rem; font-weight: 700; padding: 3px 10px;
-  border-radius: 6px; background: var(--accent); color: #fff;
+.filter-bar select, .filter-bar input {
+  background: var(--card); color: var(--text); border: 1px solid var(--border);
+  border-radius: var(--radius-xs); padding: 0.4rem 0.6rem; font-size: 0.8rem;
+  font-family: inherit;
 }
-.week-label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
-.week-progress { font-size: 0.7rem; color: var(--text3); margin-left: auto; }
+.filter-bar select:focus, .filter-bar input:focus {
+  outline: none; border-color: var(--accent);
+}
+.filter-bar button {
+  background: var(--accent); color: #fff; border: none;
+  border-radius: var(--radius-xs); padding: 0.4rem 0.8rem; font-size: 0.8rem;
+  cursor: pointer; transition: var(--transition); font-family: inherit;
+}
+.filter-bar button:hover { opacity: 0.85; }
+.filter-bar .btn-secondary {
+  background: var(--bg3); color: var(--text2);
+}
+.filter-bar .btn-secondary:hover { color: var(--accent); }
 
-.day-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 0.75rem;
+/* Kanban Board */
+.kanban-wrapper {
+  display: flex; gap: 0.75rem; overflow-x: auto;
+  padding-bottom: 1rem; min-height: 400px;
 }
-.day-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 1rem;
-  transition: var(--transition);
+.kanban-column {
+  flex: 0 0 260px; min-width: 260px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 0.5rem;
+  display: flex; flex-direction: column;
 }
-.day-card:hover { border-color: var(--accent); }
-.day-header {
+.kanban-column.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+.column-header {
   display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 0.5rem 0.75rem; border-bottom: 2px solid var(--border);
   margin-bottom: 0.5rem;
 }
-.day-name { font-size: 0.8rem; font-weight: 700; color: var(--text); }
-.day-count { font-size: 0.65rem; color: var(--text3); }
-
-.task-list { list-style: none; }
-.task-item {
-  display: flex; align-items: flex-start; gap: 0.4rem;
-  padding: 0.3rem 0; font-size: 0.75rem; color: var(--text2);
-  border-bottom: 1px solid var(--border);
+.column-title {
+  font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.task-item:last-child { border-bottom: none; }
-.task-status {
-  width: 7px; height: 7px; border-radius: 50%; margin-top: 0.3rem;
-  flex-shrink: 0;
+.column-count {
+  font-size: 0.7rem; background: var(--bg3); color: var(--text3);
+  padding: 2px 8px; border-radius: 10px;
 }
-.status-done { background: var(--success); }
-.status-progress { background: var(--warn); animation: pulse 1.5s ease-in-out infinite; }
-.status-todo { background: var(--text3); }
-.status-blocked { background: var(--danger); }
-@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-.task-desc { flex: 1; }
-.task-desc.done { text-decoration: line-through; opacity: 0.6; }
+.column-cards {
+  flex: 1; overflow-y: auto; min-height: 60px;
+}
 
-/* Runs table */
+/* Task Card */
+.task-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-xs); padding: 0.6rem;
+  margin-bottom: 0.5rem; cursor: grab;
+  transition: var(--transition); position: relative;
+}
+.task-card:hover { border-color: var(--accent); background: var(--card-hover); }
+.task-card.dragging { opacity: 0.5; }
+.task-card-title {
+  font-size: 0.78rem; font-weight: 600; color: var(--text);
+  margin-bottom: 0.35rem; line-height: 1.3;
+}
+.task-card-meta {
+  display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center;
+}
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: 0.6rem; font-weight: 600; padding: 1px 6px;
+  border-radius: 4px; white-space: nowrap;
+}
+.badge-epic {
+  color: #fff;
+}
+.badge-story {
+  background: rgba(99,102,241,0.15); color: var(--pending); border: 1px solid rgba(99,102,241,0.3);
+}
+.badge-label {
+  border: 1px solid; font-size: 0.58rem;
+}
+.badge-priority {
+  background: var(--bg3); color: var(--text3);
+}
+.priority-critical { color: var(--danger) !important; background: rgba(239,68,68,0.12) !important; }
+.priority-high { color: var(--warn) !important; background: rgba(245,158,11,0.12) !important; }
+
+/* Epic/Story Side Panel */
+.side-panel {
+  flex: 0 0 280px; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 0.75rem; max-height: 70vh;
+  overflow-y: auto;
+}
+.side-panel h3 {
+  font-size: 0.8rem; font-weight: 700; color: var(--accent);
+  margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.epic-group { margin-bottom: 0.75rem; }
+.epic-group-header {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.75rem; font-weight: 600; color: var(--text);
+  padding: 0.3rem 0; cursor: pointer;
+}
+.epic-group-header:hover { color: var(--accent); }
+.story-item {
+  font-size: 0.7rem; color: var(--text2); padding: 0.2rem 0 0.2rem 1rem;
+  cursor: pointer;
+}
+.story-item:hover { color: var(--accent); }
+.story-item.active { color: var(--accent); font-weight: 600; }
+
+/* Board layout */
+.board-layout {
+  display: flex; gap: 1rem;
+}
+.board-main { flex: 1; min-width: 0; }
+
+/* Modal */
+.modal-overlay {
+  display: none; position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.6); z-index: 200;
+  justify-content: center; align-items: center;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 1.5rem;
+  min-width: 340px; max-width: 500px; width: 90%;
+  max-height: 80vh; overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+.modal h2 {
+  font-size: 1rem; font-weight: 700; color: var(--accent);
+  margin-bottom: 1rem;
+}
+.modal-field { margin-bottom: 0.75rem; }
+.modal-field label {
+  display: block; font-size: 0.75rem; font-weight: 600;
+  color: var(--text2); margin-bottom: 0.25rem;
+}
+.modal-field input, .modal-field select, .modal-field textarea {
+  width: 100%; background: var(--card); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--radius-xs);
+  padding: 0.5rem 0.6rem; font-size: 0.85rem; font-family: inherit;
+}
+.modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus {
+  outline: none; border-color: var(--accent);
+}
+.modal-actions {
+  display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem;
+}
+.modal-actions button {
+  padding: 0.5rem 1rem; border-radius: var(--radius-xs);
+  font-size: 0.8rem; cursor: pointer; transition: var(--transition);
+  font-family: inherit; border: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-cancel { background: var(--bg3); color: var(--text2); }
+.btn-cancel:hover { color: var(--text); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { opacity: 0.85; }
+
+/* Label chips in task detail */
+.label-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.label-chip {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  font-size: 0.7rem; padding: 0.25rem 0.5rem; border-radius: 4px;
+  cursor: pointer; transition: var(--transition); border: 1.5px solid transparent;
+}
+.label-chip.selected { border-color: currentColor; }
+.label-chip:hover { opacity: 0.8; }
+
+/* Recent Runs */
 .section { margin-top: 2rem; }
 .section h2 {
   font-size: 1rem; font-weight: 600; color: var(--text);
@@ -174,16 +302,20 @@ body {
   text-align: center; padding: 1.5rem; color: var(--text3);
   font-size: 0.72rem; border-top: 1px solid var(--border); margin-top: 2rem;
 }
-.footer a { color: var(--text3); }
 
 .loading { text-align: center; padding: 3rem; color: var(--text3); }
 .error { text-align: center; padding: 3rem; color: var(--danger); }
 
+@media (max-width: 900px) {
+  .board-layout { flex-direction: column; }
+  .side-panel { flex: 1; max-height: 300px; }
+  .kanban-column { flex: 0 0 240px; min-width: 240px; }
+}
 @media (max-width: 600px) {
   .nav { padding: 0 1rem; }
-  .hero { padding: 1.75rem 1rem; }
-  .main { padding: 1.5rem 1rem; }
-  .day-grid { grid-template-columns: 1fr; }
+  .hero { padding: 1.5rem 1rem; }
+  .main { padding: 1rem; }
+  .kanban-column { flex: 0 0 220px; min-width: 220px; }
   .stats-bar { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
@@ -202,23 +334,66 @@ body {
 
 <div class="hero">
   <h1>Clowie Task Engine</h1>
-  <p>Live Task Status — powered by SQLite Task Engine</p>
+  <p>Kanban Board — Epics · Stories · Tasks</p>
 </div>
 
 <div class="main">
-
   <!-- Stats Bar -->
   <div class="stats-bar" id="statsBar">
-    <div class="stat-card"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Total Tasks</div></div>
-    <div class="stat-card"><div class="stat-value" id="statPending">—</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Total</div></div>
+    <div class="stat-card"><div class="stat-value" id="statBacklog">—</div><div class="stat-label">Backlog</div></div>
+    <div class="stat-card"><div class="stat-value" id="statTodo">—</div><div class="stat-label">To Do</div></div>
     <div class="stat-card"><div class="stat-value" id="statActive">—</div><div class="stat-label">In Progress</div></div>
     <div class="stat-card"><div class="stat-value" id="statDone">—</div><div class="stat-label">Done</div></div>
-    <div class="stat-card"><div class="stat-value" id="statRuns">—</div><div class="stat-label">Total Runs</div></div>
-    <div class="stat-card"><div class="stat-value" id="statCost">—</div><div class="stat-label">Total Cost</div></div>
+    <div class="stat-card"><div class="stat-value" id="statBlocked">—</div><div class="stat-label">Blocked</div></div>
+    <div class="stat-card"><div class="stat-value" id="statRuns">—</div><div class="stat-label">Runs</div></div>
+    <div class="stat-card"><div class="stat-value" id="statCost">—</div><div class="stat-label">Cost</div></div>
   </div>
 
-  <!-- Task Grid -->
-  <div id="taskGrid"><div class="loading">Loading tasks…</div></div>
+  <!-- Filter Bar -->
+  <div class="filter-bar" id="filterBar">
+    <select id="filterEpic"><option value="">All Epics</option></select>
+    <select id="filterStory"><option value="">All Stories</option></select>
+    <select id="filterLabel"><option value="">All Labels</option></select>
+    <select id="filterCategory"><option value="">All Categories</option></select>
+    <input type="text" id="filterSearch" placeholder="Search tasks…" style="flex:1; min-width:140px;">
+    <button onclick="clearFilters()">Clear</button>
+    <button class="btn-secondary" onclick="openEpicModal()">+ Epic</button>
+    <button class="btn-secondary" onclick="openStoryModal()">+ Story</button>
+    <button class="btn-secondary" onclick="openLabelModal()">+ Label</button>
+  </div>
+
+  <!-- Board Layout -->
+  <div class="board-layout">
+    <div class="board-main">
+      <div class="kanban-wrapper" id="kanbanBoard">
+        <div class="kanban-column" data-status="backlog" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'backlog')" ondragleave="handleDragLeave(event)">
+          <div class="column-header"><span class="column-title">📋 Backlog</span><span class="column-count" id="countBacklog">0</span></div>
+          <div class="column-cards" id="colBacklog"></div>
+        </div>
+        <div class="kanban-column" data-status="todo" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'todo')" ondragleave="handleDragLeave(event)">
+          <div class="column-header"><span class="column-title">📌 To Do</span><span class="column-count" id="countTodo">0</span></div>
+          <div class="column-cards" id="colTodo"></div>
+        </div>
+        <div class="kanban-column" data-status="in_progress" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'in_progress')" ondragleave="handleDragLeave(event)">
+          <div class="column-header"><span class="column-title">🔄 In Progress</span><span class="column-count" id="countInProgress">0</span></div>
+          <div class="column-cards" id="colInProgress"></div>
+        </div>
+        <div class="kanban-column" data-status="done" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'done')" ondragleave="handleDragLeave(event)">
+          <div class="column-header"><span class="column-title">✅ Done</span><span class="column-count" id="countDone">0</span></div>
+          <div class="column-cards" id="colDone"></div>
+        </div>
+        <div class="kanban-column" data-status="blocked" ondragover="handleDragOver(event)" ondrop="handleDrop(event, 'blocked')" ondragleave="handleDragLeave(event)">
+          <div class="column-header"><span class="column-title">🚫 Blocked</span><span class="column-count" id="countBlocked">0</span></div>
+          <div class="column-cards" id="colBlocked"></div>
+        </div>
+      </div>
+    </div>
+    <div class="side-panel" id="sidePanel">
+      <h3>🏷 Epics &amp; Stories</h3>
+      <div id="epicTree"><div class="loading">Loading…</div></div>
+    </div>
+  </div>
 
   <!-- Recent Runs -->
   <div class="section">
@@ -228,15 +403,95 @@ body {
       <tbody id="runsBody"><tr><td colspan="7" class="loading">Loading…</td></tr></tbody>
     </table>
   </div>
-
 </div>
 
 <div class="footer">
-  ClawHub Task Engine · Live from SQLite · <span id="updateTime">—</span>
+  ClawHub Task Engine · Kanban Board · <span id="updateTime">—</span>
+</div>
+
+<!-- Epic Modal -->
+<div class="modal-overlay" id="epicModal">
+  <div class="modal">
+    <h2 id="epicModalTitle">Create Epic</h2>
+    <input type="hidden" id="epicId">
+    <div class="modal-field"><label>Title</label><input type="text" id="epicTitle" placeholder="Epic title"></div>
+    <div class="modal-field"><label>Description</label><textarea id="epicDesc" rows="2" placeholder="Description"></textarea></div>
+    <div class="modal-field"><label>Color</label><input type="color" id="epicColor" value="#3D8B8B"></div>
+    <div class="modal-field"><label>Status</label><select id="epicStatus"><option value="open">Open</option><option value="in_progress">In Progress</option><option value="done">Done</option></select></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEpicModal()">Cancel</button>
+      <button class="btn-danger" id="epicDeleteBtn" style="display:none" onclick="deleteEpic()">Delete</button>
+      <button class="btn-primary" onclick="saveEpic()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Story Modal -->
+<div class="modal-overlay" id="storyModal">
+  <div class="modal">
+    <h2 id="storyModalTitle">Create Story</h2>
+    <input type="hidden" id="storyId">
+    <div class="modal-field"><label>Title</label><input type="text" id="storyTitle" placeholder="Story title"></div>
+    <div class="modal-field"><label>Description</label><textarea id="storyDesc" rows="2" placeholder="Description"></textarea></div>
+    <div class="modal-field"><label>Epic</label><select id="storyEpic"><option value="">— None —</option></select></div>
+    <div class="modal-field"><label>Priority</label><input type="number" id="storyPriority" value="0" min="0" max="10"></div>
+    <div class="modal-field"><label>Acceptance Criteria</label><textarea id="storyAC" rows="2" placeholder="Acceptance criteria"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeStoryModal()">Cancel</button>
+      <button class="btn-danger" id="storyDeleteBtn" style="display:none" onclick="deleteStory()">Delete</button>
+      <button class="btn-primary" onclick="saveStory()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Label Modal -->
+<div class="modal-overlay" id="labelModal">
+  <div class="modal">
+    <h2 id="labelModalTitle">Create Label</h2>
+    <input type="hidden" id="labelId">
+    <div class="modal-field"><label>Name</label><input type="text" id="labelName" placeholder="Label name"></div>
+    <div class="modal-field"><label>Color</label><input type="color" id="labelColor" value="#6366f1"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeLabelModal()">Cancel</button>
+      <button class="btn-danger" id="labelDeleteBtn" style="display:none" onclick="deleteLabel()">Delete</button>
+      <button class="btn-primary" onclick="saveLabel()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task Detail Modal -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal" style="max-width:540px;">
+    <h2 id="taskModalTitle">Task Details</h2>
+    <input type="hidden" id="taskModalId">
+    <div class="modal-field"><label>Status</label>
+      <select id="taskModalStatus">
+        <option value="pending">Pending</option>
+        <option value="todo">To Do</option>
+        <option value="in_progress">In Progress</option>
+        <option value="done">Done</option>
+        <option value="blocked">Blocked</option>
+      </select>
+    </div>
+    <div class="modal-field"><label>Story</label><select id="taskModalStory"><option value="">— None —</option></select></div>
+    <div class="modal-field"><label>Labels</label><div class="label-chips" id="taskModalLabels"></div></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeTaskModal()">Close</button>
+      <button class="btn-primary" onclick="saveTaskDetail()">Save</button>
+    </div>
+  </div>
 </div>
 
 <script>
-// Auth check
+// === STATE ===
+let allTasks = [];
+let allEpics = [];
+let allStories = [];
+let allLabels = [];
+let allCategories = [];
+let draggedTaskId = null;
+
+// === AUTH ===
 async function checkAuth() {
   try {
     const r = await fetch('/api/auth-status');
@@ -246,7 +501,7 @@ async function checkAuth() {
   } catch(e) { window.location.href = '/login'; return false; }
 }
 
-// Theme toggle
+// === THEME ===
 (function() {
   const saved = localStorage.getItem('clawhub-theme');
   if (saved) document.documentElement.setAttribute('data-theme', saved);
@@ -261,153 +516,562 @@ async function checkAuth() {
   });
 })();
 
-// Status mapping
-const statusClass = {
-  'done': 'status-done',
-  'in_progress': 'status-progress',
-  'pending': 'status-todo',
-  'blocked': 'status-blocked'
-};
-
-// Group tasks by week
-function groupByWeek(tasks) {
-  const weeks = {};
-  for (const t of tasks) {
-    const w = t.week || 'Unknown';
-    if (!weeks[w]) weeks[w] = [];
-    weeks[w].push(t);
-  }
-  return weeks;
-}
-
-// Render tasks
-function renderTasks(tasks) {
-  const grid = document.getElementById('taskGrid');
-  const weeks = groupByWeek(tasks);
-  const weekKeys = Object.keys(weeks).sort();
-  
-  if (weekKeys.length === 0) {
-    grid.innerHTML = '<div class="loading">No tasks found</div>';
-    return;
-  }
-
-  let html = '';
-  for (const wk of weekKeys) {
-    const weekTasks = weeks[wk];
-    const done = weekTasks.filter(t => t.status === 'done').length;
-    const total = weekTasks.length;
-    const pct = total > 0 ? Math.round(done / total * 100) : 0;
-    
-    html += `<div class="week">
-      <div class="week-header">
-        <span class="week-num">${wk}</span>
-        <span class="week-label">${wk}</span>
-        <span class="week-progress">${done}/${total} done (${pct}%)</span>
-      </div>
-      <div class="day-grid">`;
-    
-    // Group by category within week
-    const byCategory = {};
-    for (const t of weekTasks) {
-      const cat = t.category || 'other';
-      if (!byCategory[cat]) byCategory[cat] = [];
-      byCategory[cat].push(t);
-    }
-    
-    for (const [cat, catTasks] of Object.entries(byCategory)) {
-      const catDone = catTasks.filter(t => t.status === 'done').length;
-      html += `<div class="day-card">
-        <div class="day-header">
-          <span class="day-name">📁 ${cat}</span>
-          <span class="day-count">${catDone}/${catTasks.length}</span>
-        </div>
-        <ul class="task-list">`;
-      
-      for (const t of catTasks) {
-        const cls = statusClass[t.status] || 'status-todo';
-        const descCls = t.status === 'done' ? 'done' : '';
-        html += `<li class="task-item">
-          <span class="task-status ${cls}" title="${t.status}"></span>
-          <span class="task-desc ${descCls}">${escapeHtml(t.title)}</span>
-        </li>`;
-      }
-      
-      html += `</ul></div>`;
-    }
-    
-    html += `</div></div>`;
-  }
-  
-  grid.innerHTML = html;
-}
-
-function escapeHtml(str) {
+// === HELPERS ===
+function esc(str) {
+  if (!str) return '';
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
 
-// Render runs
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+// Determine kanban column status from task
+function taskColumnStatus(task) {
+  if (task.status === 'in_progress') return 'in_progress';
+  if (task.status === 'done') return 'done';
+  if (task.status === 'blocked') return 'blocked';
+  // pending — split by planned_date
+  if (task.status === 'pending' || !task.status) {
+    if (task.planned_date && task.planned_date <= todayStr()) return 'todo';
+    return 'backlog';
+  }
+  return 'backlog';
+}
+
+// === API CALLS ===
+async function apiGet(url) {
+  const r = await fetch(url);
+  return r.json();
+}
+async function apiPost(url, body) {
+  const r = await fetch(url, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  return r.json();
+}
+async function apiPut(url, body) {
+  const r = await fetch(url, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  return r.json();
+}
+async function apiPatch(url, body) {
+  const r = await fetch(url, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  return r.json();
+}
+async function apiDelete(url) {
+  const r = await fetch(url, { method: 'DELETE' });
+  return r.json();
+}
+
+// === LOAD DATA ===
+async function loadAll() {
+  if (!await checkAuth()) return;
+  try {
+    const [summary, stats, tasks, runs, epics, stories, labels] = await Promise.all([
+      apiGet('/api/tasks/summary'),
+      apiGet('/api/tasks/stats'),
+      apiGet('/api/tasks'),
+      apiGet('/api/tasks/runs'),
+      apiGet('/api/epics'),
+      apiGet('/api/stories'),
+      apiGet('/api/labels')
+    ]);
+    allTasks = tasks || [];
+    allEpics = epics || [];
+    allStories = stories || [];
+    allLabels = labels || [];
+    allCategories = [...new Set(allTasks.map(t => t.category).filter(Boolean))];
+
+    updateStats(summary, stats);
+    populateFilters();
+    renderBoard();
+    renderEpicTree();
+    renderRuns(runs);
+    document.getElementById('updateTime').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+  } catch (e) {
+    document.getElementById('kanbanBoard').innerHTML = '<div class="error">Failed to load: ' + esc(e.message) + '</div>';
+  }
+}
+
+// === STATS ===
+function updateStats(summary, stats) {
+  const counts = { backlog: 0, todo: 0, in_progress: 0, done: 0, blocked: 0 };
+  allTasks.forEach(t => { const col = taskColumnStatus(t); counts[col] = (counts[col] || 0) + 1; });
+  document.getElementById('statTotal').textContent = allTasks.length;
+  document.getElementById('statBacklog').textContent = counts.backlog;
+  document.getElementById('statTodo').textContent = counts.todo;
+  document.getElementById('statActive').textContent = counts.in_progress;
+  document.getElementById('statDone').textContent = counts.done;
+  document.getElementById('statBlocked').textContent = counts.blocked;
+  document.getElementById('statRuns').textContent = (stats && stats.total_runs) || 0;
+  document.getElementById('statCost').textContent = '€' + ((stats && stats.total_cost) || 0).toFixed(4);
+}
+
+// === FILTERS ===
+function populateFilters() {
+  const epicSel = document.getElementById('filterEpic');
+  const storySel = document.getElementById('filterStory');
+  const labelSel = document.getElementById('filterLabel');
+  const catSel = document.getElementById('filterCategory');
+
+  epicSel.innerHTML = '<option value="">All Epics</option>' + allEpics.map(e => '<option value="'+e.id+'">'+esc(e.title)+'</option>').join('');
+  storySel.innerHTML = '<option value="">All Stories</option>' + allStories.map(s => '<option value="'+s.id+'">'+esc(s.title)+'</option>').join('');
+  labelSel.innerHTML = '<option value="">All Labels</option>' + allLabels.map(l => '<option value="'+l.id+'">'+esc(l.name)+'</option>').join('');
+  catSel.innerHTML = '<option value="">All Categories</option>' + allCategories.map(c => '<option value="'+c+'">'+esc(c)+'</option>').join('');
+}
+
+function clearFilters() {
+  document.getElementById('filterEpic').value = '';
+  document.getElementById('filterStory').value = '';
+  document.getElementById('filterLabel').value = '';
+  document.getElementById('filterCategory').value = '';
+  document.getElementById('filterSearch').value = '';
+  renderBoard();
+}
+
+function getFilteredTasks() {
+  const epicFilter = document.getElementById('filterEpic').value;
+  const storyFilter = document.getElementById('filterStory').value;
+  const labelFilter = document.getElementById('filterLabel').value;
+  const catFilter = document.getElementById('filterCategory').value;
+  const searchFilter = document.getElementById('filterSearch').value.toLowerCase();
+
+  return allTasks.filter(t => {
+    if (epicFilter && t.epic_id != epicFilter) return false;
+    if (storyFilter && t.story_id != storyFilter) return false;
+    if (labelFilter && !(t.labels || []).some(l => l.id == labelFilter)) return false;
+    if (catFilter && t.category !== catFilter) return false;
+    if (searchFilter && !(t.title || '').toLowerCase().includes(searchFilter)) return false;
+    return true;
+  });
+}
+
+// Add filter event listeners
+document.getElementById('filterEpic').addEventListener('change', renderBoard);
+document.getElementById('filterStory').addEventListener('change', renderBoard);
+document.getElementById('filterLabel').addEventListener('change', renderBoard);
+document.getElementById('filterCategory').addEventListener('change', renderBoard);
+document.getElementById('filterSearch').addEventListener('input', renderBoard);
+
+// === RENDER BOARD ===
+function renderBoard() {
+  const tasks = getFilteredTasks();
+  const columns = { backlog: [], todo: [], in_progress: [], done: [], blocked: [] };
+
+  tasks.forEach(t => {
+    const col = taskColumnStatus(t);
+    columns[col].push(t);
+  });
+
+  const colMap = {
+    backlog: document.getElementById('colBacklog'),
+    todo: document.getElementById('colTodo'),
+    in_progress: document.getElementById('colInProgress'),
+    done: document.getElementById('colDone'),
+    blocked: document.getElementById('colBlocked')
+  };
+
+  const countMap = {
+    backlog: document.getElementById('countBacklog'),
+    todo: document.getElementById('countTodo'),
+    in_progress: document.getElementById('countInProgress'),
+    done: document.getElementById('countDone'),
+    blocked: document.getElementById('countBlocked')
+  };
+
+  for (const [col, container] of Object.entries(colMap)) {
+    const colTasks = columns[col];
+    countMap[col].textContent = colTasks.length;
+    container.innerHTML = colTasks.map(t => renderTaskCard(t)).join('');
+  }
+
+  // Re-attach drag listeners
+  document.querySelectorAll('.task-card').forEach(card => {
+    card.addEventListener('dragstart', handleDragStart);
+    card.addEventListener('dragend', handleDragEnd);
+  });
+}
+
+function renderTaskCard(task) {
+  const epicBadge = task.epic_id && task.epic_title
+    ? '<span class="badge badge-epic" style="background:'+esc(task.epic_color || '#3D8B8B')+'">'+esc(task.epic_title)+'</span>'
+    : '';
+  const storyBadge = task.story_title
+    ? '<span class="badge badge-story">'+esc(task.story_title)+'</span>'
+    : '';
+  const labelChips = (task.labels || []).map(l =>
+    '<span class="badge badge-label" style="color:'+esc(l.color)+';border-color:'+esc(l.color)+';background:'+esc(l.color)+'22">'+esc(l.name)+'</span>'
+  ).join('');
+  const priorityClass = task.priority >= 3 ? 'priority-critical' : task.priority >= 2 ? 'priority-high' : '';
+  const priorityBadge = task.priority ? '<span class="badge badge-priority '+priorityClass+'">P'+task.priority+'</span>' : '';
+
+  return '<div class="task-card" draggable="true" data-task-id="'+task.id+'" onclick="openTaskModal('+task.id+')">' +
+    '<div class="task-card-title">'+esc(task.title)+'</div>' +
+    '<div class="task-card-meta">' + epicBadge + storyBadge + labelChips + priorityBadge + '</div>' +
+  '</div>';
+}
+
+// === DRAG & DROP ===
+function handleDragStart(e) {
+  draggedTaskId = e.target.dataset.taskId;
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function handleDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over'));
+  draggedTaskId = null;
+}
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+async function handleDrop(e, newColumn) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!draggedTaskId) return;
+
+  // Map column to status
+  let newStatus;
+  if (newColumn === 'backlog') newStatus = 'pending';
+  else if (newColumn === 'todo') newStatus = 'pending';
+  else if (newColumn === 'in_progress') newStatus = 'in_progress';
+  else if (newColumn === 'done') newStatus = 'done';
+  else if (newColumn === 'blocked') newStatus = 'blocked';
+
+  const taskId = parseInt(draggedTaskId);
+  try {
+    await apiPatch('/api/tasks/' + taskId, { status: newStatus });
+    // Optimistic update
+    const task = allTasks.find(t => t.id === taskId);
+    if (task) {
+      task.status = newStatus;
+      // For todo column, set planned_date to today if not set
+      if (newColumn === 'todo' && !task.planned_date) {
+        task.planned_date = todayStr();
+      }
+    }
+    renderBoard();
+  } catch (err) {
+    console.error('Failed to move task:', err);
+  }
+  draggedTaskId = null;
+}
+
+// === EPIC TREE (Side Panel) ===
+function renderEpicTree() {
+  const container = document.getElementById('epicTree');
+  let html = '';
+
+  // Unassigned stories
+  const unassignedStories = allStories.filter(s => !s.epic_id);
+  if (unassignedStories.length > 0) {
+    html += '<div class="epic-group">' +
+      '<div class="epic-group-header" onclick="filterByEpic(null)">📂 Unassigned</div>' +
+      unassignedStories.map(s =>
+        '<div class="story-item" onclick="filterByStory('+s.id+')">'+esc(s.title)+'</div>'
+      ).join('') +
+    '</div>';
+  }
+
+  // Epics with stories
+  allEpics.forEach(epic => {
+    const stories = allStories.filter(s => s.epic_id === epic.id);
+    html += '<div class="epic-group">' +
+      '<div class="epic-group-header" onclick="filterByEpic('+epic.id+')">' +
+        '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+esc(epic.color || '#3D8B8B')+';margin-right:4px;"></span>' +
+        esc(epic.title) +
+        ' <span style="color:var(--text3);font-weight:400;">('+stories.length+')</span>' +
+      '</div>' +
+      stories.map(s =>
+        '<div class="story-item" onclick="filterByStory('+s.id+')">'+esc(s.title)+'</div>'
+      ).join('') +
+    '</div>';
+  });
+
+  // Epics without stories
+  const epicsWithStories = new Set(allStories.filter(s => s.epic_id).map(s => s.epic_id));
+  allEpics.filter(e => !epicsWithStories.has(e.id)).forEach(epic => {
+    html += '<div class="epic-group">' +
+      '<div class="epic-group-header" onclick="filterByEpic('+epic.id+')">' +
+        '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+esc(epic.color || '#3D8B8B')+';margin-right:4px;"></span>' +
+        esc(epic.title) +
+      '</div>' +
+    '</div>';
+  });
+
+  if (!html) html = '<div style="color:var(--text3);font-size:0.75rem;">No epics or stories yet</div>';
+  container.innerHTML = html;
+}
+
+function filterByEpic(epicId) {
+  document.getElementById('filterEpic').value = epicId || '';
+  renderBoard();
+}
+function filterByStory(storyId) {
+  document.getElementById('filterStory').value = storyId || '';
+  renderBoard();
+}
+
+// === RUNS ===
 function renderRuns(runs) {
   const tbody = document.getElementById('runsBody');
   if (!runs || runs.length === 0) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3)">No runs yet</td></tr>';
     return;
   }
-  
   tbody.innerHTML = runs.map(r => {
     const statusEmoji = r.status === 'success' ? '✅' : r.status === 'failed' ? '❌' : '🔄';
-    const cost = r.cost_eur ? `€${r.cost_eur.toFixed(6)}` : '—';
+    const cost = r.cost_eur ? '€'+r.cost_eur.toFixed(6) : '—';
     const started = r.started_at ? new Date(r.started_at).toLocaleString() : '—';
-    return `<tr>
-      <td title="${escapeHtml(r.task_title || '')}">${escapeHtml((r.task_title || '?').substring(0, 60))}</td>
-      <td>${escapeHtml(r.model || '—')}</td>
-      <td>${statusEmoji} ${r.status}</td>
-      <td>${(r.tokens_in || 0).toLocaleString()}</td>
-      <td>${(r.tokens_out || 0).toLocaleString()}</td>
-      <td>${cost}</td>
-      <td>${started}</td>
-    </tr>`;
+    return '<tr>' +
+      '<td title="'+esc(r.task_title || '')+'">'+esc((r.task_title || '?').substring(0, 60))+'</td>' +
+      '<td>'+esc(r.model || '—')+'</td>' +
+      '<td>'+statusEmoji+' '+r.status+'</td>' +
+      '<td>'+(r.tokens_in || 0).toLocaleString()+'</td>' +
+      '<td>'+(r.tokens_out || 0).toLocaleString()+'</td>' +
+      '<td>'+cost+'</td>' +
+      '<td>'+started+'</td>' +
+    '</tr>';
   }).join('');
 }
 
-// Update stats
-function updateStats(summary, stats) {
-  document.getElementById('statTotal').textContent = summary.total;
-  document.getElementById('statPending').textContent = summary.pending;
-  document.getElementById('statActive').textContent = summary.active;
-  document.getElementById('statDone').textContent = summary.done;
-  document.getElementById('statRuns').textContent = stats.total_runs;
-  document.getElementById('statCost').textContent = `€${(stats.total_cost || 0).toFixed(4)}`;
-  document.getElementById('updateTime').textContent = `Updated: ${new Date().toLocaleTimeString()}`;
-}
-
-// Load all data
-async function loadAll() {
-  if (!await checkAuth()) return;
-  
-  try {
-    const [summaryRes, statsRes, tasksRes, runsRes] = await Promise.all([
-      fetch('/api/tasks/summary'),
-      fetch('/api/tasks/stats'),
-      fetch('/api/tasks'),
-      fetch('/api/tasks/runs')
-    ]);
-    
-    const summary = await summaryRes.json();
-    const stats = await statsRes.json();
-    const tasks = await tasksRes.json();
-    const runs = await runsRes.json();
-    
-    updateStats(summary, stats);
-    renderTasks(tasks);
-    renderRuns(runs);
-  } catch (e) {
-    document.getElementById('taskGrid').innerHTML = `<div class="error">Failed to load tasks: ${e.message}</div>`;
+// === MODALS: EPIC ===
+function openEpicModal(epicId) {
+  const modal = document.getElementById('epicModal');
+  if (epicId) {
+    const epic = allEpics.find(e => e.id === epicId);
+    if (!epic) return;
+    document.getElementById('epicModalTitle').textContent = 'Edit Epic';
+    document.getElementById('epicId').value = epic.id;
+    document.getElementById('epicTitle').value = epic.title || '';
+    document.getElementById('epicDesc').value = epic.description || '';
+    document.getElementById('epicColor').value = epic.color || '#3D8B8B';
+    document.getElementById('epicStatus').value = epic.status || 'open';
+    document.getElementById('epicDeleteBtn').style.display = '';
+  } else {
+    document.getElementById('epicModalTitle').textContent = 'Create Epic';
+    document.getElementById('epicId').value = '';
+    document.getElementById('epicTitle').value = '';
+    document.getElementById('epicDesc').value = '';
+    document.getElementById('epicColor').value = '#3D8B8B';
+    document.getElementById('epicStatus').value = 'open';
+    document.getElementById('epicDeleteBtn').style.display = 'none';
   }
+  modal.classList.add('active');
+}
+function closeEpicModal() { document.getElementById('epicModal').classList.remove('active'); }
+
+async function saveEpic() {
+  const id = document.getElementById('epicId').value;
+  const data = {
+    title: document.getElementById('epicTitle').value,
+    description: document.getElementById('epicDesc').value,
+    color: document.getElementById('epicColor').value,
+    status: document.getElementById('epicStatus').value
+  };
+  try {
+    if (id) {
+      await apiPut('/api/epics/' + id, data);
+    } else {
+      await apiPost('/api/epics', data);
+    }
+    closeEpicModal();
+    await loadAll();
+  } catch (e) { alert('Failed to save epic: ' + e.message); }
 }
 
-// Auto-refresh every 60s
+async function deleteEpic() {
+  const id = document.getElementById('epicId').value;
+  if (!id || !confirm('Delete this epic? Stories will be unassigned.')) return;
+  try {
+    await apiDelete('/api/epics/' + id);
+    closeEpicModal();
+    await loadAll();
+  } catch (e) { alert('Failed to delete epic: ' + e.message); }
+}
+
+// === MODALS: STORY ===
+function openStoryModal(storyId) {
+  const modal = document.getElementById('storyModal');
+  // Populate epic select
+  const epicSel = document.getElementById('storyEpic');
+  epicSel.innerHTML = '<option value="">— None —</option>' + allEpics.map(e => '<option value="'+e.id+'">'+esc(e.title)+'</option>').join('');
+
+  if (storyId) {
+    const story = allStories.find(s => s.id === storyId);
+    if (!story) return;
+    document.getElementById('storyModalTitle').textContent = 'Edit Story';
+    document.getElementById('storyId').value = story.id;
+    document.getElementById('storyTitle').value = story.title || '';
+    document.getElementById('storyDesc').value = story.description || '';
+    document.getElementById('storyEpic').value = story.epic_id || '';
+    document.getElementById('storyPriority').value = story.priority || 0;
+    document.getElementById('storyAC').value = story.acceptance_criteria || '';
+    document.getElementById('storyDeleteBtn').style.display = '';
+  } else {
+    document.getElementById('storyModalTitle').textContent = 'Create Story';
+    document.getElementById('storyId').value = '';
+    document.getElementById('storyTitle').value = '';
+    document.getElementById('storyDesc').value = '';
+    document.getElementById('storyEpic').value = '';
+    document.getElementById('storyPriority').value = 0;
+    document.getElementById('storyAC').value = '';
+    document.getElementById('storyDeleteBtn').style.display = 'none';
+  }
+  modal.classList.add('active');
+}
+function closeStoryModal() { document.getElementById('storyModal').classList.remove('active'); }
+
+async function saveStory() {
+  const id = document.getElementById('storyId').value;
+  const data = {
+    title: document.getElementById('storyTitle').value,
+    description: document.getElementById('storyDesc').value,
+    epic_id: document.getElementById('storyEpic').value || null,
+    priority: parseInt(document.getElementById('storyPriority').value) || 0,
+    acceptance_criteria: document.getElementById('storyAC').value
+  };
+  try {
+    if (id) {
+      await apiPut('/api/stories/' + id, data);
+    } else {
+      await apiPost('/api/stories', data);
+    }
+    closeStoryModal();
+    await loadAll();
+  } catch (e) { alert('Failed to save story: ' + e.message); }
+}
+
+async function deleteStory() {
+  const id = document.getElementById('storyId').value;
+  if (!id || !confirm('Delete this story? Tasks will be unassigned.')) return;
+  try {
+    await apiDelete('/api/stories/' + id);
+    closeStoryModal();
+    await loadAll();
+  } catch (e) { alert('Failed to delete story: ' + e.message); }
+}
+
+// === MODALS: LABEL ===
+function openLabelModal(labelId) {
+  const modal = document.getElementById('labelModal');
+  if (labelId) {
+    const label = allLabels.find(l => l.id === labelId);
+    if (!label) return;
+    document.getElementById('labelModalTitle').textContent = 'Edit Label';
+    document.getElementById('labelId').value = label.id;
+    document.getElementById('labelName').value = label.name || '';
+    document.getElementById('labelColor').value = label.color || '#6366f1';
+    document.getElementById('labelDeleteBtn').style.display = '';
+  } else {
+    document.getElementById('labelModalTitle').textContent = 'Create Label';
+    document.getElementById('labelId').value = '';
+    document.getElementById('labelName').value = '';
+    document.getElementById('labelColor').value = '#6366f1';
+    document.getElementById('labelDeleteBtn').style.display = 'none';
+  }
+  modal.classList.add('active');
+}
+function closeLabelModal() { document.getElementById('labelModal').classList.remove('active'); }
+
+async function saveLabel() {
+  const id = document.getElementById('labelId').value;
+  const data = {
+    name: document.getElementById('labelName').value,
+    color: document.getElementById('labelColor').value
+  };
+  try {
+    if (id) {
+      await apiPut('/api/labels/' + id, data);
+    } else {
+      await apiPost('/api/labels', data);
+    }
+    closeLabelModal();
+    await loadAll();
+  } catch (e) { alert('Failed to save label: ' + e.message); }
+}
+
+async function deleteLabel() {
+  const id = document.getElementById('labelId').value;
+  if (!id || !confirm('Delete this label?')) return;
+  try {
+    await apiDelete('/api/labels/' + id);
+    closeLabelModal();
+    await loadAll();
+  } catch (e) { alert('Failed to delete label: ' + e.message); }
+}
+
+// === MODAL: TASK DETAIL ===
+async function openTaskModal(taskId) {
+  const task = allTasks.find(t => t.id === taskId);
+  if (!task) return;
+
+  document.getElementById('taskModalTitle').textContent = task.title;
+  document.getElementById('taskModalId').value = task.id;
+
+  // Map status to modal select
+  const statusSelect = document.getElementById('taskModalStatus');
+  const colStatus = taskColumnStatus(task);
+  // Set the actual DB status but show column mapping
+  statusSelect.value = task.status || 'pending';
+
+  // Populate stories
+  const storySel = document.getElementById('taskModalStory');
+  storySel.innerHTML = '<option value="">— None —</option>' + allStories.map(s =>
+    '<option value="'+s.id+'"'+(task.story_id == s.id ? ' selected' : '')+'>'+esc(s.title)+'</option>'
+  ).join('');
+
+  // Render label chips
+  const labelsDiv = document.getElementById('taskModalLabels');
+  const taskLabelIds = (task.labels || []).map(l => l.id);
+  labelsDiv.innerHTML = allLabels.map(l =>
+    '<span class="label-chip'+(taskLabelIds.includes(l.id) ? ' selected' : '')+'" ' +
+    'data-label-id="'+l.id+'" onclick="toggleLabelChip(this)" ' +
+    'style="color:'+esc(l.color)+';background:'+esc(l.color)+'22">'+esc(l.name)+'</span>'
+  ).join('');
+
+  document.getElementById('taskModal').classList.add('active');
+}
+
+function toggleLabelChip(el) {
+  el.classList.toggle('selected');
+}
+
+function closeTaskModal() { document.getElementById('taskModal').classList.remove('active'); }
+
+async function saveTaskDetail() {
+  const id = document.getElementById('taskModalId').value;
+  const status = document.getElementById('taskModalStatus').value;
+  const storyId = document.getElementById('taskModalStory').value || null;
+  const selectedLabels = [];
+  document.querySelectorAll('#taskModalLabels .label-chip.selected').forEach(chip => {
+    selectedLabels.push(parseInt(chip.dataset.labelId));
+  });
+
+  try {
+    await apiPatch('/api/tasks/' + id, {
+      status: status,
+      story_id: storyId ? parseInt(storyId) : null,
+      labels: selectedLabels
+    });
+    closeTaskModal();
+    await loadAll();
+  } catch (e) { alert('Failed to update task: ' + e.message); }
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+
+// === INIT ===
 loadAll();
 setInterval(loadAll, 60000);
 </script>
