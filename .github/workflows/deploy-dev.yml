@@ -1,4 +1,4 @@
-name: 🧪 Deploy DEV (Hostinger VPS)
+name: 🧪 Deploy DEV (Oracle VPS)
 
 on:
   push:
@@ -17,13 +17,13 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.DEV_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 158.180.60.61 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 187.124.178.155 >> ~/.ssh/known_hosts
 
-      - name: 🚢 Deploy to DEV (Hostinger 158.180.60.61)
+      - name: 🚢 Deploy to DEV (Oracle 187.124.178.155)
         run: |
-          ssh ubuntu@158.180.60.61 "
+          ssh root@187.124.178.155 "
             set -e
-            cd /data/clawhub-dashboard
+            cd /opt/clawhub-dashboard
             echo '📦 Pulling latest code (dev)...'
             git fetch origin
             git checkout dev || git checkout -b dev origin/dev
