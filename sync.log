@@ -1338,3 +1338,12 @@ To github.com:TheCabbageBaggage/clawhub-dashboard.git
  1 file changed, 4 insertions(+)
 To github.com:TheCabbageBaggage/clawhub-dashboard.git
    faaec89..f1a2f95  master -> master
+[master 5f9df1b] auto: dashboard sync 2026-08-10 18:15
+ 5 files changed, 3067 insertions(+)
+ create mode 100644 briefing/index.html
+ create mode 100644 newsletter/knowledge.html
+ create mode 100644 newsletter/status.html
+ create mode 100644 newsletter/status.html.bak
+ create mode 100644 newsletter/status.html.bak2
+To github.com:TheCabbageBaggage/clawhub-dashboard.git
+   a05496d..5f9df1b  master -> master
