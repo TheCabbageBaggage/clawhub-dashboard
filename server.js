@@ -640,7 +640,7 @@ const server = http.createServer(async (req, res) => {
 
         // --- TASK PATCH (Kanban drag & drop, story assignment, labels) ---
         if (pathname.match(/^\/api\/tasks\/[0-9a-f-]+$/) && req.method === 'PATCH') {
-            const id = parseInt(pathname.split('/')[3]);
+            const id = pathname.split('/')[3];
             let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
             const db = getTaskDb();
             if (!db) { jsonResponse(res, 503, { error: 'Task database not available' }); return; }
