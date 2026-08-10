@@ -21,11 +21,11 @@ services:
       - ollama-xwy9_default
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.clawhub-http.rule=Host(`claw.lkohl.duckdns.org`)"
+      - "traefik.http.routers.clawhub-http.rule=Host(`claw.lkohl.duckdns.org`) || Host(`clawhub.cabbagebaggage.net`)"
       - "traefik.http.routers.clawhub-http.entrypoints=web"
       - "traefik.http.routers.clawhub-http.middlewares=clawhub-redirect"
       - "traefik.http.routers.clawhub-http.service=clawhub-svc"
-      - "traefik.http.routers.clawhub-https.rule=Host(`claw.lkohl.duckdns.org`)"
+      - "traefik.http.routers.clawhub-https.rule=Host(`claw.lkohl.duckdns.org`) || Host(`clawhub.cabbagebaggage.net`)"
       - "traefik.http.routers.clawhub-https.entrypoints=websecure"
       - "traefik.http.routers.clawhub-https.tls=true"
       - "traefik.http.routers.clawhub-https.tls.certresolver=letsencrypt"
