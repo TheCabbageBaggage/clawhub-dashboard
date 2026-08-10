@@ -1,0 +1,14 @@
+{
+  "name": "clawhub-dashboard",
+  "version": "2.1.0",
+  "description": "ClawHub Dashboard with secure auth + dynamic task engine integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "google-auth-library": "^9.15.1",
+    "better-sqlite3": "^11.7.0"
+  }
+}
