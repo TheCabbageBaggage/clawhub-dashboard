@@ -11,7 +11,7 @@ services:
       - dashboard-data:/app/data
       - ./dashboard:/app/dashboard:ro
       - ./auth.json:/app/data/auth.json:ro
-      - ./tasks.db:/app/data/tasks.db:ro
+      - ./tasks.db:/app/data/tasks.db
     environment:
       - NODE_ENV=production
       - PORT=3001
