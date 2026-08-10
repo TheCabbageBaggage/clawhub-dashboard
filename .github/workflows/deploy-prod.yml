@@ -1,4 +1,4 @@
-name: 🚀 Auto-Deploy ClawHub Dashboard
+name: 🚀 Deploy PROD (Oracle VPS)
 
 on:
   push:
@@ -19,15 +19,15 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 187.124.178.155 >> ~/.ssh/known_hosts
 
-      - name: 🚢 Deploy via Docker Compose
+      - name: 🚢 Deploy to PROD (Oracle 187.124.178.155)
         run: |
           ssh root@187.124.178.155 "
             set -e
             cd /opt/clawhub-dashboard
-            echo '📦 Pulling latest code...'
+            echo '📦 Pulling latest code (master)...'
             git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/TheCabbageBaggage/clawhub-dashboard.git master
             echo '🔨 Rebuilding container...'
             docker compose up -d --build
-            echo '✅ Deployment complete!'
+            echo '✅ PROD deployment complete!'
             docker ps --filter name=clawhub-dashboard --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
           "
