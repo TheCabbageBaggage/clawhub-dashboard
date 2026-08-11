@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSH &amp; Storage Box — ClawHub</title>
+<style>
+/* ===== ACTA Design System ===== */
+:root, [data-theme="dark"] {
+  --bg: #0a0e14; --bg2: #11161e; --bg3: #1a2230;
+  --card: #141c26; --card-hover: #1a2432;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.25);
+  --secondary: #1A3440; --accent: #3D8B8B;
+  --accent-glow: rgba(61,139,139,0.2);
+  --text: #e0e4ea; --text2: #8892a8; --text3: #5a6478;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --border: rgba(255,255,255,0.06); --border2: rgba(255,255,255,0.1);
+  --radius: 16px; --radius-sm: 10px; --radius-xs: 6px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(10,14,20,0.85);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+  --code-bg: #161b22;
+}
+[data-theme="light"] {
+  --bg: #f5f6f8; --bg2: #ffffff; --bg3: #e8ecf1;
+  --card: #ffffff; --card-hover: #f0f3f6;
+  --primary: #2C5F7C; --primary-glow: rgba(44,95,124,0.12);
+  --secondary: #1A3440; --accent: #2C5F7C;
+  --accent-glow: rgba(44,95,124,0.1);
+  --text: #1a1d27; --text2: #5a6478; --text3: #8892a8;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.12);
+  --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --nav-bg: rgba(245,246,248,0.9);
+  --hero-gradient: linear-gradient(135deg, #1A3440 0%, #2C5F7C 100%);
+  --hero-text: #fff; --hero-text2: rgba(255,255,255,0.7);
+  --code-bg: #f0f2f5;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.nav {
+  position: sticky; top:0; z-index:100;
+  background: var(--nav-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.05rem; }
+.nav-brand .logo { width:30px; height:30px; border-radius:8px; background:var(--hero-gradient); display:flex; align-items:center; justify-content:center; font-size:15px; }
+.nav-links { display:flex; gap:4px; }
+.nav-links a {
+  color: var(--text2); text-decoration:none; padding:8px 14px;
+  border-radius:8px; font-size:0.9rem; transition: var(--transition);
+}
+.nav-links a:hover { color:var(--text); background:var(--bg3); }
+.nav-links a.active { color:var(--accent); background:var(--accent-glow); }
+.container { max-width: 1000px; margin: 0 auto; padding: 32px 24px 60px; }
+.hero {
+  background: var(--hero-gradient); border-radius: var(--radius);
+  padding: 36px 32px; color: var(--hero-text); margin-bottom: 28px;
+  box-shadow: var(--shadow);
+}
+.hero h1 { font-size: 1.7rem; margin-bottom: 8px; }
+.hero p { color: var(--hero-text2); font-size: 0.95rem; max-width: 700px; }
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.card h2 { font-size: 1.15rem; margin-bottom: 16px; display:flex; align-items:center; gap:8px; }
+.card h2 .icon { width:28px; height:28px; border-radius:8px; background:var(--accent-glow); display:flex; align-items:center; justify-content:center; font-size:14px; }
+.field { margin-bottom: 16px; }
+.field label { display:block; font-size:0.8rem; color:var(--text2); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.field .value {
+  background: var(--code-bg); border:1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size:0.85rem;
+  word-break: break-all; display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.field .value .copy-btn {
+  background: var(--accent); color:#fff; border:none; border-radius:6px;
+  padding:6px 12px; font-size:0.75rem; cursor:pointer; white-space:nowrap;
+  transition: var(--transition);
+}
+.field .value .copy-btn:hover { opacity:0.85; }
+.field .value textarea {
+  width:100%; background:transparent; border:none; color:var(--text);
+  font-family:inherit; font-size:0.8rem; resize:vertical; min-height:80px; outline:none;
+}
+.badge {
+  display:inline-block; padding:4px 12px; border-radius:20px;
+  font-size:0.75rem; font-weight:600; margin-bottom:12px;
+}
+.badge.ready { background:rgba(16,185,129,0.15); color:var(--success); }
+.badge.pending { background:rgba(245,158,11,0.15); color:var(--warn); }
+.status-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.status-dot { width:10px; height:10px; border-radius:50%; }
+.status-dot.ok { background:var(--success); box-shadow:0 0 8px var(--success); }
+.status-dot.wait { background:var(--warn); box-shadow:0 0 8px var(--warn); }
+.status-text { font-size:0.9rem; color:var(--text2); }
+.hint {
+  background: var(--bg3); border-left:3px solid var(--accent);
+  border-radius: var(--radius-xs); padding: 14px 16px; font-size:0.85rem;
+  color: var(--text2); margin-top: 16px;
+}
+.hint code { background:var(--code-bg); padding:2px 6px; border-radius:4px; font-size:0.8rem; }
+.toast {
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(100px);
+  background:var(--bg3); color:var(--text); border:1px solid var(--border2);
+  padding:12px 20px; border-radius:10px; font-size:0.85rem;
+  box-shadow:var(--shadow); opacity:0; transition: var(--transition); z-index:200;
+}
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+.loading { text-align:center; padding:40px; color:var(--text3); }
+@media (max-width: 640px) {
+  .nav-links a { padding:8px 8px; font-size:0.8rem; }
+  .container { padding:20px 16px 40px; }
+  .hero { padding:24px 20px; }
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-brand"><div class="logo">🔐</div> ClawHub</div>
+  <div class="nav-links">
+    <a href="/">Dashboard</a>
+    <a href="/research.html">Recherchen</a>
+    <a href="/ssh.html" class="active">SSH</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="hero">
+    <h1>🔐 SSH &amp; Storage Box</h1>
+    <p>Zugangsdaten für die Hetzner Storage Box (BX11, 1 TB). SSH-Key und Passwort sind generiert und sicher gespeichert. Hostname und Benutzername werden nach der Bestellung ergänzt.</p>
+  </div>
+
+  <div id="content" class="loading">Lade Zugangsdaten…</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+let toastTimer;
+
+function showToast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+async function copyText(text, label) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(label + ' kopiert ✓');
+  } catch (e) {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast(label + ' kopiert ✓');
+  }
+}
+
+function field(label, value, copyLabel, isTextarea) {
+  const copyBtn = value ? `<button class="copy-btn" onclick="copyText(this.dataset.v,'${copyLabel}')" data-v="${value.replace(/"/g,'&quot;')}">Kopieren</button>` : '';
+  const valHtml = isTextarea
+    ? `<textarea readonly>${value || ''}</textarea>`
+    : (value || '<span style="color:var(--text3)">— noch nicht gesetzt —</span>');
+  return `<div class="field"><label>${label}</label><div class="value">${valHtml}${copyBtn}</div></div>`;
+}
+
+async function load() {
+  try {
+    const r = await fetch('/api/ssh');
+    if (r.status === 401) { window.location.href = '/login.html'; return; }
+    const d = await r.json();
+    if (!d.configured) {
+      $('#content').innerHTML = `<div class="card"><span class="badge pending">Nicht konfiguriert</span><p>Noch keine Zugangsdaten vorhanden.</p></div>`;
+      return;
+    }
+    const ready = d.hostname && d.username;
+    const statusBadge = ready
+      ? '<span class="badge ready">✅ Bereit</span>'
+      : '<span class="badge pending">⏳ Wartet auf Bestellung</span>';
+    const statusRow = ready
+      ? '<div class="status-row"><div class="status-dot ok"></div><span class="status-text">Storage Box konfiguriert und bereit.</span></div>'
+      : '<div class="status-row"><div class="status-dot wait"></div><span class="status-text">SSH-Key und Passwort sind bereit. Hostname/Benutzer werden nach der Hetzner-Bestellung ergänzt.</span></div>';
+
+    $('#content').innerHTML = `
+      <div class="card">
+        ${statusBadge}
+        ${statusRow}
+        ${field('Hostname', d.hostname, 'Hostname')}
+        ${field('Benutzername', d.username, 'Benutzername')}
+        ${field('Passwort', d.password, 'Passwort')}
+      </div>
+      <div class="card">
+        <h2><span class="icon">🔑</span> SSH Public Key</h2>
+        ${field('Public Key (für Hetzner hinterlegen)', d.publicKey, 'Public Key', true)}
+        <div class="hint">Diesen Public Key hinterlegst du bei Hetzner in der Storage Box Konfiguration (SSH-Keys).</div>
+      </div>
+      <div class="card">
+        <h2><span class="icon">🔒</span> SSH Private Key</h2>
+        ${field('Private Key (nur für Automation, nicht teilen)', d.privateKey, 'Private Key', true)}
+        <div class="hint">Der Private Key wird für die rclone-Synchronisation und Backups verwendet. <strong>Niemals weitergeben.</strong></div>
+      </div>
+      <div class="card">
+        <h2><span class="icon">ℹ️</span> Hinweis</h2>
+        <p style="font-size:0.9rem;color:var(--text2)">${d.note || ''}</p>
+      </div>`;
+  } catch (e) {
+    $('#content').innerHTML = `<div class="card"><span class="badge pending">Fehler</span><p>Zugangsdaten konnten nicht geladen werden: ${e.message}</p></div>`;
+  }
+}
+
+load();
+</script>
+</body>
+</html>

@@ -457,6 +457,27 @@ const server = http.createServer(async (req, res) => {
         const currentUser = users[userKey];
         const isAdmin = currentUser && currentUser.role === 'admin';
 
+        // === SSH / STORAGE BOX CREDENTIALS ===
+        if (pathname === '/api/ssh' && req.method === 'GET') {
+            const sshDir = path.join(__dirname, '..', 'infra', 'storagebox');
+            const pubKeyPath = path.join(sshDir, 'id_ed25519_storagebox.pub');
+            const privKeyPath = path.join(sshDir, 'id_ed25519_storagebox');
+            const passPath = path.join(sshDir, 'password.txt');
+            const metaPath = path.join(sshDir, 'meta.json');
+            const read = (p) => { try { return fs.readFileSync(p, 'utf8').trim(); } catch (e) { return null; } };
+            const meta = (() => { try { return JSON.parse(fs.readFileSync(metaPath, 'utf8')); } catch (e) { return {}; } })();
+            jsonResponse(res, 200, {
+                configured: !!(pubKeyPath && read(pubKeyPath)),
+                hostname: meta.hostname || null,
+                username: meta.username || null,
+                publicKey: read(pubKeyPath) || null,
+                privateKey: read(privKeyPath) || null,
+                password: read(passPath) || null,
+                note: meta.note || 'SSH-Key und Passwort für die Hetzner Storage Box. Hostname/Benutzer werden nach der Bestellung ergänzt.'
+            });
+            return;
+        }
+
         // === TASK API ENDPOINTS ===
         if (pathname === '/api/tasks/summary') {
             const summary = getTaskSummary();
