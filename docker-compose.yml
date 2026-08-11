@@ -5,8 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: clawhub-dashboard
     restart: unless-stopped
-    expose:
-      - "3001"
+    ports:
+      - "3001:3001"
     volumes:
       - dashboard-data:/app/data
       - ./dashboard:/app/dashboard:ro
