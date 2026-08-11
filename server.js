@@ -460,21 +460,57 @@ const server = http.createServer(async (req, res) => {
         // === SSH / STORAGE BOX CREDENTIALS ===
         if (pathname === '/api/ssh' && req.method === 'GET') {
             const sshDir = path.join(__dirname, '..', 'infra', 'storagebox');
-            const pubKeyPath = path.join(sshDir, 'id_ed25519_storagebox.pub');
-            const privKeyPath = path.join(sshDir, 'id_ed25519_storagebox');
-            const passPath = path.join(sshDir, 'password.txt');
-            const metaPath = path.join(sshDir, 'meta.json');
             const read = (p) => { try { return fs.readFileSync(p, 'utf8').trim(); } catch (e) { return null; } };
-            const meta = (() => { try { return JSON.parse(fs.readFileSync(metaPath, 'utf8')); } catch (e) { return {}; } })();
-            jsonResponse(res, 200, {
-                configured: !!(pubKeyPath && read(pubKeyPath)),
-                hostname: meta.hostname || null,
-                username: meta.username || null,
-                publicKey: read(pubKeyPath) || null,
-                privateKey: read(privKeyPath) || null,
-                password: read(passPath) || null,
-                note: meta.note || 'SSH-Key und Passwort für die Hetzner Storage Box. Hostname/Benutzer werden nach der Bestellung ergänzt.'
-            });
+            const readMeta = (p) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { return {}; } };
+
+            // Haupt-Box (Legacy: id_ed25519_storagebox)
+            const boxes = [];
+            const mainMeta = readMeta(path.join(sshDir, 'meta.json'));
+            const mainPub = read(path.join(sshDir, 'id_ed25519_storagebox.pub'));
+            if (mainPub) {
+                boxes.push({
+                    id: 'box1',
+                    name: mainMeta.name || 'Storage Box 1',
+                    hostname: mainMeta.hostname || null,
+                    username: mainMeta.username || null,
+                    ssh_port: mainMeta.ssh_port || 23,
+                    publicKey: mainPub,
+                    privateKey: read(path.join(sshDir, 'id_ed25519_storagebox')) || null,
+                    password: read(path.join(sshDir, 'password.txt')) || null,
+                    note: mainMeta.note || '',
+                    configured: !!(mainMeta.hostname && mainMeta.username)
+                });
+            }
+
+            // Zusätzliche Boxes aus boxes/ Verzeichnis
+            const boxesDir = path.join(sshDir, 'boxes');
+            if (fs.existsSync(boxesDir)) {
+                const dirs = fs.readdirSync(boxesDir, { withFileTypes: true })
+                    .filter(d => d.isDirectory())
+                    .map(d => d.name)
+                    .sort();
+                for (const dir of dirs) {
+                    const bDir = path.join(boxesDir, dir);
+                    const meta = readMeta(path.join(bDir, 'meta.json'));
+                    const pub = read(path.join(bDir, 'id_ed25519.pub'));
+                    if (pub) {
+                        boxes.push({
+                            id: dir,
+                            name: meta.name || dir,
+                            hostname: meta.hostname || null,
+                            username: meta.username || null,
+                            ssh_port: meta.ssh_port || 23,
+                            publicKey: pub,
+                            privateKey: read(path.join(bDir, 'id_ed25519')) || null,
+                            password: read(path.join(bDir, 'password.txt')) || null,
+                            note: meta.note || '',
+                            configured: !!(meta.hostname && meta.username)
+                        });
+                    }
+                }
+            }
+
+            jsonResponse(res, 200, { boxes });
             return;
         }
 

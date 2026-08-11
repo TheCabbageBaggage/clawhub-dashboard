@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SSH &amp; Storage Box — ClawHub</title>
+<title>SSH &amp; Storage Boxes — ClawHub</title>
 <style>
 /* ===== ACTA Design System ===== */
 :root, [data-theme="dark"] {
@@ -72,6 +72,13 @@ body {
 }
 .hero h1 { font-size: 1.7rem; margin-bottom: 8px; }
 .hero p { color: var(--hero-text2); font-size: 0.95rem; max-width: 700px; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:6px; margin-bottom:20px;
+  background:var(--bg3); color:var(--text); border:1px solid var(--border);
+  padding:8px 16px; border-radius:8px; cursor:pointer; font-size:0.85rem;
+  transition: var(--transition); text-decoration:none;
+}
+.back-btn:hover { border-color:var(--accent); color:var(--accent); }
 .card {
   background: var(--card); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
@@ -122,10 +129,26 @@ body {
 }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 .loading { text-align:center; padding:40px; color:var(--text3); }
+/* ===== Box List ===== */
+.box-list { display:flex; flex-direction:column; gap:12px; }
+.box-item {
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px 24px; cursor:pointer; transition: var(--transition);
+}
+.box-item:hover { border-color:var(--accent); background:var(--card-hover); transform:translateY(-1px); }
+.box-item .box-info { display:flex; align-items:center; gap:16px; }
+.box-item .box-icon { width:44px; height:44px; border-radius:12px; background:var(--accent-glow); display:flex; align-items:center; justify-content:center; font-size:20px; }
+.box-item .box-name { font-weight:600; font-size:1rem; }
+.box-item .box-sub { font-size:0.8rem; color:var(--text3); margin-top:2px; }
+.box-item .box-status { display:flex; align-items:center; gap:8px; }
+.box-item .box-arrow { color:var(--text3); font-size:1.2rem; }
+.empty { text-align:center; padding:40px; color:var(--text3); }
 @media (max-width: 640px) {
   .nav-links a { padding:8px 8px; font-size:0.8rem; }
   .container { padding:20px 16px 40px; }
   .hero { padding:24px 20px; }
+  .box-item { flex-direction:column; align-items:flex-start; }
 }
 </style>
 </head>
@@ -140,12 +163,7 @@ body {
 </nav>
 
 <div class="container">
-  <div class="hero">
-    <h1>🔐 SSH &amp; Storage Box</h1>
-    <p>Zugangsdaten für die Hetzner Storage Box (BX11, 1 TB). SSH-Key und Passwort sind generiert und sicher gespeichert. Hostname und Benutzername werden nach der Bestellung ergänzt.</p>
-  </div>
-
-  <div id="content" class="loading">Lade Zugangsdaten…</div>
+  <div id="view"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -153,6 +171,7 @@ body {
 <script>
 const $ = (s) => document.querySelector(s);
 let toastTimer;
+let boxes = [];
 
 function showToast(msg) {
   const t = $('#toast');
@@ -167,7 +186,6 @@ async function copyText(text, label) {
     await navigator.clipboard.writeText(text);
     showToast(label + ' kopiert ✓');
   } catch (e) {
-    // Fallback
     const ta = document.createElement('textarea');
     ta.value = text; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
@@ -183,47 +201,85 @@ function field(label, value, copyLabel, isTextarea) {
   return `<div class="field"><label>${label}</label><div class="value">${valHtml}${copyBtn}</div></div>`;
 }
 
+function renderList() {
+  const hero = `<div class="hero">
+    <h1>🔐 SSH &amp; Storage Boxes</h1>
+    <p>Alle Storage-Box-Zugänge. Klicke auf eine Box, um die Details (Hostname, Benutzer, Passwort, SSH-Keys) zu sehen.</p>
+  </div>`;
+
+  if (!boxes.length) {
+    $('#view').innerHTML = hero + `<div class="card"><div class="empty">Keine Storage Boxes konfiguriert.</div></div>`;
+    return;
+  }
+
+  const items = boxes.map(b => {
+    const status = b.configured
+      ? '<span class="badge ready">✅ Bereit</span>'
+      : '<span class="badge pending">⏳ Wartet</span>';
+    const sub = b.hostname ? `${b.hostname} · ${b.username || '?'}` : 'Hostname noch nicht gesetzt';
+    return `<div class="box-item" onclick="showDetail('${b.id}')">
+      <div class="box-info">
+        <div class="box-icon">📦</div>
+        <div>
+          <div class="box-name">${b.name}</div>
+          <div class="box-sub">${sub}</div>
+        </div>
+      </div>
+      <div class="box-status">${status}<span class="box-arrow">›</span></div>
+    </div>`;
+  }).join('');
+
+  $('#view').innerHTML = hero + `<div class="box-list">${items}</div>`;
+}
+
+function renderDetail(id) {
+  const b = boxes.find(x => x.id === id);
+  if (!b) { renderList(); return; }
+  const ready = b.configured;
+  const statusBadge = ready
+    ? '<span class="badge ready">✅ Bereit</span>'
+    : '<span class="badge pending">⏳ Wartet auf Bestellung</span>';
+  const statusRow = ready
+    ? '<div class="status-row"><div class="status-dot ok"></div><span class="status-text">Storage Box konfiguriert und bereit.</span></div>'
+    : '<div class="status-row"><div class="status-dot wait"></div><span class="status-text">SSH-Key und Passwort sind bereit. Hostname/Benutzer werden nach der Hetzner-Bestellung ergänzt.</span></div>';
+
+  $('#view').innerHTML = `
+    <a class="back-btn" onclick="renderList()">← Zurück zur Übersicht</a>
+    <div class="hero">
+      <h1>📦 ${b.name}</h1>
+      <p>${b.note || ''}</p>
+    </div>
+    <div class="card">
+      ${statusBadge}
+      ${statusRow}
+      ${field('Hostname', b.hostname, 'Hostname')}
+      ${field('Benutzername', b.username, 'Benutzername')}
+      ${field('SSH-Port', b.ssh_port, 'SSH-Port')}
+      ${field('Passwort', b.password, 'Passwort')}
+    </div>
+    <div class="card">
+      <h2><span class="icon">🔑</span> SSH Public Key</h2>
+      ${field('Public Key (für Hetzner hinterlegen)', b.publicKey, 'Public Key', true)}
+      <div class="hint">Diesen Public Key hinterlegst du bei Hetzner in der Storage Box Konfiguration (SSH-Keys).</div>
+    </div>
+    <div class="card">
+      <h2><span class="icon">🔒</span> SSH Private Key</h2>
+      ${field('Private Key (nur für Automation, nicht teilen)', b.privateKey, 'Private Key', true)}
+      <div class="hint">Der Private Key wird für die rclone-Synchronisation und Backups verwendet. <strong>Niemals weitergeben.</strong></div>
+    </div>`;
+}
+
+function showDetail(id) { renderDetail(id); window.scrollTo(0,0); }
+
 async function load() {
   try {
     const r = await fetch('/api/ssh');
     if (r.status === 401) { window.location.href = '/login.html'; return; }
     const d = await r.json();
-    if (!d.configured) {
-      $('#content').innerHTML = `<div class="card"><span class="badge pending">Nicht konfiguriert</span><p>Noch keine Zugangsdaten vorhanden.</p></div>`;
-      return;
-    }
-    const ready = d.hostname && d.username;
-    const statusBadge = ready
-      ? '<span class="badge ready">✅ Bereit</span>'
-      : '<span class="badge pending">⏳ Wartet auf Bestellung</span>';
-    const statusRow = ready
-      ? '<div class="status-row"><div class="status-dot ok"></div><span class="status-text">Storage Box konfiguriert und bereit.</span></div>'
-      : '<div class="status-row"><div class="status-dot wait"></div><span class="status-text">SSH-Key und Passwort sind bereit. Hostname/Benutzer werden nach der Hetzner-Bestellung ergänzt.</span></div>';
-
-    $('#content').innerHTML = `
-      <div class="card">
-        ${statusBadge}
-        ${statusRow}
-        ${field('Hostname', d.hostname, 'Hostname')}
-        ${field('Benutzername', d.username, 'Benutzername')}
-        ${field('Passwort', d.password, 'Passwort')}
-      </div>
-      <div class="card">
-        <h2><span class="icon">🔑</span> SSH Public Key</h2>
-        ${field('Public Key (für Hetzner hinterlegen)', d.publicKey, 'Public Key', true)}
-        <div class="hint">Diesen Public Key hinterlegst du bei Hetzner in der Storage Box Konfiguration (SSH-Keys).</div>
-      </div>
-      <div class="card">
-        <h2><span class="icon">🔒</span> SSH Private Key</h2>
-        ${field('Private Key (nur für Automation, nicht teilen)', d.privateKey, 'Private Key', true)}
-        <div class="hint">Der Private Key wird für die rclone-Synchronisation und Backups verwendet. <strong>Niemals weitergeben.</strong></div>
-      </div>
-      <div class="card">
-        <h2><span class="icon">ℹ️</span> Hinweis</h2>
-        <p style="font-size:0.9rem;color:var(--text2)">${d.note || ''}</p>
-      </div>`;
+    boxes = d.boxes || [];
+    renderList();
   } catch (e) {
-    $('#content').innerHTML = `<div class="card"><span class="badge pending">Fehler</span><p>Zugangsdaten konnten nicht geladen werden: ${e.message}</p></div>`;
+    $('#view').innerHTML = `<div class="card"><span class="badge pending">Fehler</span><p>Zugangsdaten konnten nicht geladen werden: ${e.message}</p></div>`;
   }
 }
 
