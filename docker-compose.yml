@@ -12,6 +12,7 @@ services:
       - ./dashboard:/app/dashboard:ro
       - ./auth.json:/app/data/auth.json:ro
       - ./tasks.db:/app/data/tasks.db
+      - ../infra/storagebox:/infra/storagebox:ro
     environment:
       - NODE_ENV=production
       - PORT=3001
