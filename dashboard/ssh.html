@@ -194,10 +194,11 @@ async function copyText(text, label) {
 }
 
 function field(label, value, copyLabel, isTextarea) {
-  const copyBtn = value ? `<button class="copy-btn" onclick="copyText(this.dataset.v,'${copyLabel}')" data-v="${value.replace(/"/g,'&quot;')}">Kopieren</button>` : '';
+  const str = value === null || value === undefined ? '' : String(value);
+  const copyBtn = str ? `<button class="copy-btn" data-copy="${str.replace(/"/g,'&quot;')}" data-label="${copyLabel}">Kopieren</button>` : '';
   const valHtml = isTextarea
-    ? `<textarea readonly>${value || ''}</textarea>`
-    : (value || '<span style="color:var(--text3)">— noch nicht gesetzt —</span>');
+    ? `<textarea readonly>${str || ''}</textarea>`
+    : (str || '<span style="color:var(--text3)">— noch nicht gesetzt —</span>');
   return `<div class="field"><label>${label}</label><div class="value">${valHtml}${copyBtn}</div></div>`;
 }
 
@@ -217,7 +218,7 @@ function renderList() {
       ? '<span class="badge ready">✅ Bereit</span>'
       : '<span class="badge pending">⏳ Wartet</span>';
     const sub = b.hostname ? `${b.hostname} · ${b.username || '?'}` : 'Hostname noch nicht gesetzt';
-    return `<div class="box-item" onclick="showDetail('${b.id}')">
+    return `<div class="box-item" data-box-id="${b.id}">
       <div class="box-info">
         <div class="box-icon">📦</div>
         <div>
@@ -230,6 +231,11 @@ function renderList() {
   }).join('');
 
   $('#view').innerHTML = hero + `<div class="box-list">${items}</div>`;
+
+  // Event-Delegation für Box-Klicks (zuverlässiger als onclick-Attribute)
+  document.querySelectorAll('.box-item').forEach(el => {
+    el.addEventListener('click', () => showDetail(el.dataset.boxId));
+  });
 }
 
 function renderDetail(id) {
@@ -244,7 +250,7 @@ function renderDetail(id) {
     : '<div class="status-row"><div class="status-dot wait"></div><span class="status-text">SSH-Key und Passwort sind bereit. Hostname/Benutzer werden nach der Hetzner-Bestellung ergänzt.</span></div>';
 
   $('#view').innerHTML = `
-    <a class="back-btn" onclick="renderList()">← Zurück zur Übersicht</a>
+    <a class="back-btn" id="back-btn">← Zurück zur Übersicht</a>
     <div class="hero">
       <h1>📦 ${b.name}</h1>
       <p>${b.note || ''}</p>
@@ -267,6 +273,13 @@ function renderDetail(id) {
       ${field('Private Key (nur für Automation, nicht teilen)', b.privateKey, 'Private Key', true)}
       <div class="hint">Der Private Key wird für die rclone-Synchronisation und Backups verwendet. <strong>Niemals weitergeben.</strong></div>
     </div>`;
+
+  // Event-Delegation für Zurück-Button und Kopier-Buttons
+  const backBtn = document.getElementById('back-btn');
+  if (backBtn) backBtn.addEventListener('click', () => renderList());
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => copyText(btn.dataset.copy, btn.dataset.label));
+  });
 }
 
 function showDetail(id) { renderDetail(id); window.scrollTo(0,0); }
