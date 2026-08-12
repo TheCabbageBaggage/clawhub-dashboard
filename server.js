@@ -777,6 +777,41 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // === LIVE METRICS API (Ollama Usage + System Dashboard) ===
+        // Liefert die vom Watcher exportierten Metriken live aus dem data-Verzeichnis
+        if (pathname === '/api/metrics') {
+            const dataDir = path.join(DASHBOARD_DIR, 'data');
+            const metricsFiles = ['ollama-usage.json', 'system.json', 'containers.json', 'security.json', 'storage.json'];
+            const result = { timestamp: new Date().toISOString(), metrics: {} };
+            let pending = metricsFiles.length;
+            metricsFiles.forEach((file) => {
+                const filePath = path.join(dataDir, file);
+                fs.readFile(filePath, 'utf8', (err, content) => {
+                    if (err) { result.metrics[file.replace('.json', '')] = { error: 'not_found' }; }
+                    else {
+                        try { result.metrics[file.replace('.json', '')] = JSON.parse(content); }
+                        catch (e) { result.metrics[file.replace('.json', '')] = { error: 'parse_error' }; }
+                    }
+                    pending -= 1;
+                    if (pending === 0) { jsonResponse(res, 200, result); }
+                });
+            });
+            return;
+        }
+
+        // Einzelne Metrik abrufen: /api/metrics/ollama-usage
+        if (pathname.startsWith('/api/metrics/')) {
+            const name = pathname.replace('/api/metrics/', '').replace('.json', '');
+            const filePath = path.join(DASHBOARD_DIR, 'data', name + '.json');
+            fs.readFile(filePath, 'utf8', (err, content) => {
+                if (err) { jsonResponse(res, 404, { error: 'not_found' }); return; }
+                setSecurityHeaders(res);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(content);
+            });
+            return;
+        }
+
         // Research catalog
         if (pathname === '/api/research') {
             const catalogPath = path.join(DASHBOARD_DIR, 'data', 'research_catalog.json');
