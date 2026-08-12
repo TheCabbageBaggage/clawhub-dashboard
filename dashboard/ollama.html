@@ -75,15 +75,14 @@ nav .refresh-badge { font-size:12px; color:var(--text3); background:rgba(255,255
 const REFRESH_INTERVAL = 30000; // 30 Sekunden
 
 function getToken() {
-  return localStorage.getItem('clawhub_token') || sessionStorage.getItem('clawhub_token') || '';
+  // Session-Cookie (clawhub_session) wird automatisch mitgesendet — kein manueller Header nötig
+  return '';
 }
 
 async function fetchMetrics() {
-  const token = getToken();
   const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = 'Bearer ' + token;
-
-  const resp = await fetch('/api/metrics', { headers, cache: 'no-store' });
+  // Session-Cookie wird automatisch vom Browser mitgesendet
+  const resp = await fetch('/api/metrics', { headers, cache: 'no-store', credentials: 'same-origin' });
   if (!resp.ok) {
     if (resp.status === 401) {
       showError('Nicht autorisiert. Bitte einloggen.');
