@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  drive-sync:
+    build: .
+    container_name: drive-sync-container
+    restart: unless-stopped
+    volumes:
+      # Storagebox (vom Host gemountet)
+      - /mnt/storagebox:/mnt/storagebox
+      # rclone-Konfiguration (gdrive-Token + storagebox)
+      - /opt/drive-sync-container/config:/root/.config/rclone:ro
+      # Storagebox SSH-Key
+      - /opt/infra/storagebox:/root/.storagebox:ro
+      # Logs
+      - /opt/drive-sync-container/data/logs:/var/log
+    environment:
+      - TZ=Europe/Berlin
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: 3

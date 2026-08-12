@@ -1,0 +1,3 @@
+# Drive-Sync-Container Cron-Jobs
+# Alle 30 Minuten: Google Drive ↔ Storagebox Sync
+*/30 * * * * /usr/local/bin/drive_sync.sh >> /var/log/drive_sync.log 2>&1

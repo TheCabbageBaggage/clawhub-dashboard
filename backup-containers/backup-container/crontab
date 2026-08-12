@@ -1,0 +1,5 @@
+# Backup-Container Cron-Jobs
+# Täglich 02:00 Uhr: restic Backup
+0 2 * * * /usr/local/bin/backup.sh >> /var/log/backup.log 2>&1
+# Täglich 03:00 Uhr: rsync Sync
+0 3 * * * /usr/local/bin/rsync_sync.sh >> /var/log/rsync_sync.log 2>&1

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backup:
+    build: .
+    container_name: backup-container
+    restart: unless-stopped
+    volumes:
+      # Storagebox (vom Host gemountet)
+      - /mnt/storagebox:/mnt/storagebox
+      # Backup-Quellen (echte Host-Pfade)
+      - /docker/openclaw-lrk0/data/.openclaw/workspace:/data/backup-sources/workspace:ro
+      - /docker/openclaw-lrk0/data/.config:/data/backup-sources/config:ro
+      - /opt:/data/backup-sources/opt:ro
+      # Storagebox-Konfiguration (SSH-Key, Passwort)
+      - /opt/infra/storagebox:/root/.storagebox:ro
+      # Logs
+      - /opt/backup-container/data/logs:/var/log
+    environment:
+      - TZ=Europe/Berlin
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: 3
