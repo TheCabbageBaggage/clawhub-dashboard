@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Dashboard — Live Metriken</title>
+<style>
+:root, [data-theme="dark"] {
+  --bg: #0a0e14; --bg2: #11161e; --card: #141c26;
+  --primary: #2C5F7C; --accent: #3D8B8B; --accent-glow: rgba(61,139,139,0.2);
+  --text: #e0e4ea; --text2: #8892a8; --text3: #5a6478;
+  --success: #10b981; --warn: #f59e0b; --danger: #ef4444;
+  --border: rgba(255,255,255,0.06); --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); min-height:100vh; line-height:1.5; }
+nav { position:sticky; top:0; z-index:100; background:rgba(10,14,20,0.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 24px; display:flex; align-items:center; height:56px; gap:24px; }
+nav .logo { font-size:18px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; }
+nav .logo .dot { width:8px; height:8px; border-radius:50%; background:var(--success); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+nav a { color:var(--text2); text-decoration:none; font-size:14px; font-weight:500; }
+nav a:hover { color:var(--text); }
+nav .spacer { flex:1; }
+nav .refresh-badge { font-size:12px; color:var(--text3); background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:20px; }
+.hero { background:linear-gradient(135deg,#1A3440 0%,#2C5F7C 100%); padding:32px 24px; text-align:center; }
+.hero h1 { font-size:28px; font-weight:300; color:#fff; }
+.hero p { color:rgba(255,255,255,0.7); font-size:14px; margin-top:6px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:16px; padding:24px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); }
+.card h3 { color:var(--accent); font-size:15px; margin-bottom:14px; border-left:4px solid var(--accent); padding-left:10px; }
+.metric-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; font-size:13px; border-bottom:1px solid var(--border); }
+.metric-row:last-child { border-bottom:none; }
+.bar { height:8px; background:rgba(255,255,255,0.08); border-radius:4px; overflow:hidden; flex:1; margin:0 8px; }
+.bar-fill { height:100%; border-radius:4px; }
+.usage-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.usage-item { background:var(--bg2); border-radius:10px; padding:12px; }
+.usage-label { font-size:11px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
+.usage-value { font-size:28px; font-weight:700; margin:4px 0; }
+.usage-detail { font-size:11px; color:var(--text2); }
+.cost { font-size:13px; margin:8px 0; color:var(--text2); }
+.model-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:12px; }
+.model-name { width:140px; color:var(--text); }
+.model-count { width:60px; text-align:right; color:var(--text2); }
+.model-pct { width:50px; text-align:right; color:var(--text2); }
+.status-badge { padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600; }
+.status-running { background:rgba(16,185,129,0.15); color:var(--success); }
+.status-stopped { background:rgba(239,68,68,0.15); color:var(--danger); }
+.status-warn { background:rgba(245,158,11,0.15); color:var(--warn); }
+.error-box { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:var(--danger); padding:16px; border-radius:10px; margin:24px; text-align:center; }
+.footer { text-align:center; color:var(--text3); font-size:11px; padding:20px; }
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo"><span class="dot"></span> System Dashboard</div>
+  <a href="/">Home</a>
+  <a href="/status.html">Status</a>
+  <a href="/plan.html">Plan</a>
+  <div class="spacer"></div>
+  <span class="refresh-badge" id="refreshBadge">Lädt…</span>
+</nav>
+
+<div class="hero">
+  <h1>System Dashboard</h1>
+  <p>ACTA · Clowie + Prod-System · Live-Metriken</p>
+</div>
+
+<div id="errorBox" class="error-box" style="display:none"></div>
+<div class="grid" id="grid"></div>
+
+<div class="footer">Automatisch generiert · Datenquelle: /api/metrics</div>
+
+<script>
+const REFRESH_INTERVAL = 30000; // 30 Sekunden
+
+function getToken() {
+  return localStorage.getItem('clawhub_token') || sessionStorage.getItem('clawhub_token') || '';
+}
+
+async function fetchMetrics() {
+  const token = getToken();
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+
+  const resp = await fetch('/api/metrics', { headers, cache: 'no-store' });
+  if (!resp.ok) {
+    if (resp.status === 401) {
+      showError('Nicht autorisiert. Bitte einloggen.');
+      return null;
+    }
+    showError('API-Fehler: ' + resp.status);
+    return null;
+  }
+  hideError();
+  return await resp.json();
+}
+
+function bar(pct, color) {
+  pct = Math.min(pct, 100);
+  return '<div class="bar"><div class="bar-fill" style="width:' + pct.toFixed(1) + '%;background:' + color + '"></div></div>';
+}
+
+function buildUsageCard(m) {
+  if (!m || m.error) return '<div class="card"><h3>🤖 Ollama Usage</h3><p>Keine Daten</p></div>';
+  const s = m.session || {}, w = m.weekly || {};
+  const sPct = s.usage_pct || 0, wPct = w.usage_pct || 0;
+  const sColor = sPct < 70 ? '#10b981' : (sPct < 85 ? '#f59e0b' : '#ef4444');
+  const wColor = wPct < 70 ? '#10b981' : (wPct < 85 ? '#f59e0b' : '#ef4444');
+  const models = m.models || [];
+  let modelRows = '';
+  models.forEach(function(mdl) {
+    const pct = w.limit ? (mdl.request_count / w.limit * 100) : 0;
+    modelRows += '<div class="model-row"><span class="model-name">' + mdl.name + '</span>' +
+      '<span class="model-count">' + (mdl.request_count||0).toLocaleString() + '</span>' +
+      bar(pct, '#63B2B2') +
+      '<span class="model-pct">' + pct.toFixed(1) + '%</span></div>';
+  });
+  return '<div class="card"><h3>🤖 Ollama Cloud Usage</h3>' +
+    '<div class="usage-grid">' +
+      '<div class="usage-item"><div class="usage-label">Session</div><div class="usage-value" style="color:' + sColor + '">' + sPct.toFixed(1) + '%</div>' + bar(sPct, sColor) + '<div class="usage-detail">' + (s.requests||0).toLocaleString() + ' / ~' + Math.round(s.limit||0).toLocaleString() + ' Requests</div></div>' +
+      '<div class="usage-item"><div class="usage-label">Weekly</div><div class="usage-value" style="color:' + wColor + '">' + wPct.toFixed(1) + '%</div>' + bar(wPct, wColor) + '<div class="usage-detail">' + (w.requests||0).toLocaleString() + ' / ~' + Math.round(w.limit||0).toLocaleString() + ' Requests</div></div>' +
+    '</div>' +
+    '<div class="cost">💰 Kosten (4 Wochen): <strong>$' + (m.cost_4weeks||0).toFixed(2) + '</strong></div>' +
+    '<div class="models">' + modelRows + '</div></div>';
+}
+
+function buildSystemCard(m) {
+  if (!m || m.error) return '<div class="card"><h3>🖥️ System</h3><p>Keine Daten</p></div>';
+  const mem = m.memory || {}, disk = m.disk || {};
+  const up = m.uptime_seconds || 0;
+  const upStr = Math.floor(up/86400) + 'd ' + Math.floor((up%86400)/3600) + 'h';
+  return '<div class="card"><h3>🖥️ System-Auslastung</h3>' +
+    '<div class="metric-row"><span>CPU Load</span><span>' + (m.cpu_load||0).toFixed(2) + '</span>' + bar((m.cpu_load||0)*100, '#3D8B8B') + '</div>' +
+    '<div class="metric-row"><span>Memory</span><span>' + (mem.used_mb||0) + ' / ' + (mem.total_mb||0) + ' MB</span>' + bar(mem.pct||0, '#63B2B2') + '</div>' +
+    '<div class="metric-row"><span>Disk</span><span>' + (disk.used_gb||0) + ' / ' + (disk.total_gb||0) + ' GB</span>' + bar(disk.pct||0, '#D4A24A') + '</div>' +
+    '<div class="metric-row"><span>Uptime</span><span>' + upStr + '</span></div></div>';
+}
+
+function buildContainerCard(m) {
+  if (!m || m.error || !Array.isArray(m)) return '<div class="card"><h3>🐳 Container</h3><p>Keine Daten</p></div>';
+  let running = 0, stopped = 0, items = '';
+  m.forEach(function(p) {
+    const state = p.state || 'unknown';
+    if (state === 'running') running++; else stopped++;
+    const cls = state === 'running' ? 'status-running' : 'status-stopped';
+    items += '<div class="metric-row"><span>' + p.name + '</span><span class="status-badge ' + cls + '">' + state + '</span></div>';
+  });
+  return '<div class="card"><h3>🐳 Container (' + m.length + ')</h3>' +
+    '<div class="usage-detail" style="margin-bottom:8px">' + running + ' running · ' + stopped + ' gestoppt</div>' + items + '</div>';
+}
+
+function buildSecurityCard(m) {
+  if (!m || m.error) return '<div class="card"><h3>🛡️ Security</h3><p>Keine Daten</p></div>';
+  const ports = m.open_ports || [];
+  const monarx = m.monarx || {};
+  const monarxStatus = monarx.status || 'unknown';
+  const monarxColor = monarxStatus === 'installed' ? '#10b981' : '#f59e0b';
+  let portItems = '';
+  ports.slice(0, 6).forEach(function(p) {
+    portItems += '<div class="metric-row"><span>Port</span><span>' + p + '</span></div>';
+  });
+  return '<div class="card"><h3>🛡️ Security</h3>' +
+    '<div class="metric-row"><span>Monarx</span><span class="status-badge status-warn">' + monarxStatus + '</span></div>' +
+    '<div class="metric-row"><span>Offene Ports</span><span>' + ports.length + '</span></div>' + portItems + '</div>';
+}
+
+function buildStorageCard(m) {
+  if (!m || m.error) return '<div class="card"><h3>💾 Storage</h3><p>Keine Daten</p></div>';
+  const pct = m.total_gb ? (m.used_gb / m.total_gb * 100) : 0;
+  return '<div class="card"><h3>💾 Storage Box</h3>' +
+    '<div class="metric-row"><span>Nutzung</span><span>' + (m.used_gb||0) + ' / ' + (m.total_gb||0) + ' GB</span></div>' +
+    bar(pct, '#3D8B8B') +
+    '<div class="metric-row"><span>Letzter Sync</span><span>' + (m.last_sync || '—') + '</span></div></div>';
+}
+
+function render(data) {
+  const grid = document.getElementById('grid');
+  const metrics = data.metrics || {};
+  grid.innerHTML =
+    buildUsageCard(metrics['ollama-usage']) +
+    buildSystemCard(metrics['system']) +
+    buildContainerCard(metrics['containers']) +
+    buildSecurityCard(metrics['security']) +
+    buildStorageCard(metrics['storage']);
+  const ts = new Date(data.timestamp);
+  document.getElementById('refreshBadge').textContent = 'Stand: ' + ts.toLocaleTimeString('de-DE');
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.style.display = 'block';
+}
+function hideError() {
+  document.getElementById('errorBox').style.display = 'none';
+}
+
+async function refresh() {
+  const data = await fetchMetrics();
+  if (data) render(data);
+}
+
+// Initial laden + periodisch aktualisieren
+refresh();
+setInterval(refresh, REFRESH_INTERVAL);
+</script>
+</body>
+</html>

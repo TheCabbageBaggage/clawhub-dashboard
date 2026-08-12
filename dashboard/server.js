@@ -145,7 +145,60 @@ const server = http.createServer((req, res) => {
         }));
         return;
     }
-    
+
+    // === LIVE METRICS API (Ollama Usage + System Dashboard) ===
+    // Liefert die vom Watcher exportierten Metriken live aus dem data-Verzeichnis
+    if (pathname === '/api/metrics') {
+        const dataDir = path.join(DASHBOARD_DIR, 'data');
+        const metricsFiles = ['ollama-usage.json', 'system.json', 'containers.json', 'security.json', 'storage.json'];
+        const result = { timestamp: new Date().toISOString(), metrics: {} };
+        let pending = metricsFiles.length;
+        let failed = false;
+
+        metricsFiles.forEach((file) => {
+            const filePath = path.join(dataDir, file);
+            fs.readFile(filePath, 'utf8', (err, content) => {
+                if (err) {
+                    result.metrics[file.replace('.json', '')] = { error: 'not_found' };
+                } else {
+                    try {
+                        result.metrics[file.replace('.json', '')] = JSON.parse(content);
+                    } catch (e) {
+                        result.metrics[file.replace('.json', '')] = { error: 'parse_error' };
+                    }
+                }
+                pending -= 1;
+                if (pending === 0) {
+                    res.writeHead(200, {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    });
+                    res.end(JSON.stringify(result));
+                }
+            });
+        });
+        return;
+    }
+
+    // Einzelne Metrik abrufen: /api/metrics/ollama-usage
+    if (pathname.startsWith('/api/metrics/')) {
+        const name = pathname.replace('/api/metrics/', '').replace('.json', '');
+        const filePath = path.join(DASHBOARD_DIR, 'data', `${name}.json`);
+        fs.readFile(filePath, 'utf8', (err, content) => {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'not_found' }));
+                return;
+            }
+            res.writeHead(200, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            });
+            res.end(content);
+        });
+        return;
+    }
+
     // Research catalog API
     if (pathname === '/api/research') {
         serveResearchCatalog(res);

@@ -5,3 +5,10 @@ data/research-files/
 auth.json
 tasks.db
 *.tar.gz
+# Generierte Metriken (vom Watcher/Monitor geschrieben)
+dashboard/data/status.json
+dashboard/data/ollama-usage.json
+dashboard/data/system.json
+dashboard/data/containers.json
+dashboard/data/security.json
+dashboard/data/storage.json

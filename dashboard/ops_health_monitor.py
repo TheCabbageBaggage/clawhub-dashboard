@@ -13,7 +13,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 WORKSPACE = Path("/data/.openclaw/workspace")
-STATUS_FILE = WORKSPACE / "dashboard" / "data" / "status.json"
+# status.html lädt /data/status.json relativ zum ClawHub-Dashboard-Verzeichnis
+STATUS_FILE = WORKSPACE / "clawhub-dashboard" / "dashboard" / "data" / "status.json"
 NOW = datetime.now(timezone.utc)
 
 
