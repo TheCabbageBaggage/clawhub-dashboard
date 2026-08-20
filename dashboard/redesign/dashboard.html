@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — System</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade System-Metriken…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    const ACTA = { petroleum:'#2C5F7C', teal:'#3D8B8B', slate:'#8A9BA8', success:'#387359', warning:'#CC9A33', alert:'#BF3939' };
+    let charts = {};
+
+    function destroyCharts() {
+      Object.values(charts).forEach(c => { if (c) c.destroy(); });
+      charts = {};
+    }
+
+    function fmt(n, d=0) {
+      if (n === null || n === undefined || isNaN(n)) return '—';
+      return Number(n).toLocaleString('de-DE', { maximumFractionDigits: d });
+    }
+
+    function fmtBytes(mb) {
+      if (mb === null || mb === undefined) return '—';
+      if (mb >= 1024) return (mb/1024).toFixed(1) + ' GB';
+      return Math.round(mb) + ' MB';
+    }
+
+    function fmtUptime(sec) {
+      if (!sec) return '—';
+      const d = Math.floor(sec/86400), h = Math.floor((sec%86400)/3600), m = Math.floor((sec%3600)/60);
+      return d + 'd ' + h + 'h ' + m + 'm';
+    }
+
+    function badge(state) {
+      if (state === 'green' || state === 'running' || state === 'ok' || state === 'healthy') return '<span class="acta-badge acta-badge-success">' + state + '</span>';
+      if (state === 'yellow' || state === 'warning') return '<span class="acta-badge acta-badge-warning">' + state + '</span>';
+      if (state === 'red' || state === 'stopped' || state === 'error' || state === 'exited') return '<span class="acta-badge acta-badge-alert">' + state + '</span>';
+      return '<span class="acta-badge acta-badge-neutral">' + (state || '—') + '</span>';
+    }
+
+    async function load() {
+      const content = document.getElementById('content');
+      try {
+        const res = await fetch('/api/metrics');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        const m = data.metrics || {};
+        const ollama = m['ollama-usage'] || {};
+        const sys = m.system || {};
+        const containers = Array.isArray(m.containers) ? m.containers : [];
+        const sec = m.security || {};
+        const storage = m.storage || {};
+
+        const running = containers.filter(c => c.state === 'running').length;
+        const stopped = containers.length - running;
+        const memPct = sys.memory ? sys.memory.pct : null;
+        const diskPct = sys.disk ? sys.disk.pct : null;
+        const storagePct = storage.total_gb ? Math.round(storage.used_gb / storage.total_gb * 100) : null;
+
+        content.innerHTML = `
+          <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
+            <div class="acta-card acta-metric">
+              <div class="acta-metric-label">Ollama Weekly</div>
+              <div class="acta-metric-value">${fmt(ollama.weekly && ollama.weekly.usage_pct, 1)}%</div>
+              <div class="acta-metric-sub">${fmt(ollama.weekly && ollama.weekly.requests)} / ${fmt(ollama.weekly && ollama.weekly.limit)} Requests</div>
+            </div>
+            <div class="acta-card acta-metric">
+              <div class="acta-metric-label">Ollama Session</div>
+              <div class="acta-metric-value">${fmt(ollama.session && ollama.session.usage_pct, 1)}%</div>
+              <div class="acta-metric-sub">${fmt(ollama.session && ollama.session.requests)} Requests</div>
+            </div>
+            <div class="acta-card acta-metric">
+              <div class="acta-metric-label">Container</div>
+              <div class="acta-metric-value">${running}<span style="font-size:0.9rem;color:var(--acta-slate);"> / ${containers.length}</span></div>
+              <div class="acta-metric-sub">${stopped} gestoppt</div>
+            </div>
+            <div class="acta-card acta-metric">
+              <div class="acta-metric-label">System</div>
+              <div class="acta-metric-value" style="color:var(--acta-success);">Healthy</div>
+              <div class="acta-metric-sub">Uptime ${fmtUptime(sys.uptime_seconds)}</div>
+            </div>
+          </div>
+
+          <div class="acta-grid acta-grid-2" style="margin-bottom:1.25rem;">
+            <div class="acta-card">
+              <div class="acta-card-title">Ollama Model-Verteilung</div>
+              <canvas id="modelChart" height="200"></canvas>
+            </div>
+            <div class="acta-card">
+              <div class="acta-card-title">Container-Status</div>
+              <canvas id="containerChart" height="200"></canvas>
+            </div>
+          </div>
+
+          <div class="acta-grid acta-grid-3" style="margin-bottom:1.25rem;">
+            <div class="acta-card">
+              <div class="acta-card-title">Memory</div>
+              <div class="acta-metric-value" style="margin-bottom:0.5rem;">${memPct !== null ? memPct.toFixed(1) + '%' : '—'}</div>
+              <div class="acta-progress"><div class="acta-progress-fill ${memPct > 85 ? 'alert' : memPct > 70 ? 'warning' : ''}" style="width:${memPct || 0}%"></div></div>
+              <div class="acta-metric-sub" style="margin-top:0.5rem;">${fmtBytes(sys.memory && sys.memory.used_mb)} / ${fmtBytes(sys.memory && sys.memory.total_mb)}</div>
+            </div>
+            <div class="acta-card">
+              <div class="acta-card-title">Disk</div>
+              <div class="acta-metric-value" style="margin-bottom:0.5rem;">${diskPct !== null ? diskPct.toFixed(1) + '%' : '—'}</div>
+              <div class="acta-progress"><div class="acta-progress-fill ${diskPct > 85 ? 'alert' : diskPct > 70 ? 'warning' : ''}" style="width:${diskPct || 0}%"></div></div>
+              <div class="acta-metric-sub" style="margin-top:0.5rem;">${fmt(sys.disk && sys.disk.used_gb, 1)} / ${fmt(sys.disk && sys.disk.total_gb, 1)} GB</div>
+            </div>
+            <div class="acta-card">
+              <div class="acta-card-title">Storage Box</div>
+              <div class="acta-metric-value" style="margin-bottom:0.5rem;">${storagePct !== null ? storagePct + '%' : '—'}</div>
+              <div class="acta-progress"><div class="acta-progress-fill teal" style="width:${storagePct || 0}%"></div></div>
+              <div class="acta-metric-sub" style="margin-top:0.5rem;">${fmt(storage.used_gb, 1)} / ${fmt(storage.total_gb, 1)} GB</div>
+            </div>
+          </div>
+
+          <div class="acta-card" style="margin-bottom:1.25rem;">
+            <div class="acta-card-title">Container-Liste <span class="acta-badge acta-badge-neutral">${containers.length}</span></div>
+            <div class="acta-table-wrap">
+              <table class="acta-table">
+                <thead><tr><th>Projekt</th><th>Status</th><th>State</th><th>Container</th></tr></thead>
+                <tbody>
+                  ${containers.map(c => `
+                    <tr>
+                      <td>${c.name}</td>
+                      <td>${badge(c.state)}</td>
+                      <td>${c.status || '—'}</td>
+                      <td>${(c.containers || []).map(x => x.name + ' (' + x.status + ')').join('<br>') || '—'}</td>
+                    </tr>`).join('') || '<tr><td colspan="4" class="acta-empty">Keine Container-Daten</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="acta-grid acta-grid-2">
+            <div class="acta-card">
+              <div class="acta-card-title">Offene Ports</div>
+              <div class="acta-detail-list">
+                ${(sec.open_ports || []).map(p => `<div class="acta-detail-item"><div class="acta-detail-value">${p}</div></div>`).join('') || '<div class="acta-empty">Keine offenen Ports</div>'}
+              </div>
+            </div>
+            <div class="acta-card">
+              <div class="acta-card-title">Security</div>
+              <div class="acta-detail-list">
+                <div class="acta-detail-item"><div class="acta-detail-label">Monarx</div><div class="acta-detail-value">${(sec.monarx && sec.monarx.status) || '—'}</div></div>
+                <div class="acta-detail-item"><div class="acta-detail-label">Letzter Sync</div><div class="acta-detail-value">${storage.last_sync || '—'}</div></div>
+                <div class="acta-detail-item"><div class="acta-detail-label">Kosten 4 Wochen</div><div class="acta-detail-value">€ ${fmt(ollama.cost_4weeks, 2)}</div></div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Charts
+        const models = ollama.models || [];
+        if (models.length) {
+          charts.model = new Chart(document.getElementById('modelChart'), {
+            type: 'doughnut',
+            data: {
+              labels: models.map(x => x.name),
+              datasets: [{ data: models.map(x => x.request_count), backgroundColor: [ACTA.petroleum, ACTA.teal, ACTA.slate, ACTA.warning, ACTA.success], borderWidth: 0 }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8' } } } }
+          });
+        }
+        if (containers.length) {
+          charts.container = new Chart(document.getElementById('containerChart'), {
+            type: 'doughnut',
+            data: {
+              labels: ['Running', 'Stopped'],
+              datasets: [{ data: [running, stopped], backgroundColor: [ACTA.success, ACTA.alert], borderWidth: 0 }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8' } } } }
+          });
+        }
+      } catch (e) {
+        content.innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Status</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade System-Status…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function badge(state) {
+      if (state === 'green' || state === 'running' || state === 'ok' || state === 'healthy') return '<span class="acta-badge acta-badge-success">OK</span>';
+      if (state === 'yellow' || state === 'warning') return '<span class="acta-badge acta-badge-warning">Warnung</span>';
+      if (state === 'red' || state === 'stopped' || state === 'error' || state === 'exited') return '<span class="acta-badge acta-badge-alert">Fehler</span>';
+      return '<span class="acta-badge acta-badge-neutral">' + esc(state || '—') + '</span>';
+    }
+
+    async function load() {
+      const content = document.getElementById('content');
+      try {
+        const res = await fetch('/api/metrics');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        const m = data.metrics || {};
+        const containers = Array.isArray(m.containers) ? m.containers : [];
+        const sys = m.system || {};
+        const storage = m.storage || {};
+        const sec = m.security || {};
+        const ollama = m['ollama-usage'] || {};
+
+        const running = containers.filter(c => c.state === 'running').length;
+        const stopped = containers.length - running;
+        const overall = stopped > 0 ? 'yellow' : 'green';
+        const memPct = sys.memory ? sys.memory.pct : null;
+        const diskPct = sys.disk ? sys.disk.pct : null;
+
+        const checks = [
+          { name: 'Ollama Usage', state: 'green', detail: (ollama.weekly ? ollama.weekly.usage_pct.toFixed(1) + '% Weekly' : '—') },
+          { name: 'Container', state: stopped > 0 ? 'yellow' : 'green', detail: running + ' running · ' + stopped + ' stopped' },
+          { name: 'Memory', state: memPct > 85 ? 'red' : memPct > 70 ? 'yellow' : 'green', detail: memPct !== null ? memPct.toFixed(1) + '%' : '—' },
+          { name: 'Disk', state: diskPct > 85 ? 'red' : diskPct > 70 ? 'yellow' : 'green', detail: diskPct !== null ? diskPct.toFixed(1) + '%' : '—' },
+          { name: 'Storage Box', state: 'green', detail: (storage.used_gb || 0).toFixed(1) + ' / ' + (storage.total_gb || 0).toFixed(1) + ' GB' },
+          { name: 'Security', state: (sec.open_ports || []).length > 0 ? 'yellow' : 'green', detail: (sec.open_ports || []).length + ' offene Ports' },
+          { name: 'Monarx', state: (sec.monarx && sec.monarx.status === 'not_installed') ? 'yellow' : 'green', detail: (sec.monarx && sec.monarx.status) || '—' },
+          { name: 'Uptime', state: 'green', detail: sys.uptime_seconds ? Math.floor(sys.uptime_seconds/86400) + ' Tage' : '—' }
+        ];
+
+        content.innerHTML = `
+          <div class="acta-card" style="margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <div>
+              <div style="font-size:1.25rem;font-weight:600;">System-Status</div>
+              <div style="font-size:0.85rem;color:var(--acta-slate);">${esc(data.timestamp || '')}</div>
+            </div>
+            ${overall === 'green' ? '<span class="acta-badge acta-badge-success" style="font-size:0.9rem;padding:0.5rem 1rem;">All Systems Operational</span>' : '<span class="acta-badge acta-badge-warning" style="font-size:0.9rem;padding:0.5rem 1rem;">Degraded</span>'}
+          </div>
+
+          <div class="acta-grid acta-grid-4">
+            ${checks.map(c => `
+              <div class="acta-card">
+                <div class="acta-card-title" style="display:flex;justify-content:space-between;align-items:center;">
+                  ${esc(c.name)} ${badge(c.state)}
+                </div>
+                <div style="font-size:0.9rem;color:var(--acta-dark-text);margin-top:0.5rem;">${esc(c.detail)}</div>
+              </div>`).join('')}
+          </div>
+
+          <div class="acta-card" style="margin-top:1.25rem;">
+            <div class="acta-card-title">Container-Details</div>
+            <div class="acta-table-wrap">
+              <table class="acta-table">
+                <thead><tr><th>Projekt</th><th>Status</th><th>State</th></tr></thead>
+                <tbody>
+                  ${containers.map(c => `<tr><td>${esc(c.name)}</td><td>${badge(c.state)}</td><td>${esc(c.status || '—')}</td></tr>`).join('') || '<tr><td colspan="3" class="acta-empty">Keine Container-Daten</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } catch (e) {
+        content.innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

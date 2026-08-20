@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Knowledge Base</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Knowledge Base…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    let KNOWLEDGE = [];
+    let activeLabel = 'all';
+    let searchTerm = '';
+
+    const LABEL_COLORS = {
+      ai:'#2C5F7C', management:'#3D8B8B', strategy:'#8A9BA8', research:'#387359',
+      security:'#BF3939', engineering:'#CC9A33', business:'#2C5F7C', product:'#3D8B8B',
+      policy:'#8A9BA8', innovation:'#387359', leadership:'#CC9A33', operations:'#2C5F7C',
+      newsletter:'#3D8B8B', papers:'#8A9BA8', community:'#387359', startup:'#CC9A33',
+      safety:'#BF3939', trends:'#3D8B8B'
+    };
+
+    function labelColor(l) { return LABEL_COLORS[l] || '#8A9BA8'; }
+
+    function esc(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function render() {
+      const content = document.getElementById('content');
+      const labels = [...new Set(KNOWLEDGE.flatMap(a => a.labels))].sort();
+      const sources = [...new Set(KNOWLEDGE.map(a => a.source))].length;
+
+      let filtered = KNOWLEDGE;
+      if (activeLabel !== 'all') filtered = filtered.filter(a => a.labels.includes(activeLabel));
+      if (searchTerm) {
+        const q = searchTerm.toLowerCase();
+        filtered = filtered.filter(a => (a.title + ' ' + a.content + ' ' + a.source).toLowerCase().includes(q));
+      }
+
+      content.innerHTML = `
+        <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Artikel</div><div class="acta-metric-value">${KNOWLEDGE.length}</div><div class="acta-metric-sub">in der Wissensbasis</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Quellen</div><div class="acta-metric-value">${sources}</div><div class="acta-metric-sub">verschiedene Publisher</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Themen</div><div class="acta-metric-value">${labels.length}</div><div class="acta-metric-sub">Labels</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Treffer</div><div class="acta-metric-value">${filtered.length}</div><div class="acta-metric-sub">${activeLabel !== 'all' ? 'gefiltert' : 'alle'}</div></div>
+        </div>
+
+        <div class="acta-toolbar">
+          <div class="acta-search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="searchInput" placeholder="Suchen…" value="${esc(searchTerm)}">
+          </div>
+          <select class="acta-select" id="labelSelect">
+            <option value="all" ${activeLabel==='all'?'selected':''}>Alle Themen</option>
+            ${labels.map(l => `<option value="${l}" ${activeLabel===l?'selected':''}>${l}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="acta-card">
+          <div class="acta-card-title">Artikel <span class="acta-badge acta-badge-neutral">${filtered.length}</span></div>
+          <div class="acta-table-wrap">
+            <table class="acta-table">
+              <thead><tr><th>Titel</th><th>Quelle</th><th>Datum</th><th>Labels</th></tr></thead>
+              <tbody>
+                ${filtered.slice(0, 50).map(a => `
+                  <tr>
+                    <td><a href="${esc(a.url)}" target="_blank" rel="noopener" style="color:var(--acta-petroleum);text-decoration:none;font-weight:500;">${esc(a.title)}</a></td>
+                    <td>${esc(a.source)}</td>
+                    <td>${esc(a.published || '—')}</td>
+                    <td>${(a.labels || []).map(l => `<span class="acta-badge" style="background:${labelColor(l)};color:#fff;">${l}</span>`).join(' ')}</td>
+                  </tr>`).join('') || '<tr><td colspan="4" class="acta-empty">Keine Artikel gefunden</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+          ${filtered.length > 50 ? '<div class="acta-pagination"><div class="acta-pagination-info">Zeige 50 von ' + filtered.length + ' — nutze die Suche zum Eingrenzen</div></div>' : ''}
+        </div>
+      `;
+
+      document.getElementById('searchInput').addEventListener('input', e => { searchTerm = e.target.value; render(); });
+      document.getElementById('labelSelect').addEventListener('change', e => { activeLabel = e.target.value; render(); });
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('data/knowledge.json');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        KNOWLEDGE = await res.json();
+        render();
+      } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

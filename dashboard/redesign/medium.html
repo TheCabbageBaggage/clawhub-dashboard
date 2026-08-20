@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Medium</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Medium-Artikel…</div>
+      </div>
+    </main>
+  </div>
+
+  <div class="acta-modal" id="outlineModal" style="display:none;">
+    <div class="acta-modal-backdrop" onclick="closeModal()"></div>
+    <div class="acta-modal-content">
+      <div class="acta-modal-header">
+        <div class="acta-modal-title" id="modalTitle"></div>
+        <button class="acta-modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="acta-modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    let ARTICLES = [];
+    let activeCategory = 'all';
+    let searchTerm = '';
+
+    const STATUS_COLORS = {
+      'Ready for writing':'#387359', 'Ready':'#387359', 'Draft':'#CC9A33',
+      'Concept':'#8A9BA8', 'Analysis':'#2C5F7C', 'Writing':'#3D8B8B'
+    };
+
+    function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function statusColor(s) { return STATUS_COLORS[s] || '#8A9BA8'; }
+
+    function renderMarkdown(md) {
+      if (!md) return '';
+      let html = esc(md);
+      // Code blocks
+      html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+      // Headers
+      html = html.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+      html = html.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+      html = html.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+      // Blockquote
+      html = html.replace(/^&gt; (.*)$/gm, '<blockquote>$1</blockquote>');
+      // Bold/Italic
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      // Links
+      html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      // HR
+      html = html.replace(/^---$/gm, '<hr>');
+      // Lists
+      html = html.replace(/^- (.*)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
+      // Paragraphs
+      html = html.replace(/^(?!<[hupb]|<\/|$)(.*)$/gm, '<p>$1</p>');
+      return html;
+    }
+
+    function openModal(article) {
+      document.getElementById('modalTitle').textContent = article.title;
+      document.getElementById('modalBody').innerHTML = renderMarkdown(article.outline);
+      document.getElementById('outlineModal').style.display = 'flex';
+    }
+    function closeModal() { document.getElementById('outlineModal').style.display = 'none'; }
+
+    function render() {
+      const content = document.getElementById('content');
+      const categories = [...new Set(ARTICLES.map(a => a.category))].sort();
+      const ready = ARTICLES.filter(a => (a.status || '').toLowerCase().includes('ready')).length;
+      const drafts = ARTICLES.filter(a => a.hasDraft).length;
+
+      let filtered = ARTICLES;
+      if (activeCategory !== 'all') filtered = filtered.filter(a => a.category === activeCategory);
+      if (searchTerm) {
+        const q = searchTerm.toLowerCase();
+        filtered = filtered.filter(a => (a.title + ' ' + (a.subtitle||'') + ' ' + (a.category||'')).toLowerCase().includes(q));
+      }
+
+      content.innerHTML = `
+        <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Artikel</div><div class="acta-metric-value">${ARTICLES.length}</div><div class="acta-metric-sub">geplant</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Ready</div><div class="acta-metric-value" style="color:var(--acta-success);">${ready}</div><div class="acta-metric-sub">schreibbereit</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Drafts</div><div class="acta-metric-value" style="color:var(--acta-warning);">${drafts}</div><div class="acta-metric-sub">mit Outline</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Kategorien</div><div class="acta-metric-value">${categories.length}</div><div class="acta-metric-sub">Themen</div></div>
+        </div>
+
+        <div class="acta-toolbar">
+          <div class="acta-search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="searchInput" placeholder="Artikel suchen…" value="${esc(searchTerm)}">
+          </div>
+          <select class="acta-select" id="catSelect">
+            <option value="all" ${activeCategory==='all'?'selected':''}>Alle Kategorien</option>
+            ${categories.map(c => `<option value="${c}" ${activeCategory===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="acta-grid acta-grid-3">
+          ${filtered.map(a => `
+            <div class="acta-card" style="cursor:pointer;display:flex;flex-direction:column;" onclick="openModal(${JSON.stringify(a).replace(/"/g,'&quot;')})">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <span class="acta-badge" style="background:var(--acta-petroleum);color:#fff;">${esc(a.category || '—')}</span>
+                <span class="acta-badge" style="background:${statusColor(a.status)};color:#fff;">${esc(a.status || '—')}</span>
+              </div>
+              <div style="font-weight:600;font-size:0.95rem;line-height:1.35;margin-bottom:0.4rem;">${esc(a.title)}</div>
+              <div style="font-size:0.8rem;color:var(--acta-slate);line-height:1.4;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${esc(a.subtitle || '')}</div>
+              <div style="display:flex;gap:0.5rem;margin-top:0.75rem;font-size:0.75rem;color:var(--acta-slate);">
+                ${a.hasDraft ? '<span class="acta-badge acta-badge-warning">Draft</span>' : ''}
+                ${a.target ? '<span>🎯 ' + esc(a.target) + '</span>' : ''}
+              </div>
+            </div>`).join('') || '<div class="acta-empty">Keine Artikel gefunden</div>'}
+        </div>
+      `;
+
+      document.getElementById('searchInput').addEventListener('input', e => { searchTerm = e.target.value; render(); });
+      document.getElementById('catSelect').addEventListener('change', e => { activeCategory = e.target.value; render(); });
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('/briefing/data/medium_articles.json');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        ARTICLES = await res.json();
+        render();
+      } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

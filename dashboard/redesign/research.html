@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Recherchen</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Recherchen…</div>
+      </div>
+    </main>
+  </div>
+
+  <div class="acta-modal" id="docModal" style="display:none;">
+    <div class="acta-modal-backdrop" onclick="closeModal()"></div>
+    <div class="acta-modal-content">
+      <div class="acta-modal-header">
+        <div class="acta-modal-title" id="modalTitle"></div>
+        <button class="acta-modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="acta-modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    let DOCS = [];
+    let activeCat = 'all';
+    let activeType = 'all';
+    let searchTerm = '';
+
+    const TYPE_COLORS = { 'MD':'#387359', 'HTML':'#CC9A33', 'PDF':'#BF3939' };
+
+    function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    function renderMarkdown(md) {
+      if (!md) return '';
+      let html = esc(md);
+      html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+      html = html.replace(/^### (.*)$/gm, '<h3>$1</h3>');
+      html = html.replace(/^## (.*)$/gm, '<h2>$1</h2>');
+      html = html.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+      html = html.replace(/^&gt; (.*)$/gm, '<blockquote>$1</blockquote>');
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      html = html.replace(/^---$/gm, '<hr>');
+      html = html.replace(/^- (.*)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
+      html = html.replace(/^(?!<[hupb]|<\/|$)(.*)$/gm, '<p>$1</p>');
+      return html;
+    }
+
+    function closeModal() { document.getElementById('docModal').style.display = 'none'; }
+
+    async function openDoc(doc) {
+      document.getElementById('modalTitle').textContent = doc.title;
+      const body = document.getElementById('modalBody');
+      body.innerHTML = '<div class="acta-loading"><span class="acta-spinner"></span>Lade Dokument…</div>';
+      document.getElementById('docModal').style.display = 'flex';
+      try {
+        const res = await fetch('/api/research/' + encodeURIComponent(doc.path));
+        if (!res.ok) { body.innerHTML = '<div class="acta-empty">Fehler beim Laden (' + res.status + ')</div>'; return; }
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/pdf')) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          body.innerHTML = '<div style="margin-bottom:0.75rem;"><a class="acta-btn acta-btn-primary" href="' + url + '" download>PDF herunterladen</a></div><iframe src="' + url + '" style="width:100%;height:60vh;border:none;border-radius:0.5rem;"></iframe>';
+        } else if (ct.includes('text/html')) {
+          const text = await res.text();
+          const m = text.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+          body.innerHTML = m ? m[1] : text;
+        } else {
+          const text = await res.text();
+          body.innerHTML = renderMarkdown(text);
+        }
+      } catch (e) {
+        body.innerHTML = '<div class="acta-empty">Fehler: ' + e.message + '</div>';
+      }
+    }
+
+    function render() {
+      const content = document.getElementById('content');
+      const cats = [...new Set(DOCS.map(d => d.category))].sort();
+      const md = DOCS.filter(d => d.type === 'MD').length;
+      const html = DOCS.filter(d => d.type === 'HTML').length;
+      const pdf = DOCS.filter(d => d.type === 'PDF').length;
+
+      let filtered = DOCS;
+      if (activeCat !== 'all') filtered = filtered.filter(d => d.category === activeCat);
+      if (activeType !== 'all') filtered = filtered.filter(d => d.type === activeType);
+      if (searchTerm) {
+        const q = searchTerm.toLowerCase();
+        filtered = filtered.filter(d => (d.title + ' ' + (d.summary||'') + ' ' + (d.category||'')).toLowerCase().includes(q));
+      }
+
+      content.innerHTML = `
+        <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Dokumente</div><div class="acta-metric-value">${DOCS.length}</div><div class="acta-metric-sub">im Archiv</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Kategorien</div><div class="acta-metric-value">${cats.length}</div><div class="acta-metric-sub">Themen</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Markdown</div><div class="acta-metric-value" style="color:var(--acta-success);">${md}</div><div class="acta-metric-sub">${html} HTML · ${pdf} PDF</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Treffer</div><div class="acta-metric-value">${filtered.length}</div><div class="acta-metric-sub">gefiltert</div></div>
+        </div>
+
+        <div class="acta-toolbar">
+          <div class="acta-search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="searchInput" placeholder="Recherche suchen…" value="${esc(searchTerm)}">
+          </div>
+          <select class="acta-select" id="catSelect">
+            <option value="all" ${activeCat==='all'?'selected':''}>Alle Kategorien</option>
+            ${cats.map(c => `<option value="${c}" ${activeCat===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+          <select class="acta-select" id="typeSelect">
+            <option value="all" ${activeType==='all'?'selected':''}>Alle Typen</option>
+            <option value="MD" ${activeType==='MD'?'selected':''}>Markdown</option>
+            <option value="HTML" ${activeType==='HTML'?'selected':''}>HTML</option>
+            <option value="PDF" ${activeType==='PDF'?'selected':''}>PDF</option>
+          </select>
+        </div>
+
+        <div class="acta-grid acta-grid-3">
+          ${filtered.map(d => `
+            <div class="acta-card" style="cursor:pointer;display:flex;flex-direction:column;" onclick="openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                <span class="acta-badge" style="background:var(--acta-petroleum);color:#fff;">${esc(d.category || '—')}</span>
+                <span class="acta-badge" style="background:${TYPE_COLORS[d.type] || '#8A9BA8'};color:#fff;">${esc(d.type || '—')}</span>
+              </div>
+              <div style="font-weight:600;font-size:0.95rem;line-height:1.35;margin-bottom:0.4rem;">${esc(d.title)}</div>
+              <div style="font-size:0.8rem;color:var(--acta-slate);line-height:1.4;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${esc(d.summary || '')}</div>
+              <div style="font-size:0.75rem;color:var(--acta-slate);margin-top:0.75rem;">${esc(d.date || '')}</div>
+            </div>`).join('') || '<div class="acta-empty">Keine Recherchen gefunden</div>'}
+        </div>
+      `;
+
+      document.getElementById('searchInput').addEventListener('input', e => { searchTerm = e.target.value; render(); });
+      document.getElementById('catSelect').addEventListener('change', e => { activeCat = e.target.value; render(); });
+      document.getElementById('typeSelect').addEventListener('change', e => { activeType = e.target.value; render(); });
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('/api/research');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        DOCS = await res.json();
+        render();
+      } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

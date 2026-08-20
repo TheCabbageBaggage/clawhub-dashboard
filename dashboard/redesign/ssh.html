@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — SSH & Storage</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade SSH-Boxen…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    let BOXES = [];
+    let selected = null;
+
+    function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    function copyText(text, label) {
+      navigator.clipboard.writeText(text || '').then(() => {
+        const toast = document.getElementById('toast');
+        toast.textContent = label + ' kopiert';
+        toast.style.opacity = '1';
+        setTimeout(() => toast.style.opacity = '0', 2000);
+      });
+    }
+
+    function renderList() {
+      const content = document.getElementById('content');
+      const ready = BOXES.filter(b => b.configured).length;
+      content.innerHTML = `
+        <div class="acta-grid acta-grid-3" style="margin-bottom:1.25rem;">
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Boxen</div><div class="acta-metric-value">${BOXES.length}</div><div class="acta-metric-sub">konfiguriert</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Bereit</div><div class="acta-metric-value" style="color:var(--acta-success);">${ready}</div><div class="acta-metric-sub">vollständig</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Wartend</div><div class="acta-metric-value" style="color:var(--acta-warning);">${BOXES.length - ready}</div><div class="acta-metric-sub">unvollständig</div></div>
+        </div>
+
+        <div class="acta-card">
+          <div class="acta-card-title">Storage Boxes</div>
+          <div class="acta-grid acta-grid-2" style="margin-top:0.5rem;">
+            ${BOXES.map(b => `
+              <div class="acta-link-card" onclick="selectBox('${b.id}')" style="cursor:pointer;">
+                <div class="acta-link-card-icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg>
+                </div>
+                <div class="acta-link-card-body">
+                  <div class="acta-link-card-title">${esc(b.name)}</div>
+                  <div class="acta-link-card-desc">${esc(b.hostname || '—')} · ${esc(b.username || '—')}</div>
+                </div>
+                <span class="acta-badge ${b.configured ? 'acta-badge-success' : 'acta-badge-warning'}">${b.configured ? 'Bereit' : 'Wartet'}</span>
+              </div>`).join('') || '<div class="acta-empty">Keine Boxen gefunden</div>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function selectBox(id) {
+      selected = BOXES.find(b => b.id === id);
+      if (!selected) return;
+      const content = document.getElementById('content');
+      content.innerHTML = `
+        <button class="acta-btn acta-btn-ghost" onclick="renderList()" style="margin-bottom:1rem;">← Zurück</button>
+        <div class="acta-card" style="margin-bottom:1.25rem;">
+          <div class="acta-card-title">${esc(selected.name)} <span class="acta-badge ${selected.configured ? 'acta-badge-success' : 'acta-badge-warning'}">${selected.configured ? 'Bereit' : 'Wartet'}</span></div>
+          ${selected.note ? '<div style="font-size:0.85rem;color:var(--acta-slate);margin-bottom:1rem;">' + esc(selected.note) + '</div>' : ''}
+          <div class="acta-detail-list">
+            <div class="acta-detail-item"><div class="acta-detail-label">Hostname</div><div class="acta-detail-value">${esc(selected.hostname || '—')}</div></div>
+            <div class="acta-detail-item"><div class="acta-detail-label">Benutzer</div><div class="acta-detail-value">${esc(selected.username || '—')}</div></div>
+            <div class="acta-detail-item"><div class="acta-detail-label">SSH-Port</div><div class="acta-detail-value">${esc(selected.ssh_port || '—')}</div></div>
+            <div class="acta-detail-item"><div class="acta-detail-label">Passwort</div><div class="acta-detail-value">${esc(selected.password || '—')} <button class="acta-btn acta-btn-ghost" style="padding:0.15rem 0.5rem;font-size:0.75rem;" onclick="copyText('${esc(selected.password || '')}','Passwort')">Kopieren</button></div></div>
+          </div>
+        </div>
+        <div class="acta-grid acta-grid-2">
+          <div class="acta-card">
+            <div class="acta-card-title">SSH Public Key</div>
+            <textarea class="acta-textarea" readonly rows="4">${esc(selected.publicKey || '')}</textarea>
+            <button class="acta-btn acta-btn-primary" style="margin-top:0.5rem;" onclick="copyText('${esc(selected.publicKey || '')}','Public Key')">Kopieren</button>
+          </div>
+          <div class="acta-card">
+            <div class="acta-card-title">SSH Private Key</div>
+            <textarea class="acta-textarea" readonly rows="4">${esc(selected.privateKey || '')}</textarea>
+            <button class="acta-btn acta-btn-primary" style="margin-top:0.5rem;" onclick="copyText('${esc(selected.privateKey || '')}','Private Key')">Kopieren</button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('/api/ssh');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        BOXES = data.boxes || [];
+        renderList();
+      } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+  <div id="toast" style="position:fixed;bottom:1.5rem;right:1.5rem;background:var(--acta-petroleum);color:#fff;padding:0.75rem 1.25rem;border-radius:0.5rem;opacity:0;transition:opacity 0.3s;z-index:200;font-size:0.875rem;"></div>
+</body>
+</html>

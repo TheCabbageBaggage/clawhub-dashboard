@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Projekte</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Projekte…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    let TASKS = [], EPICS = [], STORIES = [], LABELS = [], RUNS = [], SUMMARY = {}, STATS = {};
+    let activeEpic = 'all', activeStory = 'all', activeLabel = 'all', activeCat = 'all', searchTerm = '';
+
+    function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function fmt(n, d=0) { if (n === null || n === undefined || isNaN(n)) return '—'; return Number(n).toLocaleString('de-DE', { maximumFractionDigits: d }); }
+
+    const COLUMNS = [
+      { key: 'backlog', title: 'Backlog' },
+      { key: 'todo', title: 'To Do' },
+      { key: 'in_progress', title: 'In Progress' },
+      { key: 'done', title: 'Done' },
+      { key: 'blocked', title: 'Blocked' }
+    ];
+
+    function taskColumn(t) {
+      if (t.status === 'in_progress') return 'in_progress';
+      if (t.status === 'done') return 'done';
+      if (t.status === 'blocked') return 'blocked';
+      if (t.status === 'pending' || !t.status) {
+        const today = new Date().toISOString().slice(0,10);
+        return (t.planned_date && t.planned_date <= today) ? 'todo' : 'backlog';
+      }
+      return 'backlog';
+    }
+
+    function statusBadge(s) {
+      const map = { pending:'neutral', in_progress:'warning', done:'success', blocked:'alert' };
+      const cls = map[s] || 'neutral';
+      return '<span class="acta-badge acta-badge-' + cls + '">' + esc(s || '—') + '</span>';
+    }
+
+    function render() {
+      const content = document.getElementById('content');
+      const cats = [...new Set(TASKS.map(t => t.category).filter(Boolean))].sort();
+
+      let filtered = TASKS;
+      if (activeEpic !== 'all') filtered = filtered.filter(t => String(t.epic_id) === activeEpic);
+      if (activeStory !== 'all') filtered = filtered.filter(t => String(t.story_id) === activeStory);
+      if (activeLabel !== 'all') filtered = filtered.filter(t => (t.labels || []).some(l => String(l.id) === activeLabel));
+      if (activeCat !== 'all') filtered = filtered.filter(t => t.category === activeCat);
+      if (searchTerm) {
+        const q = searchTerm.toLowerCase();
+        filtered = filtered.filter(t => (t.title + ' ' + (t.epic_title||'') + ' ' + (t.story_title||'')).toLowerCase().includes(q));
+      }
+
+      content.innerHTML = `
+        <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Total</div><div class="acta-metric-value">${SUMMARY.total ?? TASKS.length}</div><div class="acta-metric-sub">Tasks</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">In Progress</div><div class="acta-metric-value" style="color:var(--acta-warning);">${SUMMARY.active ?? 0}</div><div class="acta-metric-sub">aktiv</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Done</div><div class="acta-metric-value" style="color:var(--acta-success);">${SUMMARY.done ?? 0}</div><div class="acta-metric-sub">erledigt</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Runs</div><div class="acta-metric-value">${STATS.total_runs ?? RUNS.length}</div><div class="acta-metric-sub">€ ${fmt(STATS.total_cost, 4)}</div></div>
+        </div>
+
+        <div class="acta-toolbar">
+          <div class="acta-search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" id="searchInput" placeholder="Task suchen…" value="${esc(searchTerm)}">
+          </div>
+          <select class="acta-select" id="epicSelect">
+            <option value="all" ${activeEpic==='all'?'selected':''}>Alle Epics</option>
+            ${EPICS.map(e => `<option value="${e.id}" ${activeEpic===String(e.id)?'selected':''}>${esc(e.title)}</option>`).join('')}
+          </select>
+          <select class="acta-select" id="catSelect">
+            <option value="all" ${activeCat==='all'?'selected':''}>Alle Kategorien</option>
+            ${cats.map(c => `<option value="${c}" ${activeCat===c?'selected':''}>${esc(c)}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="acta-grid" style="grid-template-columns:repeat(5,1fr);gap:0.75rem;margin-bottom:1.25rem;">
+          ${COLUMNS.map(col => {
+            const colTasks = filtered.filter(t => taskColumn(t) === col.key);
+            return `
+              <div class="acta-card" style="min-height:200px;">
+                <div class="acta-card-title" style="display:flex;justify-content:space-between;align-items:center;">
+                  ${col.title} <span class="acta-badge acta-badge-neutral">${colTasks.length}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem;">
+                  ${colTasks.map(t => `
+                    <div style="padding:0.6rem;border:1px solid var(--acta-border);border-radius:0.5rem;background-color:var(--acta-light-gray);">
+                      <div style="font-size:0.8rem;font-weight:500;line-height:1.3;">${esc(t.title)}</div>
+                      <div style="display:flex;flex-wrap:wrap;gap:0.25rem;margin-top:0.4rem;">
+                        ${t.epic_title ? `<span class="acta-badge" style="background:${t.epic_color || '#3D8B8B'};color:#fff;font-size:0.65rem;">${esc(t.epic_title)}</span>` : ''}
+                        ${(t.labels || []).slice(0,2).map(l => `<span class="acta-badge" style="background:${l.color || '#8A9BA8'};color:#fff;font-size:0.65rem;">${esc(l.name)}</span>`).join('')}
+                      </div>
+                    </div>`).join('') || '<div class="acta-empty" style="padding:1rem;font-size:0.75rem;">Leer</div>'}
+                </div>
+              </div>`;
+          }).join('')}
+        </div>
+
+        <div class="acta-card">
+          <div class="acta-card-title">Recent Runs <span class="acta-badge acta-badge-neutral">${RUNS.length}</span></div>
+          <div class="acta-table-wrap">
+            <table class="acta-table">
+              <thead><tr><th>Task</th><th>Modell</th><th>Status</th><th>Tokens In</th><th>Tokens Out</th><th>Kosten</th></tr></thead>
+              <tbody>
+                ${RUNS.map(r => `
+                  <tr>
+                    <td>${esc(r.task_title || '—')}</td>
+                    <td>${esc(r.model || '—')}</td>
+                    <td>${statusBadge(r.status)}</td>
+                    <td>${fmt(r.tokens_in)}</td>
+                    <td>${fmt(r.tokens_out)}</td>
+                    <td>€ ${fmt(r.cost_eur, 6)}</td>
+                  </tr>`).join('') || '<tr><td colspan="6" class="acta-empty">Keine Runs</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('searchInput').addEventListener('input', e => { searchTerm = e.target.value; render(); });
+      document.getElementById('epicSelect').addEventListener('change', e => { activeEpic = e.target.value; render(); });
+      document.getElementById('catSelect').addEventListener('change', e => { activeCat = e.target.value; render(); });
+    }
+
+    async function load() {
+      try {
+        const [tasksRes, epicsRes, storiesRes, labelsRes, runsRes, sumRes, statsRes] = await Promise.all([
+          fetch('/api/tasks'), fetch('/api/epics'), fetch('/api/stories'), fetch('/api/labels'),
+          fetch('/api/tasks/runs'), fetch('/api/tasks/summary'), fetch('/api/tasks/stats')
+        ]);
+        if (tasksRes.status === 401) { window.location.href = '/login'; return; }
+        TASKS = await tasksRes.json();
+        EPICS = await epicsRes.json();
+        STORIES = await storiesRes.json();
+        LABELS = await labelsRes.json();
+        RUNS = await runsRes.json();
+        SUMMARY = await sumRes.json();
+        STATS = await statsRes.json();
+        render();
+      } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

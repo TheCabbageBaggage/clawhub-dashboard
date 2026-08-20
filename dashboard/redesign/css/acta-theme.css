@@ -1,0 +1,641 @@
+/* ============================================================
+   ACTA Web Theme — ClawHub Redesign (Windmill-Stil)
+   Single Source of Truth: acta/reporting/acta-design-system.json
+   Adaptiert für Web (Hover-States, Dark/Light, Charts)
+   ============================================================ */
+
+:root {
+  /* ACTA Palette (konsistent mit Reports) */
+  --acta-petroleum:   #2C5F7C;
+  --acta-deep-navy:   #1A3440;
+  --acta-teal:        #3D8B8B;
+  --acta-slate:       #8A9BA8;
+  --acta-charcoal:    #2D3436;
+  --acta-off-white:   #F5F6F7;
+  --acta-dark-text:   #1A1A1A;
+  --acta-light-gray:  #F2F2F2;
+  --acta-success:     #387359;
+  --acta-warning:     #CC9A33;
+  --acta-alert:       #BF3939;
+  --acta-white:       #FFFFFF;
+
+  /* Abgeleitete Web-Töne (Hover, Borders, Backgrounds) */
+  --acta-petroleum-hover: #24506A;
+  --acta-teal-hover:      #347A7A;
+  --acta-petroleum-soft:  #E6F0F7;
+  --acta-teal-soft:       #E3F0F0;
+  --acta-border:          #E2E8EC;
+  --acta-sidebar-bg:      #1A3440;   /* Deep Navy Sidebar (Open-WebUI-Stil) */
+  --acta-sidebar-text:    #C9D6DE;
+  --acta-sidebar-active:  #2C5F7C;
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+  --acta-off-white:   #12181C;
+  --acta-light-gray:  #1A2228;
+  --acta-dark-text:   #E6EDF2;
+  --acta-charcoal:    #D5DEE5;
+  --acta-border:      #2A363E;
+  --acta-petroleum-soft: #1E3A4A;
+  --acta-teal-soft:      #1E3A3A;
+  --acta-sidebar-bg:  #0E1519;
+  --acta-sidebar-text:#A9BCC7;
+  --acta-sidebar-active: #2C5F7C;
+  --acta-white:       #1A2228;
+}
+
+/* ============================================================
+   Basis
+   ============================================================ */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--acta-off-white);
+  color: var(--acta-dark-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ============================================================
+   Layout-Shell (Windmill-Stil: Sidebar + Main)
+   ============================================================ */
+.acta-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.acta-sidebar {
+  width: 260px;
+  background-color: var(--acta-sidebar-bg);
+  color: var(--acta-sidebar-text);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 40;
+  transition: transform 0.25s ease;
+}
+
+.acta-sidebar-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.acta-sidebar-brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.acta-sidebar-brand span {
+  color: var(--acta-teal);
+}
+
+.acta-sidebar-nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  overflow-y: auto;
+}
+
+.acta-nav-section {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.4);
+  padding: 0.75rem 0.75rem 0.35rem;
+}
+
+.acta-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--acta-sidebar-text);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 0.15rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.acta-nav-item:hover {
+  background-color: rgba(255,255,255,0.06);
+  color: #fff;
+}
+
+.acta-nav-item.active {
+  background-color: var(--acta-sidebar-active);
+  color: #fff;
+}
+
+.acta-nav-item svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+
+.acta-sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.acta-main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 1.5rem 2rem;
+  min-height: 100vh;
+}
+
+/* Topbar */
+.acta-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.acta-topbar-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--acta-petroleum);
+}
+
+.acta-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ============================================================
+   Cards
+   ============================================================ */
+.acta-card {
+  background-color: var(--acta-white);
+  border: 1px solid var(--acta-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.acta-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--acta-deep-navy);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+[data-theme="dark"] .acta-card-title {
+  color: var(--acta-dark-text);
+}
+
+/* Metric Cards */
+.acta-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.acta-metric-label {
+  font-size: 0.8rem;
+  color: var(--acta-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.acta-metric-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--acta-petroleum);
+}
+
+.acta-metric-sub {
+  font-size: 0.8rem;
+  color: var(--acta-slate);
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.acta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.acta-btn-primary {
+  background-color: var(--acta-petroleum);
+  color: #fff;
+}
+.acta-btn-primary:hover { background-color: var(--acta-petroleum-hover); }
+
+.acta-btn-teal {
+  background-color: var(--acta-teal);
+  color: #fff;
+}
+.acta-btn-teal:hover { background-color: var(--acta-teal-hover); }
+
+.acta-btn-ghost {
+  background-color: transparent;
+  color: var(--acta-petroleum);
+  border-color: var(--acta-border);
+}
+.acta-btn-ghost:hover { background-color: var(--acta-petroleum-soft); }
+
+/* ============================================================
+   Tables
+   ============================================================ */
+.acta-table-wrap {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid var(--acta-border);
+}
+
+.acta-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.acta-table thead th {
+  background-color: var(--acta-petroleum);
+  color: #fff;
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.acta-table tbody td {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--acta-border);
+  color: var(--acta-dark-text);
+}
+
+.acta-table tbody tr:hover {
+  background-color: var(--acta-petroleum-soft);
+}
+
+.acta-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================================
+   Badges / Status
+   ============================================================ */
+.acta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.acta-badge-success { background-color: var(--acta-success); color: #fff; }
+.acta-badge-warning { background-color: var(--acta-warning); color: #fff; }
+.acta-badge-alert   { background-color: var(--acta-alert);   color: #fff; }
+.acta-badge-neutral { background-color: var(--acta-slate);   color: #fff; }
+
+/* ============================================================
+   Grid Helpers
+   ============================================================ */
+.acta-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+.acta-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.acta-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.acta-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 1024px) {
+  .acta-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .acta-grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .acta-grid-2, .acta-grid-3, .acta-grid-4 { grid-template-columns: 1fr; }
+  .acta-sidebar { transform: translateX(-100%); }
+  .acta-main { margin-left: 0; }
+  .acta-sidebar.open { transform: translateX(0); }
+}
+
+/* ============================================================
+   Theme Toggle Button
+   ============================================================ */
+.acta-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--acta-border);
+  background-color: var(--acta-white);
+  color: var(--acta-petroleum);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.acta-theme-toggle:hover { background-color: var(--acta-petroleum-soft); }
+
+/* Mobile hamburger */
+.acta-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--acta-border);
+  background-color: var(--acta-white);
+  color: var(--acta-petroleum);
+  cursor: pointer;
+}
+@media (max-width: 640px) {
+  .acta-hamburger { display: inline-flex; }
+}
+
+/* ============================================================
+   Zusätzliche Komponenten für Subseiten (Filter, Tabs, Pagination)
+   ============================================================ */
+
+/* --- Toolbar (Suche + Filter) --- */
+.acta-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.acta-search {
+  flex: 1 1 220px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--acta-border);
+  border-radius: 0.5rem;
+  background-color: var(--acta-white);
+  color: var(--acta-dark-text);
+}
+.acta-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--acta-dark-text);
+  font-size: 0.875rem;
+}
+.acta-search svg { color: var(--acta-slate); flex-shrink: 0; }
+.acta-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--acta-border);
+  border-radius: 0.5rem;
+  background-color: var(--acta-white);
+  color: var(--acta-dark-text);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+/* --- Tabs --- */
+.acta-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--acta-border);
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+}
+.acta-tab {
+  padding: 0.6rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--acta-slate);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.acta-tab:hover { color: var(--acta-petroleum); }
+.acta-tab.active {
+  color: var(--acta-petroleum);
+  border-bottom-color: var(--acta-petroleum);
+}
+
+/* --- Pagination --- */
+.acta-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.acta-pagination-info { font-size: 0.8rem; color: var(--acta-slate); }
+.acta-pagination-btns { display: flex; gap: 0.35rem; }
+.acta-page-btn {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--acta-border);
+  border-radius: 0.4rem;
+  background-color: var(--acta-white);
+  color: var(--acta-dark-text);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.acta-page-btn:hover { border-color: var(--acta-petroleum); color: var(--acta-petroleum); }
+.acta-page-btn.active { background-color: var(--acta-petroleum); border-color: var(--acta-petroleum); color: #fff; }
+.acta-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* --- Status-Dot --- */
+.acta-dot {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+.acta-dot-online { background-color: var(--acta-success); }
+.acta-dot-offline { background-color: var(--acta-alert); }
+.acta-dot-warning { background-color: var(--acta-warning); }
+
+/* --- Progress-Bar --- */
+.acta-progress {
+  height: 0.5rem;
+  border-radius: 999px;
+  background-color: var(--acta-border);
+  overflow: hidden;
+}
+.acta-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--acta-petroleum);
+  transition: width 0.3s ease;
+}
+.acta-progress-fill.teal { background-color: var(--acta-teal); }
+.acta-progress-fill.success { background-color: var(--acta-success); }
+.acta-progress-fill.warning { background-color: var(--acta-warning); }
+.acta-progress-fill.alert { background-color: var(--acta-alert); }
+
+/* --- Detail-Liste (Key/Value) --- */
+.acta-detail-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+.acta-detail-item {
+  padding: 0.75rem;
+  border: 1px solid var(--acta-border);
+  border-radius: 0.5rem;
+  background-color: var(--acta-white);
+}
+.acta-detail-label { font-size: 0.75rem; color: var(--acta-slate); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 0.25rem; }
+.acta-detail-value { font-size: 0.95rem; font-weight: 500; color: var(--acta-dark-text); word-break: break-word; }
+
+/* --- Empty / Loading --- */
+.acta-empty {
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--acta-slate);
+  font-size: 0.9rem;
+}
+.acta-loading {
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--acta-slate);
+  font-size: 0.9rem;
+}
+.acta-spinner {
+  display: inline-block;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--acta-border);
+  border-top-color: var(--acta-petroleum);
+  border-radius: 50%;
+  animation: acta-spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+@keyframes acta-spin { to { transform: rotate(360deg); } }
+
+/* --- Link-Card (für Influencer-Codes etc.) --- */
+.acta-link-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--acta-border);
+  border-radius: 0.5rem;
+  background-color: var(--acta-white);
+  text-decoration: none;
+  color: var(--acta-dark-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.acta-link-card:hover { border-color: var(--acta-petroleum); box-shadow: 0 2px 8px rgba(44,95,124,0.12); }
+.acta-link-card-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  background-color: var(--acta-petroleum-soft);
+  color: var(--acta-petroleum);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.acta-link-card-body { flex: 1; min-width: 0; }
+.acta-link-card-title { font-weight: 600; font-size: 0.9rem; }
+.acta-link-card-desc { font-size: 0.8rem; color: var(--acta-slate); }
+.acta-link-card-arrow { color: var(--acta-slate); flex-shrink: 0; }
+
+/* ============================================================
+   Modal
+   ============================================================ */
+.acta-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.acta-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+}
+.acta-modal-content {
+  position: relative;
+  background-color: var(--acta-white);
+  color: var(--acta-dark-text);
+  border-radius: 0.75rem;
+  max-width: 800px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+.acta-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--acta-border);
+}
+.acta-modal-title { font-weight: 600; font-size: 1rem; }
+.acta-modal-close {
+  border: none;
+  background: transparent;
+  color: var(--acta-slate);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+.acta-modal-close:hover { color: var(--acta-alert); }
+.acta-modal-body {
+  padding: 1.25rem;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.acta-modal-body h1, .acta-modal-body h2, .acta-modal-body h3 { color: var(--acta-petroleum); margin: 1rem 0 0.5rem; }
+.acta-modal-body pre { background-color: var(--acta-light-gray); padding: 0.75rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.8rem; }
+.acta-modal-body blockquote { border-left: 3px solid var(--acta-teal); margin: 0.5rem 0; padding-left: 1rem; color: var(--acta-slate); }
+.acta-modal-body a { color: var(--acta-petroleum); }
+.acta-modal-body hr { border: none; border-top: 1px solid var(--acta-border); margin: 1rem 0; }
+.acta-modal-body ul { padding-left: 1.25rem; }
+
+/* --- Textarea --- */
+.acta-textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--acta-border);
+  border-radius: 0.5rem;
+  background-color: var(--acta-light-gray);
+  color: var(--acta-dark-text);
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.8rem;
+  resize: vertical;
+  box-sizing: border-box;
+}

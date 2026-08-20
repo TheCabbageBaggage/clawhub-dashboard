@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — ACTA Pilot</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="acta-layout">
+
+    <!-- ===== Main (Sidebar + Topbar werden von acta-shell.js injiziert) ===== -->
+    <main class="acta-main">
+
+      <!-- Metric Cards -->
+      <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Weekly Usage</div>
+          <div class="acta-metric-value">35.5%</div>
+          <div class="acta-metric-sub">3,552 / 10,006 Requests</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Session Usage</div>
+          <div class="acta-metric-value">46.3%</div>
+          <div class="acta-metric-sub">644 / 1,391 Requests</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Aktive Jobs</div>
+          <div class="acta-metric-value">12</div>
+          <div class="acta-metric-sub">3 fehlerhaft</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">System Status</div>
+          <div class="acta-metric-value" style="color:var(--acta-success);">Healthy</div>
+          <div class="acta-metric-sub">Alle Dienste online</div>
+        </div>
+      </div>
+
+      <!-- Chart + Table -->
+      <div class="acta-grid acta-grid-2">
+        <div class="acta-card">
+          <div class="acta-card-title">Usage über 7 Tage</div>
+          <canvas id="usageChart" height="220"></canvas>
+        </div>
+        <div class="acta-card">
+          <div class="acta-card-title">Request-Verteilung</div>
+          <canvas id="distChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Cron-Jobs <span class="acta-badge acta-badge-success">12 aktiv</span></div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead>
+              <tr>
+                <th>Job</th>
+                <th>Intervall</th>
+                <th>Modell</th>
+                <th>Status</th>
+                <th>Letzter Lauf</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ops Hub Status Monitor</td>
+                <td>1h</td>
+                <td>nemotron-mini</td>
+                <td><span class="acta-badge acta-badge-success">OK</span></td>
+                <td>vor 12 min</td>
+              </tr>
+              <tr>
+                <td>MCP Prozess-Cleanup</td>
+                <td>1h</td>
+                <td>nemotron-mini</td>
+                <td><span class="acta-badge acta-badge-success">OK</span></td>
+                <td>vor 5 min</td>
+              </tr>
+              <tr>
+                <td>Ollama Dashboard Pipeline</td>
+                <td>1h</td>
+                <td>nemotron-mini</td>
+                <td><span class="acta-badge acta-badge-success">OK</span></td>
+                <td>vor 3 min</td>
+              </tr>
+              <tr>
+                <td>Weekly Memory Distillation</td>
+                <td>wöchentlich</td>
+                <td>deepseek-v4-pro</td>
+                <td><span class="acta-badge acta-badge-warning">Rate Limit</span></td>
+                <td>vor 5 Tagen</td>
+              </tr>
+              <tr>
+                <td>Nightly Dreaming</td>
+                <td>täglich 03:00</td>
+                <td>deepseek-v4-flash</td>
+                <td><span class="acta-badge acta-badge-warning">Cooldown</span></td>
+                <td>gestern</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    // --- Charts im ACTA-Stil ---
+    const ACTA = {
+      petroleum: '#2C5F7C',
+      teal: '#3D8B8B',
+      slate: '#8A9BA8',
+      success: '#387359',
+      warning: '#CC9A33',
+      alert: '#BF3939'
+    };
+
+    // Usage Line Chart
+    const usageCtx = document.getElementById('usageChart');
+    if (usageCtx) {
+      new Chart(usageCtx, {
+        type: 'line',
+        data: {
+          labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+          datasets: [{
+            label: 'Requests',
+            data: [420, 510, 480, 560, 620, 480, 482],
+            borderColor: ACTA.petroleum,
+            backgroundColor: 'rgba(44,95,124,0.1)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: ACTA.petroleum
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(138,155,168,0.2)' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // Distribution Doughnut
+    const distCtx = document.getElementById('distChart');
+    if (distCtx) {
+      new Chart(distCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['deepseek-v4-flash', 'deepseek-v4-pro', 'minimax-m2.7', 'kimi-k2.6'],
+          datasets: [{
+            data: [2924, 445, 182, 1],
+            backgroundColor: [ACTA.petroleum, ACTA.teal, ACTA.slate, ACTA.warning],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8' } } }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
