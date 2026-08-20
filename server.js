@@ -27,6 +27,68 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '346557089211-umshm9dqd
 const ALLOWED_GOOGLE_DOMAINS = (process.env.ALLOWED_GOOGLE_DOMAINS || 'gmail.com').split(',').map(d => d.trim());
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
+// === AUTHENTIK OIDC CONFIG ===
+const AUTHENTIK_ISSUER = process.env.AUTHENTIK_ISSUER || 'https://auth.cabbagebaggage.net';
+const AUTHENTIK_CLIENT_ID = process.env.AUTHENTIK_CLIENT_ID || 'clawhub';
+const AUTHENTIK_CLIENT_SECRET = process.env.AUTHENTIK_CLIENT_SECRET || (() => {
+    try { return fs.readFileSync(path.join(__dirname, '.oidc_client_secret'), 'utf8').trim(); } catch (e) { return ''; }
+})();
+const AUTHENTIK_REDIRECT_URI = process.env.AUTHENTIK_REDIRECT_URI || 'https://clawhub.cabbagebaggage.net/api/auth/authentik/callback';
+const AUTHENTIK_SCOPE = 'openid profile email';
+const AUTHENTIK_DISCOVERY_URL = `${AUTHENTIK_ISSUER}/application/o/${AUTHENTIK_CLIENT_ID}/.well-known/openid-configuration`;
+
+// PKCE state store (verifier per login attempt)
+const pkceStore = new Map();
+function base64url(buf) { return Buffer.from(buf).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function generatePkce() {
+    const verifier = base64url(crypto.randomBytes(48));
+    const challenge = base64url(crypto.createHash('sha256').update(verifier).digest());
+    const state = crypto.randomBytes(24).toString('hex');
+    pkceStore.set(state, { verifier, created: Date.now() });
+    return { verifier, challenge, state };
+}
+function consumePkce(state) {
+    const entry = pkceStore.get(state);
+    if (!entry) return null;
+    pkceStore.delete(state);
+    return entry.verifier;
+}
+setInterval(() => {
+    const now = Date.now();
+    for (const [state, entry] of pkceStore) if (now - entry.created > 10 * 60 * 1000) pkceStore.delete(state);
+}, 5 * 60 * 1000);
+
+// Minimal HTTPS JSON helper for OIDC token/userinfo calls
+function httpsJson(urlStr, options = {}) {
+    return new Promise((resolve, reject) => {
+        const u = new URL(urlStr);
+        const lib = u.protocol === 'http:' ? require('http') : require('https');
+        const req = lib.request(u, { method: options.method || 'GET', headers: options.headers || {} }, (res) => {
+            let data = '';
+            res.on('data', (c) => data += c);
+            res.on('end', () => {
+                try { resolve({ status: res.statusCode, body: JSON.parse(data) }); }
+                catch (e) { resolve({ status: res.statusCode, body: data }); }
+            });
+        });
+        req.on('error', reject);
+        if (options.body) req.write(options.body);
+        req.end();
+    });
+}
+
+// Fetch Authentik discovery (cached)
+let authentikDiscovery = null;
+let authentikDiscoveryAt = 0;
+async function getAuthentikDiscovery() {
+    if (authentikDiscovery && Date.now() - authentikDiscoveryAt < 3600 * 1000) return authentikDiscovery;
+    const res = await httpsJson(AUTHENTIK_DISCOVERY_URL);
+    if (res.status !== 200 || !res.body.authorization_endpoint) throw new Error('Authentik discovery failed');
+    authentikDiscovery = res.body;
+    authentikDiscoveryAt = Date.now();
+    return authentikDiscovery;
+}
+
 // === SQLITE TASK DB ===
 let taskDb = null;
 function getTaskDb() {
@@ -406,6 +468,86 @@ const server = http.createServer(async (req, res) => {
             setSecurityHeaders(res);
             res.writeHead(200, { 'Content-Type': 'application/json', 'Set-Cookie': `clawhub_session=${token}; HttpOnly; SameSite=Strict; Max-Age=43200; Path=/; Secure` });
             res.end(JSON.stringify({ success: true, username: user.username, role: user.role, displayName: user.displayName, picture: user.picture }));
+            return;
+        }
+
+        // Authentik OIDC login (redirect to Authentik authorize)
+        if (pathname === '/api/auth/authentik/login' && req.method === 'GET') {
+            try {
+                const discovery = await getAuthentikDiscovery();
+                const { challenge, state } = generatePkce();
+                const params = new URLSearchParams({
+                    client_id: AUTHENTIK_CLIENT_ID,
+                    redirect_uri: AUTHENTIK_REDIRECT_URI,
+                    response_type: 'code',
+                    scope: AUTHENTIK_SCOPE,
+                    code_challenge: challenge,
+                    code_challenge_method: 'S256',
+                    state: state
+                });
+                res.writeHead(302, { 'Location': `${discovery.authorization_endpoint}?${params.toString()}` });
+                res.end();
+            } catch (e) {
+                console.error('Authentik login:', e.message);
+                jsonResponse(res, 500, { error: 'Authentik login failed' });
+            }
+            return;
+        }
+
+        // Authentik OIDC callback (code exchange + session)
+        if (pathname === '/api/auth/authentik/callback' && req.method === 'GET') {
+            const q = parsedUrl.query || {};
+            const { code, state, error } = q;
+            if (error) { res.writeHead(302, { 'Location': '/login?error=' + encodeURIComponent(error) }); res.end(); return; }
+            if (!code || !state) { res.writeHead(302, { 'Location': '/login?error=missing_params' }); res.end(); return; }
+            const verifier = consumePkce(state);
+            if (!verifier) { res.writeHead(302, { 'Location': '/login?error=invalid_state' }); res.end(); return; }
+            try {
+                const discovery = await getAuthentikDiscovery();
+                const tokenRes = await httpsJson(discovery.token_endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        grant_type: 'authorization_code',
+                        client_id: AUTHENTIK_CLIENT_ID,
+                        client_secret: AUTHENTIK_CLIENT_SECRET,
+                        code: code,
+                        redirect_uri: AUTHENTIK_REDIRECT_URI,
+                        code_verifier: verifier
+                    }).toString()
+                });
+                if (tokenRes.status !== 200 || !tokenRes.body.access_token) {
+                    console.error('Authentik token exchange failed:', tokenRes.status, JSON.stringify(tokenRes.body).slice(0, 200));
+                    res.writeHead(302, { 'Location': '/login?error=token_failed' }); res.end(); return;
+                }
+                const userinfoRes = await httpsJson(discovery.userinfo_endpoint, {
+                    headers: { 'Authorization': `Bearer ${tokenRes.body.access_token}` }
+                });
+                if (userinfoRes.status !== 200 || !userinfoRes.body.email) {
+                    console.error('Authentik userinfo failed:', userinfoRes.status);
+                    res.writeHead(302, { 'Location': '/login?error=userinfo_failed' }); res.end(); return;
+                }
+                const info = userinfoRes.body;
+                const userKey = `authentik:${info.email}`;
+                let user = users[userKey];
+                if (!user) {
+                    user = { username: info.email, authentikEmail: info.email, authentikSub: info.sub, displayName: info.name || info.preferred_username || info.email.split('@')[0], picture: info.picture || null, role: 'user', created: new Date().toISOString(), authProvider: 'authentik' };
+                    users[userKey] = user; saveUsers();
+                    console.log(`Authentik user auto-created: ${info.email}`);
+                }
+                user.lastLogin = new Date().toISOString(); saveUsers();
+                resetLoginAttempts(ip);
+                const token = createSession(user.username);
+                setSecurityHeaders(res);
+                res.writeHead(302, {
+                    'Location': '/',
+                    'Set-Cookie': `clawhub_session=${token}; HttpOnly; SameSite=Strict; Max-Age=43200; Path=/; Secure`
+                });
+                res.end();
+            } catch (e) {
+                console.error('Authentik callback:', e.message);
+                res.writeHead(302, { 'Location': '/login?error=callback_failed' }); res.end();
+            }
             return;
         }
 
