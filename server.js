@@ -4,7 +4,6 @@ const path = require('path');
 const url = require('url');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const { OAuth2Client } = require('google-auth-library');
 const Database = require('better-sqlite3');
 
 const PORT = process.env.PORT || 3001;
@@ -21,11 +20,6 @@ const MAX_LOGIN_ATTEMPTS = 5;
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_WINDOW = 60 * 1000;
 const RATE_LIMIT_MAX = 100;
-
-// Google OAuth config
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '346557089211-umshm9dqdub0bgq9p8nd4hlj5vghng76.apps.googleusercontent.com';
-const ALLOWED_GOOGLE_DOMAINS = (process.env.ALLOWED_GOOGLE_DOMAINS || 'gmail.com').split(',').map(d => d.trim());
-const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 // === AUTHENTIK OIDC CONFIG ===
 const AUTHENTIK_ISSUER = process.env.AUTHENTIK_ISSUER || 'https://auth.cabbagebaggage.net';
@@ -249,19 +243,6 @@ function parseBody(req) {
     });
 }
 
-// === GOOGLE OAUTH ===
-async function verifyGoogleToken(idToken) {
-    try {
-        const ticket = await googleClient.verifyIdToken({ idToken, audience: GOOGLE_CLIENT_ID });
-        const payload = ticket.getPayload();
-        if (!payload.email_verified) return { error: 'Google email not verified' };
-        const domain = payload.email.split('@')[1];
-        if (ALLOWED_GOOGLE_DOMAINS.length > 0 && !ALLOWED_GOOGLE_DOMAINS.includes('*') && !ALLOWED_GOOGLE_DOMAINS.includes(domain))
-            return { error: `Google domain @${domain} not allowed` };
-        return { email: payload.email, name: payload.name || payload.email.split('@')[0], picture: payload.picture, googleId: payload.sub };
-    } catch (e) { console.error('Google verify:', e.message); return { error: 'Invalid Google token' }; }
-}
-
 // === TASK API HELPERS ===
 function getTaskSummary() {
     const db = getTaskDb();
@@ -446,31 +427,6 @@ const server = http.createServer(async (req, res) => {
         // === PUBLIC ROUTES ===
         if (pathname === '/login' && req.method === 'GET') { serveFile(path.join(__dirname, 'login.html'), res); return; }
 
-        // Google OAuth login
-        if (pathname === '/api/auth/google' && req.method === 'POST') {
-            const attemptCheck = checkLoginAttempts(ip);
-            if (attemptCheck.blocked) { jsonResponse(res, 429, { error: 'Too many login attempts', retryAfter: attemptCheck.retryAfter }); return; }
-            let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
-            const { credential } = body;
-            if (!credential) { jsonResponse(res, 400, { error: 'Google credential required' }); return; }
-            const googleUser = await verifyGoogleToken(credential);
-            if (googleUser.error) { jsonResponse(res, 401, { error: googleUser.error }); return; }
-            const userKey = `google:${googleUser.email}`;
-            let user = users[userKey];
-            if (!user) {
-                user = { username: googleUser.email, googleEmail: googleUser.email, googleId: googleUser.googleId, displayName: googleUser.name, picture: googleUser.picture, role: 'user', created: new Date().toISOString(), authProvider: 'google' };
-                users[userKey] = user; saveUsers();
-                console.log(`Google user auto-created: ${googleUser.email}`);
-            }
-            user.lastLogin = new Date().toISOString(); saveUsers();
-            resetLoginAttempts(ip);
-            const token = createSession(user.username);
-            setSecurityHeaders(res);
-            res.writeHead(200, { 'Content-Type': 'application/json', 'Set-Cookie': `clawhub_session=${token}; HttpOnly; SameSite=Strict; Max-Age=43200; Path=/; Secure` });
-            res.end(JSON.stringify({ success: true, username: user.username, role: user.role, displayName: user.displayName, picture: user.picture }));
-            return;
-        }
-
         // Authentik OIDC login (redirect to Authentik authorize)
         if (pathname === '/api/auth/authentik/login' && req.method === 'GET') {
             try {
@@ -588,9 +544,6 @@ const server = http.createServer(async (req, res) => {
             } else { jsonResponse(res, 200, { authenticated: false }); }
             return;
         }
-
-        // Google client ID
-        if (pathname === '/api/auth/google-config') { jsonResponse(res, 200, { clientId: GOOGLE_CLIENT_ID }); return; }
 
         // === AUTH REQUIRED ===
         const session = requireAuth(req, res);
@@ -902,7 +855,6 @@ const server = http.createServer(async (req, res) => {
             const key = targetUser.toLowerCase();
             if (key !== userKey && !isAdmin) { jsonResponse(res, 403, { error: 'Can only change your own password' }); return; }
             if (!users[key]) { jsonResponse(res, 404, { error: 'User not found' }); return; }
-            if (users[key].authProvider === 'google') { jsonResponse(res, 400, { error: 'Google users cannot set a password' }); return; }
             let body; try { body = await parseBody(req); } catch (e) { jsonResponse(res, 400, { error: 'Invalid request body' }); return; }
             const { currentPassword, newPassword } = body;
             if (key === userKey && !isAdmin) { if (!currentPassword || !bcrypt.compareSync(currentPassword, users[key].passwordHash)) { jsonResponse(res, 401, { error: 'Current password incorrect' }); return; } }
@@ -999,9 +951,9 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
     console.log(`🔒 ClawHub Dashboard on port ${PORT}`);
-    console.log(`   Auth: bcrypt + Google OAuth + sessions + rate limiting`);
+    console.log(`   Auth: bcrypt + Authentik OIDC + sessions + rate limiting`);
     console.log(`   Users: ${Object.keys(users).length} configured`);
-    console.log(`   Google OAuth: ${GOOGLE_CLIENT_ID ? 'enabled' : 'disabled'}`);
+    console.log(`   Authentik OIDC: ${AUTHENTIK_CLIENT_ID ? 'enabled' : 'disabled'}`);
     console.log(`   Task DB: ${TASK_DB_PATH}`);
 });
 

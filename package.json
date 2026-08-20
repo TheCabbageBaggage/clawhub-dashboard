@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "google-auth-library": "^9.15.1",
     "better-sqlite3": "^11.7.0"
   }
 }

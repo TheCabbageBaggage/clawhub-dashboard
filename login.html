@@ -63,7 +63,7 @@
             padding: 0 12px;
         }
         
-        .btn-google {
+        .btn-oauth {
             width: 100%;
             padding: 12px;
             background: #fff;
@@ -80,21 +80,21 @@
             gap: 10px;
         }
         
-        .btn-google:hover {
+        .btn-oauth:hover {
             background: #f0f0f0;
         }
         
-        .btn-google:active {
+        .btn-oauth:active {
             transform: scale(0.98);
         }
         
-        .btn-google:disabled {
+        .btn-oauth:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
         
-        .btn-google svg {
+        .btn-oauth svg {
             width: 20px;
             height: 20px;
         }
@@ -210,15 +210,9 @@
         
         <div id="error" class="error-message"></div>
         
-        <!-- Google Sign-In -->
-        <button type="button" class="btn-google" id="googleBtn" onclick="handleGoogleLogin()">
-            <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            Sign in with Google
-        </button>
-
         <!-- Authentik SSO -->
-        <button type="button" class="btn-google" id="authentikBtn" onclick="handleAuthentikLogin()" style="background:#2C5F7C;border-color:#2C5F7C;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+        <button type="button" class="btn-oauth" id="authentikBtn" onclick="handleAuthentikLogin()">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path fill="#FD4B2D" d="M12 1.5L2.5 5.5v6c0 5.2 3.9 9.4 9.5 11 5.6-1.6 9.5-5.8 9.5-11v-6L12 1.5z"/><path fill="#fff" d="M12 4.5l6.5 2.6v4.4c0 3.9-2.9 7.1-6.5 8.4-3.6-1.3-6.5-4.5-6.5-8.4V7.1L12 4.5z"/><path fill="#FD4B2D" d="M12 7.2l4.2 1.7v2.9c0 2.5-1.9 4.6-4.2 5.4-2.3-.8-4.2-2.9-4.2-5.4V8.9L12 7.2z"/><path fill="#fff" d="M12 9.5l1.8.7v1.2c0 1.1-.8 2-1.8 2.3-1-.3-1.8-1.2-1.8-2.3v-1.2L12 9.5z"/></svg>
             Sign in with Authentik
         </button>
         
@@ -250,84 +244,13 @@
         </div>
     </div>
     
-    <!-- Google Identity Services -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        let googleClientId = '';
-        let googleInitialized = false;
-        
-        // Fetch Google client ID from server
-        async function initGoogleAuth() {
-            try {
-                const resp = await fetch('/api/auth/google-config');
-                const data = await resp.json();
-                googleClientId = data.clientId;
-                
-                if (googleClientId && window.google) {
-                    google.accounts.id.initialize({
-                        client_id: googleClientId,
-                        callback: handleGoogleResponse,
-                        auto_select: false,
-                        cancel_on_tap_outside: true
-                    });
-                    googleInitialized = true;
-                }
-            } catch (e) {
-                console.error('Failed to init Google auth:', e);
-            }
-        }
-        
-        function handleGoogleLogin() {
-            if (!googleInitialized || !window.google) {
-                showError('Google Sign-In is not available. Please use password login.');
-                return;
-            }
-            setGoogleLoading(true);
-            google.accounts.id.prompt();
-        }
-
         // Authentik SSO login (redirect to server, which redirects to Authentik)
         function handleAuthentikLogin() {
             const btn = document.getElementById('authentikBtn');
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner"></span>Redirecting to Authentik...';
             window.location.href = '/api/auth/authentik/login';
-        }
-        
-        async function handleGoogleResponse(response) {
-            if (response.error) {
-                setGoogleLoading(false);
-                showError('Google Sign-In was cancelled or failed.');
-                return;
-            }
-            
-            try {
-                const resp = await fetch('/api/auth/google', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ credential: response.credential })
-                });
-                
-                const data = await resp.json();
-                
-                if (resp.ok && data.success) {
-                    window.location.href = '/';
-                } else {
-                    setGoogleLoading(false);
-                    showError(data.error || 'Google authentication failed.');
-                }
-            } catch (err) {
-                setGoogleLoading(false);
-                showError('Connection error. Please try again.');
-            }
-        }
-        
-        function setGoogleLoading(loading) {
-            const btn = document.getElementById('googleBtn');
-            btn.disabled = loading;
-            btn.innerHTML = loading 
-                ? '<span class="spinner"></span>Signing in...' 
-                : '<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Sign in with Google';
         }
         
         // Password login
@@ -397,8 +320,6 @@
             } catch (e) {}
         })();
         
-        // Init Google auth
-        initGoogleAuth();
     </script>
 </body>
 </html>
