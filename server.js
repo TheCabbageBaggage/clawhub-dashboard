@@ -5,6 +5,7 @@ const url = require('url');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const Database = require('better-sqlite3');
+const kgEngine = require('./kg-engine.js');
 
 const PORT = process.env.PORT || 3001;
 const DASHBOARD_DIR = path.join(__dirname, 'dashboard');
@@ -932,17 +933,48 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // === KG Natural Language Query ===
+        if (pathname === '/api/kg/nlquery' && req.method === 'POST') {
+            try {
+                const body = await parseBody(req);
+                const nl = (body.query || body.nl || '').toString().trim();
+                if (!nl) { jsonResponse(res, 400, { error: 'query required' }); return; }
+                const result = await kgEngine.runNLQuery(nl);
+                jsonResponse(res, 200, result);
+            } catch (e) {
+                console.error('KG NL-Query error:', e.message);
+                jsonResponse(res, 500, { error: e.message });
+            }
+            return;
+        }
+
+        // Knowledge Graph Schema (für Frontend-Autovervollständigung)
+        if (pathname === '/api/kg/schema' && req.method === 'GET') {
+            try {
+                const kg = kgEngine.loadGraph();
+                const nodes = kg.nodes.map(n => ({ id: n.id, label: n.label, type: n.type }));
+                const types = [...new Set(kg.nodes.map(n => n.type))].sort();
+                const rels = [...new Set(kg.edges.map(e => e.relation))].sort();
+                jsonResponse(res, 200, { types, rels, nodes });
+            } catch (e) { jsonResponse(res, 500, { error: e.message }); }
+            return;
+        }
+
         // Static files (protected)
         let filePath = path.join(DASHBOARD_DIR, pathname);
         if (pathname === '/') filePath = path.join(DASHBOARD_DIR, 'index.html');
         const resolvedPath = path.resolve(filePath);
         if (!resolvedPath.startsWith(DASHBOARD_DIR)) { jsonResponse(res, 403, { error: 'Forbidden' }); return; }
         fs.stat(filePath, (err, stats) => {
-            if (err || !stats.isFile()) {
+            if (err) {
                 if (!pathname.includes('.')) {
                     const htmlPath = filePath + '.html';
                     fs.stat(htmlPath, (err2, stats2) => { if (err2 || !stats2.isFile()) { jsonResponse(res, 404, { error: 'Not found' }); } else { serveFile(htmlPath, res); } });
                 } else { jsonResponse(res, 404, { error: 'Not found' }); }
+            } else if (stats.isDirectory()) {
+                // Serve index.html for directory paths (e.g. /redesign/)
+                const indexPath = path.join(filePath, 'index.html');
+                fs.stat(indexPath, (err2, stats2) => { if (err2 || !stats2.isFile()) { jsonResponse(res, 404, { error: 'Not found' }); } else { serveFile(indexPath, res); } });
             } else { serveFile(filePath, res); }
         });
 

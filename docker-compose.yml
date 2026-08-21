@@ -18,6 +18,9 @@ services:
       - NODE_ENV=production
       - PORT=3001
       - TASK_DB_PATH=/app/data/tasks.db
+      - OLLAMA_URL=http://ollama:11434
+      - KG_PATH=/app/dashboard/briefing/data/kg_full.json
+      - KG_NL_MODEL=nemotron-mini:latest
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
     networks:
       - ollama-xwy9_default
