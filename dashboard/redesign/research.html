@@ -32,6 +32,8 @@
     let activeCat = 'all';
     let activeType = 'all';
     let searchTerm = '';
+    let sortKey = 'date';
+    let sortDir = -1;
 
     const TYPE_COLORS = { 'MD':'#387359', 'HTML':'#CC9A33', 'PDF':'#BF3939' };
 
@@ -83,6 +85,15 @@
       }
     }
 
+    function sortBy(key) {
+      if (sortKey === key) { sortDir = -sortDir; } else { sortKey = key; sortDir = 1; }
+      render();
+    }
+    function sortIcon(key) {
+      if (sortKey !== key) return '↕';
+      return sortDir === 1 ? '↑' : '↓';
+    }
+
     function render() {
       const content = document.getElementById('content');
       const cats = [...new Set(DOCS.map(d => d.category))].sort();
@@ -97,6 +108,11 @@
         const q = searchTerm.toLowerCase();
         filtered = filtered.filter(d => (d.title + ' ' + (d.summary||'') + ' ' + (d.category||'')).toLowerCase().includes(q));
       }
+      filtered = filtered.slice().sort((a, b) => {
+        const av = (a[sortKey] || '').toString().toLowerCase();
+        const bv = (b[sortKey] || '').toString().toLowerCase();
+        return av < bv ? -sortDir : av > bv ? sortDir : 0;
+      });
 
       content.innerHTML = `
         <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
@@ -123,17 +139,33 @@
           </select>
         </div>
 
-        <div class="acta-grid acta-grid-3">
-          ${filtered.map(d => `
-            <div class="acta-card" style="cursor:pointer;display:flex;flex-direction:column;" onclick="openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                <span class="acta-badge" style="background:var(--acta-petroleum);color:#fff;">${esc(d.category || '—')}</span>
-                <span class="acta-badge" style="background:${TYPE_COLORS[d.type] || '#8A9BA8'};color:#fff;">${esc(d.type || '—')}</span>
-              </div>
-              <div style="font-weight:600;font-size:0.95rem;line-height:1.35;margin-bottom:0.4rem;">${esc(d.title)}</div>
-              <div style="font-size:0.8rem;color:var(--acta-slate);line-height:1.4;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${esc(d.summary || '')}</div>
-              <div style="font-size:0.75rem;color:var(--acta-slate);margin-top:0.75rem;">${esc(d.date || '')}</div>
-            </div>`).join('') || '<div class="acta-empty">Keine Recherchen gefunden</div>'}
+        <div class="acta-card">
+          <div class="acta-card-title">Recherchen <span class="acta-badge acta-badge-neutral">${filtered.length}</span></div>
+          <div class="acta-table-wrap">
+            <table class="acta-table">
+              <thead>
+                <tr>
+                  <th style="cursor:pointer;" onclick="sortBy('title')">Titel ${sortIcon('title')}</th>
+                  <th style="cursor:pointer;" onclick="sortBy('category')">Kategorie ${sortIcon('category')}</th>
+                  <th style="cursor:pointer;" onclick="sortBy('type')">Typ ${sortIcon('type')}</th>
+                  <th style="cursor:pointer;" onclick="sortBy('date')">Datum ${sortIcon('date')}</th>
+                  <th>Zusammenfassung</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filtered.map(d => `
+                  <tr>
+                    <td style="font-weight:500;color:var(--acta-petroleum);cursor:pointer;" onclick="openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">${esc(d.title)}</td>
+                    <td><span class="acta-badge" style="background:var(--acta-petroleum);color:#fff;">${esc(d.category || '—')}</span></td>
+                    <td><span class="acta-badge" style="background:${TYPE_COLORS[d.type] || '#8A9BA8'};color:#fff;">${esc(d.type || '—')}</span></td>
+                    <td style="font-size:0.8rem;color:var(--acta-slate);white-space:nowrap;">${esc(d.date || '—')}</td>
+                    <td style="font-size:0.8rem;color:var(--acta-slate);max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(d.summary || '')}</td>
+                    <td><button class="acta-btn acta-btn-sm" onclick="openDoc(${JSON.stringify(d).replace(/"/g,'&quot;')})">Öffnen</button></td>
+                  </tr>`).join('') || '<tr><td colspan="6" class="acta-empty">Keine Recherchen gefunden</td></tr>'}
+              </tbody>
+            </table>
+          </div>
         </div>
       `;
 

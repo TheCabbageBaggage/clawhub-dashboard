@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Knowledge Graph</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+  <style>
+    #cy {
+      width: 100%;
+      height: 640px;
+      border-radius: 0.5rem;
+      background: var(--acta-card-bg, #fff);
+      border: 1px solid var(--acta-border, #e2e8f0);
+    }
+    .kg-legend {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;
+      font-size: 0.8rem; color: var(--acta-slate, #64748b);
+    }
+    .kg-legend-item { display: flex; align-items: center; gap: 0.35rem; }
+    .kg-legend-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .kg-legend-line { width: 20px; height: 2px; display: inline-block; }
+    .kg-toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .kg-query-result { font-size: 0.8rem; color: var(--acta-slate, #64748b); }
+    .kg-node-detail { font-size: 0.85rem; }
+    .kg-node-detail .row { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--acta-border, #eef2f7); }
+    .kg-node-detail .row:last-child { border-bottom: none; }
+    .kg-node-detail .lbl { color: var(--acta-slate, #64748b); }
+    .kg-node-detail .val { font-weight: 500; color: var(--acta-petroleum, #2C5F7C); }
+    .kg-chip { display:inline-block; padding:0.15rem 0.5rem; border-radius:999px; font-size:0.72rem; font-weight:600; color:#fff; }
+  </style>
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Knowledge Graph…</div>
+      </div>
+    </main>
+  </div>
+
+  <div class="acta-modal" id="nodeModal" style="display:none;">
+    <div class="acta-modal-backdrop" onclick="closeNodeModal()"></div>
+    <div class="acta-modal-content">
+      <div class="acta-modal-header">
+        <div class="acta-modal-title" id="nodeModalTitle"></div>
+        <button class="acta-modal-close" onclick="closeNodeModal()">✕</button>
+      </div>
+      <div class="acta-modal-body" id="nodeModalBody"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/layout-base@2.0.1/layout-base.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cose-base@2.2.0/cose-base.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+  <script>cytoscape.use(cytoscapeFcose);</script>
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    let KG = null;          // { nodes, edges, stats }
+    let cy = null;
+    let nodeMap = {};       // id -> original node
+    let currentQuery = 'all';
+    let queryParam = '';
+
+    const TYPE_COLORS = {
+      'Person':'#2C5F7C', 'Organization':'#3D8B8B', 'UNKNOWN':'#8A9BA8'
+    };
+    const REL_COLORS = {
+      'knows':'#3D8B8B', 'works_at':'#CC9A33', 'connected_on':'#8A9BA8', 'has_role':'#63B2B2'
+    };
+
+    function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    // --- Datenaufbereitung für Cytoscape ---
+    function buildCyData() {
+      nodeMap = {};
+      KG.nodes.forEach(n => { nodeMap[n.id] = n; });
+
+      const cyNodes = KG.nodes.map(n => ({
+        data: {
+          id: n.id,
+          label: n.label || n.id,
+          type: n.type || 'UNKNOWN',
+          degree: n.degree || 0
+        }
+      }));
+
+      const cyEdges = KG.edges.map((e, i) => ({
+        data: {
+          id: 'e' + i,
+          source: e.source,
+          target: e.target,
+          relation: e.relation || 'connected',
+          weight: e.weight || 1
+        }
+      }));
+
+      return { nodes: cyNodes, edges: cyEdges };
+    }
+
+    // --- Query-Logik (arbeitet auf dem vollen Graphen) ---
+    function neighbors(id) {
+      const result = new Set([id]);
+      KG.edges.forEach(e => {
+        if (e.source === id) result.add(e.target);
+        if (e.target === id) result.add(e.source);
+      });
+      return result;
+    }
+
+    function bfsPath(from, to) {
+      if (from === to) return [from];
+      const visited = new Set([from]);
+      const queue = [[from]];
+      while (queue.length) {
+        const path = queue.shift();
+        const last = path[path.length - 1];
+        const nbrs = neighbors(last);
+        for (const n of nbrs) {
+          if (n === to) return path.concat([to]);
+          if (!visited.has(n)) { visited.add(n); queue.push(path.concat([n])); }
+        }
+      }
+      return null;
+    }
+
+    // Gibt {nodeIds:Set, edgeIds:Set} zurück
+    function computeQuery() {
+      let nodeIds = new Set();
+      let edgeIds = new Set();
+
+      if (currentQuery === 'all') {
+        KG.nodes.forEach(n => nodeIds.add(n.id));
+        KG.edges.forEach((e, i) => edgeIds.add('e' + i));
+      } else if (currentQuery === 'neighbors') {
+        const target = queryParam.trim();
+        if (target && nodeMap[target]) {
+          const nbrs = neighbors(target);
+          nbrs.forEach(id => nodeIds.add(id));
+          KG.edges.forEach((e, i) => {
+            if (nbrs.has(e.source) && nbrs.has(e.target)) edgeIds.add('e' + i);
+          });
+        }
+      } else if (currentQuery === 'path') {
+        const parts = queryParam.split('|').map(s => s.trim());
+        if (parts.length === 2 && nodeMap[parts[0]] && nodeMap[parts[1]]) {
+          const path = bfsPath(parts[0], parts[1]);
+          if (path) {
+            path.forEach(id => nodeIds.add(id));
+            for (let i = 0; i < path.length - 1; i++) {
+              KG.edges.forEach((e, ei) => {
+                if ((e.source === path[i] && e.target === path[i+1]) || (e.source === path[i+1] && e.target === path[i])) edgeIds.add('e' + ei);
+              });
+            }
+          }
+        }
+      } else if (currentQuery === 'type') {
+        const t = queryParam.trim();
+        KG.nodes.forEach(n => { if (n.type === t) nodeIds.add(n.id); });
+        KG.edges.forEach((e, i) => { if (nodeIds.has(e.source) && nodeIds.has(e.target)) edgeIds.add('e' + i); });
+      } else if (currentQuery === 'search') {
+        const q = queryParam.trim().toLowerCase();
+        KG.nodes.forEach(n => { if ((n.label||'').toLowerCase().includes(q) || n.id.toLowerCase().includes(q)) nodeIds.add(n.id); });
+        KG.edges.forEach((e, i) => { if (nodeIds.has(e.source) && nodeIds.has(e.target)) edgeIds.add('e' + i); });
+      }
+
+      return { nodeIds, edgeIds };
+    }
+
+    function applyQuery() {
+      const { nodeIds, edgeIds } = computeQuery();
+      if (!cy) return;
+
+      // Alle Elemente ausblenden, dann die gefilterten einblenden
+      cy.elements().addClass('hidden');
+      cy.nodes().forEach(n => { if (nodeIds.has(n.id())) n.removeClass('hidden'); });
+      cy.edges().forEach(e => { if (edgeIds.has(e.id())) e.removeClass('hidden'); });
+
+      // Highlight für neighbors/path: markiere den Fokus-Node
+      cy.elements().removeClass('focused');
+      if (currentQuery === 'neighbors' && nodeMap[queryParam.trim()]) {
+        cy.getElementById(queryParam.trim()).addClass('focused');
+      } else if (currentQuery === 'path') {
+        const parts = queryParam.split('|').map(s => s.trim());
+        if (parts.length === 2) {
+          if (nodeMap[parts[0]]) cy.getElementById(parts[0]).addClass('focused');
+          if (nodeMap[parts[1]]) cy.getElementById(parts[1]).addClass('focused');
+        }
+      }
+
+      updateStats(nodeIds.size, edgeIds.size);
+    }
+
+    // --- Netzwerk rendern (Cytoscape) ---
+    // --- NL-Query ausführen (nemotron → Cypher → Engine, serverseitig) ---
+    async function runNLQuery() {
+      const input = document.getElementById('nlQuery');
+      const q = (input.value || '').trim();
+      if (!q) return;
+      const resultEl = document.getElementById('nlQueryResult');
+      const btn = document.getElementById('runNLQueryBtn');
+      resultEl.innerHTML = '<span class="acta-spinner"></span> Übersetze via nemotron…';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/kg/nlquery', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q })
+        });
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Fehler');
+        renderNLResult(data.nodes || [], data.edges || []);
+        resultEl.innerHTML = '✅ <strong>' + data.stats.nodes + '</strong> Nodes, <strong>' + data.stats.edges + '</strong> Edges'
+          + (data.fallback ? ' · <em>Fallback-Match (kein sauberes Cypher)</em>' : '')
+          + '<span style="margin-left:0.5rem;">Cypher: <code>' + esc(data.query) + '</code></span>';
+      } catch (e) {
+        resultEl.innerHTML = '<span style="color:var(--acta-alert,#BF3939);">Fehler: ' + esc(e.message) + '</span>';
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // NL-Ergebnis in den Cytoscape-Graph rendern
+    function renderNLResult(nodes, edges) {
+      if (!cy) return;
+      cy.elements().removeClass('hidden');
+      const resultIds = new Set(nodes.map(n => n.id));
+      const resultEdgeKeys = new Set(edges.map(e => e.source + '|' + e.target));
+      cy.nodes().addClass('hidden');
+      cy.nodes().forEach(n => { if (resultIds.has(n.id())) n.removeClass('hidden'); });
+      cy.edges().addClass('hidden');
+      cy.edges().forEach(e => {
+        const src = e.source().id(), tgt = e.target().id();
+        if (resultEdgeKeys.has(src + '|' + tgt) || resultEdgeKeys.has(tgt + '|' + src)) e.removeClass('hidden');
+      });
+      updateStats(nodes.length, edges.length);
+      // zum Ergebnis zoomen
+      const els = cy.elements(':visible');
+      if (els.length) cy.animate({ fit: { eles: els, padding: 40 }, duration: 500 });
+    }
+
+    function renderNetwork() {
+      const container = document.getElementById('cy');
+      if (!container) return;
+      if (cy) { cy.destroy(); cy = null; }
+
+      const { nodes, edges } = buildCyData();
+      cy = cytoscape({
+        container,
+        elements: { nodes, edges },
+        style: [
+          {
+            selector: 'node',
+            style: {
+              'label': 'data(label)',
+              'background-color': function(ele) { return TYPE_COLORS[ele.data('type')] || '#8A9BA8'; },
+              'color': '#1A3440',
+              'font-size': 10,
+              'text-wrap': 'ellipsis',
+              'text-max-width': '120px',
+              'text-outline-width': 2,
+              'text-outline-color': '#fff',
+              'width': 'mapData(degree, 0, 100, 12, 40)',
+              'height': 'mapData(degree, 0, 100, 12, 40)',
+              'border-width': 1,
+              'border-color': '#1A3440',
+              'overlay-opacity': 0
+            }
+          },
+          {
+            selector: 'edge',
+            style: {
+              'width': 1.5,
+              'line-color': function(ele) { return REL_COLORS[ele.data('relation')] || '#8A9BA8'; },
+              'target-arrow-color': function(ele) { return REL_COLORS[ele.data('relation')] || '#8A9BA8'; },
+              'target-arrow-shape': 'triangle',
+              'arrow-scale': 0.6,
+              'curve-style': 'bezier',
+              'opacity': 0.55,
+              'label': 'data(relation)',
+              'font-size': 7,
+              'text-rotation': 'autorotate',
+              'text-outline-width': 1,
+              'text-outline-color': '#fff'
+            }
+          },
+          {
+            selector: '.hidden',
+            style: { 'display': 'none' }
+          },
+          {
+            selector: '.focused',
+            style: {
+              'border-width': 4,
+              'border-color': '#BF3939',
+              'width': 'mapData(degree, 0, 100, 20, 55)',
+              'height': 'mapData(degree, 0, 100, 20, 55)'
+            }
+          },
+          {
+            selector: 'node:selected',
+            style: { 'border-width': 4, 'border-color': '#3D8B8B' }
+          }
+        ],
+        layout: {
+          name: 'fcose',
+          quality: 'default',
+          randomize: true,
+          animate: true,
+          animationDuration: 800,
+          nodeRepulsion: 8000,
+          idealEdgeLength: 80,
+          edgeElasticity: 0.45,
+          gravity: 0.25,
+          numIter: 2500,
+          tile: true
+        },
+        minZoom: 0.05,
+        maxZoom: 3,
+        wheelSensitivity: 0.2
+      });
+
+      cy.on('tap', 'node', function(evt) {
+        showNodeDetails(evt.target.id());
+      });
+
+      cy.on('tap', function(evt) {
+        if (evt.target === cy) { /* Hintergrund-Klick */ }
+      });
+    }
+
+    function showNodeDetails(id) {
+      const n = nodeMap[id];
+      if (!n) return;
+      document.getElementById('nodeModalTitle').textContent = n.label || n.id;
+      const connected = KG.edges.filter(e => e.source === id || e.target === id);
+      const body = document.getElementById('nodeModalBody');
+      body.innerHTML = `
+        <div class="kg-node-detail">
+          <div class="row"><span class="lbl">Typ</span><span class="val">${esc(n.type || '—')}</span></div>
+          <div class="row"><span class="lbl">Degree</span><span class="val">${n.degree || 0}</span></div>
+          <div class="row"><span class="lbl">Verbindungen</span><span class="val">${connected.length}</span></div>
+        </div>
+        <div class="acta-card-title" style="margin:1rem 0 0.5rem;">Direkte Verbindungen</div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead><tr><th>Node</th><th>Relation</th><th>Typ</th></tr></thead>
+            <tbody>
+              ${connected.map(e => {
+                const other = e.source === id ? e.target : e.source;
+                const on = nodeMap[other];
+                return `<tr>
+                  <td style="font-weight:500;color:var(--acta-petroleum);cursor:pointer;" onclick="exploreNode('${esc(other)}')">${esc(on ? (on.label||other) : other)}</td>
+                  <td><span class="kg-chip" style="background:${REL_COLORS[e.relation]||'#8A9BA8'};">${esc(e.relation || 'connected')}</span></td>
+                  <td><span class="kg-chip" style="background:${TYPE_COLORS[on ? on.type : 'UNKNOWN'] || '#8A9BA8'};">${esc(on ? (on.type||'?') : '?')}</span></td>
+                </tr>`;
+              }).join('') || '<tr><td colspan="3" class="acta-empty">Keine Verbindungen</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      `;
+      document.getElementById('nodeModal').style.display = 'flex';
+    }
+    function closeNodeModal() { document.getElementById('nodeModal').style.display = 'none'; }
+    function exploreNode(id) {
+      closeNodeModal();
+      document.getElementById('queryType').value = 'neighbors';
+      document.getElementById('queryParam').value = id;
+      currentQuery = 'neighbors'; queryParam = id;
+      applyQuery();
+    }
+
+    function updateStats(nodes, edges) {
+      const el = document.getElementById('graphStats');
+      if (el) el.innerHTML = `<span class="acta-badge acta-badge-neutral">${nodes} Nodes</span> <span class="acta-badge acta-badge-neutral">${edges} Edges</span>`;
+    }
+
+    // --- UI bauen ---
+    function render() {
+      const content = document.getElementById('content');
+      const types = [...new Set(KG.nodes.map(n => n.type))].sort();
+      const nodeOptions = KG.nodes.map(n => `<option value="${esc(n.id)}">${esc(n.label || n.id)}</option>`).join('');
+
+      content.innerHTML = `
+        <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Nodes</div><div class="acta-metric-value">${KG.stats.nodes}</div><div class="acta-metric-sub">im Graph</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Edges</div><div class="acta-metric-value">${KG.stats.edges}</div><div class="acta-metric-sub">Verbindungen</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Personen</div><div class="acta-metric-value">${KG.stats.types.Person || 0}</div><div class="acta-metric-sub">Kontakte</div></div>
+          <div class="acta-card acta-metric"><div class="acta-metric-label">Organisationen</div><div class="acta-metric-value">${KG.stats.types.Organization || 0}</div><div class="acta-metric-sub">Firmen</div></div>
+        </div>
+
+        <div class="acta-card" style="margin-bottom:1.25rem;">
+          <div class="acta-card-title">🔍 Natürliche Sprache (nemotron → Cypher)</div>
+          <div class="kg-toolbar">
+            <div class="acta-search" style="flex:1;min-width:260px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="nlQuery" placeholder="z.B. Wer arbeitet bei OMV? · Wer kennt Linus Kohl? · Pfad Linus Kohl → OMV" onkeydown="if(event.key==='Enter')runNLQuery()">
+            </div>
+            <button class="acta-btn acta-btn-primary" id="runNLQueryBtn" onclick="runNLQuery()">NL-Query</button>
+          </div>
+          <div id="nlQueryResult" style="margin-top:0.5rem;font-size:0.8rem;color:var(--acta-slate);"></div>
+        </div>
+
+        <div class="acta-card" style="margin-bottom:1.25rem;">
+          <div class="acta-card-title">Graph-Query (strukturiert)</div>
+          <div class="kg-toolbar">
+            <select class="acta-select" id="queryType" style="min-width:180px;">
+              <option value="all">Alle anzeigen</option>
+              <option value="neighbors">Nachbarn von…</option>
+              <option value="path">Pfad von… zu…</option>
+              <option value="type">Alle vom Typ…</option>
+              <option value="search">Suche…</option>
+            </select>
+            <div class="acta-search" style="flex:1;min-width:220px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="queryParam" placeholder="Node, 'A|B' für Pfad, Typ oder Suchbegriff…" list="nodeList">
+            </div>
+            <datalist id="nodeList">${nodeOptions}</datalist>
+            <button class="acta-btn acta-btn-primary" id="runQuery">Query ausführen</button>
+            <button class="acta-btn acta-btn-sm" id="resetView">Zurücksetzen</button>
+          </div>
+          <div style="margin-top:0.75rem;font-size:0.8rem;color:var(--acta-slate);" id="queryHint">
+            Tipp: Wähle eine Query-Art, gib einen Wert ein (z.B. <strong>Linus Kohl</strong> für Nachbarn, <strong>Linus Kohl|OMV</strong> für Pfad, <strong>Organization</strong> für Typ) und klicke „Query ausführen".
+          </div>
+        </div>
+
+        <div class="acta-card">
+          <div class="acta-card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+            <span>Graph-Explorer <span id="graphStats"></span></span>
+            <div class="kg-legend">
+              <span class="kg-legend-item"><span class="kg-legend-dot" style="background:#2C5F7C;"></span>Person</span>
+              <span class="kg-legend-item"><span class="kg-legend-dot" style="background:#3D8B8B;"></span>Organisation</span>
+              <span class="kg-legend-item"><span class="kg-legend-line" style="background:#3D8B8B;"></span>knows</span>
+              <span class="kg-legend-item"><span class="kg-legend-line" style="background:#CC9A33;"></span>works_at</span>
+            </div>
+          </div>
+          <div id="cy"></div>
+        </div>
+      `;
+
+      document.getElementById('queryType').addEventListener('change', e => {
+        currentQuery = e.target.value;
+        const hint = document.getElementById('queryHint');
+        const ph = document.getElementById('queryParam');
+        if (currentQuery === 'neighbors') { hint.innerHTML = 'Gib einen Node-Namen ein (z.B. <strong>Linus Kohl</strong>) — zeigt alle direkten Verbindungen.'; ph.placeholder = 'Node-Name…'; }
+        else if (currentQuery === 'path') { hint.innerHTML = 'Gib <strong>Start|Ziel</strong> ein (z.B. <strong>Linus Kohl|OMV</strong>) — zeigt den kürzesten Pfad.'; ph.placeholder = 'Start|Ziel…'; }
+        else if (currentQuery === 'type') { hint.innerHTML = 'Gib einen Typ ein: <strong>' + types.join(', ') + '</strong>.'; ph.placeholder = 'Typ…'; }
+        else if (currentQuery === 'search') { hint.innerHTML = 'Durchsucht alle Node-Namen und IDs.'; ph.placeholder = 'Suchbegriff…'; }
+        else { hint.innerHTML = 'Zeigt den gesamten Knowledge Graph.'; ph.placeholder = '—'; }
+      });
+      document.getElementById('runQuery').addEventListener('click', () => {
+        queryParam = document.getElementById('queryParam').value;
+        applyQuery();
+      });
+      document.getElementById('queryParam').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { queryParam = e.target.value; applyQuery(); }
+      });
+      document.getElementById('resetView').addEventListener('click', () => {
+        currentQuery = 'all'; queryParam = '';
+        document.getElementById('queryType').value = 'all';
+        document.getElementById('queryParam').value = '';
+        applyQuery();
+      });
+
+      renderNetwork();
+      applyQuery();
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('/briefing/data/kg_full.json');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        KG = await res.json();
+        render();
+      } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

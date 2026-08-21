@@ -12,3 +12,6 @@ dashboard/data/system.json
 dashboard/data/containers.json
 dashboard/data/security.json
 dashboard/data/storage.json
+.oidc_client_secret
+*.bak-*
+migrate_scrum.py
