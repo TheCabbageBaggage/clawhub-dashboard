@@ -296,10 +296,23 @@ function getTasksByWeek() {
                    s.title as story_title,
                    s.epic_id,
                    e.title as epic_title,
-                   e.color as epic_color
+                   e.color as epic_color,
+                   COALESCE(r_sum.cost_eur, 0) as cost_eur,
+                   COALESCE(r_sum.tokens_in, 0) as tokens_in,
+                   COALESCE(r_sum.tokens_out, 0) as tokens_out,
+                   COALESCE(r_sum.run_count, 0) as run_count
             FROM tasks t
             LEFT JOIN user_stories s ON t.story_id = s.id
             LEFT JOIN epics e ON s.epic_id = e.id
+            LEFT JOIN (
+                SELECT task_id,
+                       SUM(cost_eur) as cost_eur,
+                       SUM(tokens_in) as tokens_in,
+                       SUM(tokens_out) as tokens_out,
+                       COUNT(*) as run_count
+                FROM task_runs
+                GROUP BY task_id
+            ) r_sum ON r_sum.task_id = t.id
             ORDER BY t.week, t.category, t.priority
         `).all();
         // Attach labels for each task
@@ -325,9 +338,16 @@ function getEpics() {
     if (!db) return [];
     try {
         return db.prepare(`
-            SELECT e.*, COUNT(s.id) as story_count
+            SELECT e.*, COUNT(DISTINCT s.id) as story_count,
+                   COALESCE(SUM(r.cost_eur), 0) as total_cost_eur,
+                   COALESCE(SUM(r.tokens_in), 0) as total_tokens_in,
+                   COALESCE(SUM(r.tokens_out), 0) as total_tokens_out,
+                   COUNT(DISTINCT r.id) as total_runs,
+                   CASE WHEN COUNT(DISTINCT r.id) > 0 THEN ROUND(COALESCE(SUM(r.cost_eur), 0) / COUNT(DISTINCT r.id), 6) ELSE 0 END as avg_cost_per_run
             FROM epics e
             LEFT JOIN user_stories s ON s.epic_id = e.id
+            LEFT JOIN tasks t ON t.story_id = s.id
+            LEFT JOIN task_runs r ON r.task_id = t.id
             GROUP BY e.id
             ORDER BY e.created_at DESC
         `).all();

@@ -15,3 +15,5 @@ dashboard/data/storage.json
 .oidc_client_secret
 *.bak-*
 migrate_scrum.py
+node_modules/
+package-lock.json
