@@ -17,3 +17,5 @@ dashboard/data/storage.json
 migrate_scrum.py
 node_modules/
 package-lock.json
+tasks.db-shm
+tasks.db-wal

@@ -46,7 +46,7 @@ log "Remote: ${REMOTE_COMMIT:0:8}"
 
 # Pull changes
 log "Pulling latest changes..."
-git pull origin main 2>&1
+git pull origin master 2>&1
 
 # Rebuild and restart
 log "Rebuilding Docker image..."
