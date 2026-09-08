@@ -980,6 +980,27 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+
+        // Redirect old dashboard pages to new redesign pages
+        const REDESIGN_REDIRECTS = {
+            '/index.html': '/redesign/index.html',
+            '/dashboard.html': '/redesign/dashboard.html',
+            '/plan.html': '/redesign/plan.html',
+            '/status.html': '/redesign/status.html',
+            '/knowledge.html': '/redesign/knowledge.html',
+            '/research.html': '/redesign/research.html',
+            '/ssh.html': '/redesign/ssh.html',
+            '/medium.html': '/redesign/medium.html',
+            '/influencer.html': '/redesign/influencer.html',
+            '/ollama.html': '/redesign/dashboard.html',
+            '/graph.html': '/redesign/graph.html',
+        };
+        if (REDESIGN_REDIRECTS[pathname]) {
+            res.writeHead(302, { 'Location': REDESIGN_REDIRECTS[pathname] });
+            res.end();
+            return;
+        }
+
         // Static files (protected)
         let filePath = path.join(DASHBOARD_DIR, pathname);
         if (pathname === '/') filePath = path.join(DASHBOARD_DIR, 'redesign', 'index.html');
