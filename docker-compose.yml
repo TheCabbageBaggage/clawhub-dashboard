@@ -10,6 +10,7 @@ services:
     volumes:
       - dashboard-data:/app/data
       - ./dashboard:/app/dashboard:ro
+      - ./server.js:/app/server.js:ro
       - ./auth.json:/app/data/auth.json:ro
       - ./.oidc_client_secret:/app/.oidc_client_secret:ro
       - ./tasks.db:/app/data/tasks.db
