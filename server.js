@@ -982,7 +982,7 @@ const server = http.createServer(async (req, res) => {
 
         // Static files (protected)
         let filePath = path.join(DASHBOARD_DIR, pathname);
-        if (pathname === '/') filePath = path.join(DASHBOARD_DIR, 'index.html');
+        if (pathname === '/') filePath = path.join(DASHBOARD_DIR, 'redesign', 'index.html');
         const resolvedPath = path.resolve(filePath);
         if (!resolvedPath.startsWith(DASHBOARD_DIR)) { jsonResponse(res, 403, { error: 'Forbidden' }); return; }
         fs.stat(filePath, (err, stats) => {
