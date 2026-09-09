@@ -336,8 +336,54 @@ html, body {
 @media (max-width: 640px) {
   .acta-grid-2, .acta-grid-3, .acta-grid-4 { grid-template-columns: 1fr; }
   .acta-sidebar { transform: translateX(-100%); }
-  .acta-main { margin-left: 0; }
+  .acta-main { margin-left: 0; padding: 0.75rem 0.75rem; }
   .acta-sidebar.open { transform: translateX(0); }
+  .acta-topbar-title { font-size: 1.1rem; }
+  .acta-toolbar { flex-direction: column; align-items: stretch; }
+  .acta-search { min-width: 0; }
+}
+
+/* --- Sidebar Overlay (Mobile) --- */
+.acta-sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  background-color: rgba(0,0,0,0.5);
+  transition: opacity 0.25s ease;
+}
+.acta-sidebar-overlay.visible {
+  display: block;
+}
+
+/* --- Kanban Board Mobile Stacking --- */
+@media (max-width: 640px) {
+  .acta-kanban {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  .acta-kanban > .acta-card {
+    min-width: 0 !important;
+    flex: 1 1 100% !important;
+  }
+  .acta-kanban-inner {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+}
+
+/* --- Epic Tree Mobile --- */
+@media (max-width: 640px) {
+  .acta-plan-layout {
+    flex-direction: column !important;
+  }
+  .acta-plan-layout > .acta-card {
+    flex: none !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
 }
 
 /* ============================================================

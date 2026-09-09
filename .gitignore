@@ -19,3 +19,4 @@ node_modules/
 package-lock.json
 tasks.db-shm
 tasks.db-wal
+__pycache__/

@@ -46,17 +46,25 @@
     function renderMarkdown(md) {
       if (!md) return '';
       let html = esc(md);
+      // Code blocks
       html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+      // Headers
       html = html.replace(/^### (.*)$/gm, '<h3>$1</h3>');
       html = html.replace(/^## (.*)$/gm, '<h2>$1</h2>');
       html = html.replace(/^# (.*)$/gm, '<h1>$1</h1>');
+      // Blockquote
       html = html.replace(/^&gt; (.*)$/gm, '<blockquote>$1</blockquote>');
+      // Bold/Italic
       html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      // Links
       html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      // HR
       html = html.replace(/^---$/gm, '<hr>');
+      // Lists
       html = html.replace(/^- (.*)$/gm, '<li>$1</li>');
       html = html.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
+      // Paragraphs
       html = html.replace(/^(?!<[hupb]|<\/|$)(.*)$/gm, '<p>$1</p>');
       return html;
     }

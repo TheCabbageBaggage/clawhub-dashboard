@@ -1,16 +1,16 @@
 {
   "system": {
-    "last_check": "2026-09-08T12:11:20.205888+00:00",
+    "last_check": "2026-09-09T14:30:18.781434+00:00",
     "status": "healthy",
-    "uptime_seconds": 2584140,
-    "cpu_load": 1.35,
+    "uptime_seconds": 2679540,
+    "cpu_load": 1.82,
     "memory": {
-      "used_mb": 6709,
+      "used_mb": 8390,
       "total_mb": 15992,
-      "pct": 42.0
+      "pct": 52.5
     },
     "disk": {
-      "used_gb": 137.0,
+      "used_gb": 138.0,
       "total_gb": 193.0,
       "pct": 72.0
     }
@@ -48,24 +48,28 @@
   },
   "ollama_usage": {
     "session": {
-      "usage_pct": 8.6,
-      "requests": 20,
-      "limit": 232.55813953488374
+      "usage_pct": 22.900000000000002,
+      "requests": 220,
+      "limit": 960.6986899563318
     },
     "weekly": {
-      "usage_pct": 17.1,
-      "requests": 221,
-      "limit": 1292.3976608187133
+      "usage_pct": 35.6,
+      "requests": 1039,
+      "limit": 2918.5393258426966
     },
     "cost_4weeks": 0.0,
     "models": [
       {
         "name": "deepseek-v4-pro:0813",
-        "request_count": 84
+        "request_count": 148
       },
       {
         "name": "deepseek-v4-flash:0731",
-        "request_count": 137
+        "request_count": 747
+      },
+      {
+        "name": "glm-5.1",
+        "request_count": 144
       }
     ]
   },

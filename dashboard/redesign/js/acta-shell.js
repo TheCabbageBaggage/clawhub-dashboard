@@ -73,15 +73,38 @@
       .catch(function () { /* Sidebar konnte nicht geladen werden */ });
   }
 
-  // --- Sidebar (Mobile Toggle) ---
+  // --- Sidebar (Mobile Toggle + Overlay) ---
   function initSidebar() {
     const sidebar = document.getElementById('actaSidebar');
     const hamburger = document.getElementById('actaHamburger');
-    if (sidebar && hamburger) {
-      hamburger.addEventListener('click', function () {
-        sidebar.classList.toggle('open');
-      });
+    if (!sidebar || !hamburger) return;
+
+    // Create overlay element
+    var overlay = document.createElement('div');
+    overlay.className = 'acta-sidebar-overlay';
+    document.body.appendChild(overlay);
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('visible');
+      document.body.style.overflow = 'hidden';
     }
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+
+    hamburger.addEventListener('click', function () {
+      if (sidebar.classList.contains('open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+
+    // Click overlay to close
+    overlay.addEventListener('click', closeSidebar);
   }
 
   // --- Active Nav Highlight ---
