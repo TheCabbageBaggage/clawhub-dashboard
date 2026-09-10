@@ -899,7 +899,7 @@ const server = http.createServer(async (req, res) => {
                 if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
                 const finDb = new Database(dbPath, { readonly: true });
                 const monthly = finDb.prepare(`
-                    SELECT month, income, expenses, savings, savings_pct, txn_count
+                    SELECT month, income, expenses, net as savings, savings_rate as savings_pct, txn_count
                     FROM monthly_summary ORDER BY month
                 `).all();
                 const categories = finDb.prepare(`
@@ -914,7 +914,7 @@ const server = http.createServer(async (req, res) => {
                     SELECT
                         SUM(income) as total_income,
                         SUM(expenses) as total_expenses,
-                        SUM(savings) as total_savings,
+                        SUM(net) as total_savings,
                         COUNT(*) as month_count
                     FROM monthly_summary
                 `).get();
