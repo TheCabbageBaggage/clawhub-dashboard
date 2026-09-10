@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Finanz Dashboard</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+
+      <!-- Metric Cards -->
+      <div class="acta-grid acta-grid-4" id="metricCards">
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Gesamte Einnahmen</div>
+          <div class="acta-metric-value" id="totalIncome">—</div>
+          <div class="acta-metric-sub">über alle Monate</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Gesamte Ausgaben</div>
+          <div class="acta-metric-value" id="totalExpenses">—</div>
+          <div class="acta-metric-sub">über alle Monate</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Ersparnisse</div>
+          <div class="acta-metric-value" id="totalSavings">—</div>
+          <div class="acta-metric-sub" id="savingsPct">—</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Monate erfasst</div>
+          <div class="acta-metric-value" id="monthCount">—</div>
+          <div class="acta-metric-sub">Datenpunkte</div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="acta-grid acta-grid-2">
+        <div class="acta-card">
+          <div class="acta-card-title">Monatsübersicht</div>
+          <canvas id="monthlyChart" height="260"></canvas>
+        </div>
+        <div class="acta-card">
+          <div class="acta-card-title">Kategorie-Verteilung (aktueller Monat)</div>
+          <canvas id="categoryChart" height="260"></canvas>
+        </div>
+      </div>
+
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Sparquote über Zeit</div>
+        <canvas id="savingsChart" height="160"></canvas>
+      </div>
+
+      <!-- Recurring Costs -->
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Wiederkehrende Kosten <span class="acta-badge acta-badge-neutral" id="recurringCount">—</span></div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead>
+              <tr>
+                <th>Merchant</th>
+                <th>Kategorie</th>
+                <th>Ø / Monat</th>
+                <th>Frequenz</th>
+                <th>Zeitraum</th>
+              </tr>
+            </thead>
+            <tbody id="recurringBody">
+              <tr><td colspan="5" class="acta-loading"><span class="acta-spinner"></span>Laden…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Letzte Transaktionen <span class="acta-badge acta-badge-neutral" id="txnTotal">—</span></div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Beschreibung</th>
+                <th>Kategorie</th>
+                <th>Betrag</th>
+              </tr>
+            </thead>
+            <tbody id="txnBody">
+              <tr><td colspan="4" class="acta-loading"><span class="acta-spinner"></span>Laden…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    const ACTA = {
+      petroleum: '#2C5F7C', teal: '#3D8B8B', slate: '#8A9BA8',
+      success: '#387359', warning: '#CC9A33', alert: '#BF3939'
+    };
+
+    const fmt = (n) => new Intl.NumberFormat('de-AT', { style: 'currency', currency: 'EUR' }).format(n);
+
+    async function loadFinanz() {
+      try {
+        const res = await fetch('/api/finanz/monthly');
+        if (!res.ok) throw new Error('API Fehler');
+        const data = await res.json();
+
+        // Metrics
+        const t = data.totals || {};
+        document.getElementById('totalIncome').textContent = fmt(t.total_income || 0);
+        document.getElementById('totalExpenses').textContent = fmt(Math.abs(t.total_expenses || 0));
+        document.getElementById('totalSavings').textContent = fmt(t.total_savings || 0);
+        document.getElementById('totalSavings').style.color =
+          (t.total_savings || 0) >= 0 ? ACTA.success : ACTA.alert;
+        const pct = t.total_income ? ((t.total_savings / t.total_income) * 100).toFixed(1) : 0;
+        document.getElementById('savingsPct').textContent = `Ø Sparquote ${pct}%`;
+        document.getElementById('monthCount').textContent = t.month_count || '0';
+
+        // Monthly Chart
+        const months = (data.monthly || []).map(m => m.month);
+        const incomes = (data.monthly || []).map(m => m.income);
+        const expenses = (data.monthly || []).map(m => Math.abs(m.expenses));
+        const savings = (data.monthly || []).map(m => m.savings);
+
+        new Chart(document.getElementById('monthlyChart'), {
+          type: 'bar',
+          data: {
+            labels: months,
+            datasets: [
+              { label: 'Einnahmen', data: incomes, backgroundColor: ACTA.success, borderRadius: 4 },
+              { label: 'Ausgaben', data: expenses, backgroundColor: ACTA.alert, borderRadius: 4 }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(138,155,168,0.15)' } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+
+        // Savings Line Chart
+        new Chart(document.getElementById('savingsChart'), {
+          type: 'line',
+          data: {
+            labels: months,
+            datasets: [{
+              label: 'Sparquote (%)',
+              data: (data.monthly || []).map(m => m.savings_pct),
+              borderColor: ACTA.teal,
+              backgroundColor: 'rgba(61,139,139,0.1)',
+              fill: true,
+              tension: 0.3,
+              pointBackgroundColor: ACTA.teal
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { grid: { color: 'rgba(138,155,168,0.15)' } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+
+        // Category Doughnut (latest month)
+        const cats = (data.categories || []).filter(c => c.amount < 0);
+        const lastMonth = cats.length > 0 ? cats[cats.length - 1].month : null;
+        const latestCats = cats.filter(c => c.month === lastMonth);
+        const catLabels = latestCats.map(c => c.category);
+        const catAmounts = latestCats.map(c => Math.abs(c.amount));
+        const catColors = [ACTA.petroleum, ACTA.teal, ACTA.slate, ACTA.success, ACTA.warning, ACTA.alert,
+          '#6366f1', '#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444', '#10b981', '#ec4899', '#3b82f6'];
+
+        new Chart(document.getElementById('categoryChart'), {
+          type: 'doughnut',
+          data: {
+            labels: catLabels,
+            datasets: [{ data: catAmounts, backgroundColor: catColors.slice(0, catLabels.length), borderWidth: 0 }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8', boxWidth: 12 } } }
+          }
+        });
+
+        // Recurring Table
+        const rec = data.recurring || [];
+        document.getElementById('recurringCount').textContent = rec.length + ' Einträge';
+        document.getElementById('recurringBody').innerHTML = rec.map(r => `
+          <tr>
+            <td>${r.merchant}</td>
+            <td>${r.category || '—'}</td>
+            <td>${fmt(Math.abs(r.avg_monthly))}</td>
+            <td><span class="acta-badge ${r.frequency === 'monthly' ? 'acta-badge-success' : r.frequency === 'frequent' ? 'acta-badge-alert' : 'acta-badge-neutral'}">${r.frequency}</span></td>
+            <td>${r.first_seen || '—'} → ${r.last_seen || '—'}</td>
+          </tr>
+        `).join('');
+
+      } catch (e) {
+        console.error('Finanz load error:', e);
+        document.getElementById('metricCards').innerHTML = '<div class="acta-card acta-empty">Fehler beim Laden der Finanzdaten.</div>';
+      }
+    }
+
+    async function loadTransactions() {
+      try {
+        const res = await fetch('/api/finanz/transactions?limit=20');
+        if (!res.ok) return;
+        const data = await res.json();
+        document.getElementById('txnTotal').textContent = data.total + ' gesamt';
+        document.getElementById('txnBody').innerHTML = data.transactions.map(t => `
+          <tr>
+            <td>${t.date}</td>
+            <td>${(t.description || '').slice(0, 50)}</td>
+            <td><span class="acta-badge acta-badge-neutral">${t.category || '—'}</span></td>
+            <td style="color:${t.amount >= 0 ? ACTA.success : ACTA.alert};font-weight:600">${fmt(t.amount)}</td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error('Transactions load error:', e);
+      }
+    }
+
+    loadFinanz();
+    loadTransactions();
+  </script>
+</body>
+</html>

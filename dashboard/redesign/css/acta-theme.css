@@ -685,3 +685,118 @@ html, body {
   resize: vertical;
   box-sizing: border-box;
 }
+
+/* ============================================================
+   Hero Section (Statische Webseite)
+   ============================================================ */
+.acta-hero {
+  background: linear-gradient(135deg, var(--acta-deep-navy) 0%, var(--acta-petroleum) 60%, var(--acta-teal) 100%);
+  border-radius: 1rem;
+  padding: 3rem 2.5rem;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.acta-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(61,139,139,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.acta-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+.acta-hero-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  background-color: rgba(255,255,255,0.15);
+  color: var(--acta-teal);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.acta-hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+.acta-hero-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.8);
+  margin: 0 0 1.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.acta-hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.acta-hero-actions .acta-btn {
+  font-size: 0.95rem;
+  padding: 0.65rem 1.5rem;
+}
+.acta-hero-actions .acta-btn-ghost {
+  color: #fff;
+  border-color: rgba(255,255,255,0.4);
+}
+.acta-hero-actions .acta-btn-ghost:hover {
+  background-color: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.6);
+}
+
+@media (max-width: 640px) {
+  .acta-hero { padding: 2rem 1.25rem; }
+  .acta-hero-title { font-size: 1.75rem; }
+  .acta-hero-subtitle { font-size: 0.95rem; }
+}
+
+/* --- Feature Card (Statische Webseite) --- */
+.acta-feature-card {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 1.5rem 1.25rem;
+}
+.acta-feature-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  background-color: var(--acta-petroleum-soft);
+  color: var(--acta-petroleum);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+}
+.acta-feature-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.acta-feature-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--acta-deep-navy);
+  margin: 0 0 0.35rem;
+}
+[data-theme="dark"] .acta-feature-title {
+  color: var(--acta-dark-text);
+}
+.acta-feature-desc {
+  font-size: 0.85rem;
+  color: var(--acta-slate);
+  line-height: 1.5;
+  margin: 0;
+}

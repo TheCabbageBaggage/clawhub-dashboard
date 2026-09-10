@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — BI Plattform</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+
+      <!-- Metric Cards -->
+      <div class="acta-grid acta-grid-4" id="metricCards">
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Token-Kosten gesamt</div>
+          <div class="acta-metric-value" id="totalCost">—</div>
+          <div class="acta-metric-sub" id="totalCostSub">—</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Input-Tokens</div>
+          <div class="acta-metric-value" id="totalInput">—</div>
+          <div class="acta-metric-sub">gesamt</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Output-Tokens</div>
+          <div class="acta-metric-value" id="totalOutput">—</div>
+          <div class="acta-metric-sub">gesamt</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Sessions</div>
+          <div class="acta-metric-value" id="totalSessions">—</div>
+          <div class="acta-metric-sub" id="dayCount">—</div>
+        </div>
+      </div>
+
+      <!-- Charts Row 1 -->
+      <div class="acta-grid acta-grid-2" style="margin-top:1.25rem;">
+        <div class="acta-card">
+          <div class="acta-card-title">Token-Verbrauch über Zeit</div>
+          <canvas id="tokenChart" height="260"></canvas>
+        </div>
+        <div class="acta-card">
+          <div class="acta-card-title">Kosten über Zeit</div>
+          <canvas id="costChart" height="260"></canvas>
+        </div>
+      </div>
+
+      <!-- Charts Row 2 -->
+      <div class="acta-grid acta-grid-2" style="margin-top:1.25rem;">
+        <div class="acta-card">
+          <div class="acta-card-title">Modell-Verteilung (Kosten)</div>
+          <canvas id="modelCostChart" height="260"></canvas>
+        </div>
+        <div class="acta-card">
+          <div class="acta-card-title">Modell-Verteilung (Aufrufe)</div>
+          <canvas id="modelCallsChart" height="260"></canvas>
+        </div>
+      </div>
+
+      <!-- Model Table -->
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Modell-Details</div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead>
+              <tr>
+                <th>Modell</th>
+                <th>Input-Tokens</th>
+                <th>Output-Tokens</th>
+                <th>Kosten ($)</th>
+                <th>Aufrufe</th>
+                <th>Anteil Kosten</th>
+              </tr>
+            </thead>
+            <tbody id="modelTableBody">
+              <tr><td colspan="6" class="acta-loading"><span class="acta-spinner"></span>Laden…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Ollama Live Metrics -->
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Ollama Live-Metriken</div>
+        <div id="ollamaMetrics" class="acta-empty">Laden…</div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    const ACTA = {
+      petroleum: '#2C5F7C', teal: '#3D8B8B', slate: '#8A9BA8',
+      success: '#387359', warning: '#CC9A33', alert: '#BF3939'
+    };
+
+    const fmtNum = (n) => new Intl.NumberFormat('de-AT').format(n);
+    const fmtEUR = (n) => '€ ' + new Intl.NumberFormat('de-AT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+
+    async function loadBI() {
+      try {
+        const res = await fetch('/api/bi/summary');
+        if (!res.ok) throw new Error('API Fehler');
+        const data = await res.json();
+
+        // Metrics
+        const o = data.overall || {};
+        document.getElementById('totalCost').textContent = '$' + (o.total_cost || 0).toFixed(2);
+        document.getElementById('totalInput').textContent = fmtNum(o.total_input || 0);
+        document.getElementById('totalOutput').textContent = fmtNum(o.total_output || 0);
+        document.getElementById('totalSessions').textContent = fmtNum(o.total_sessions || 0);
+        document.getElementById('dayCount').textContent = (o.day_count || 0) + ' Tage';
+        document.getElementById('totalCostSub').textContent = (o.day_count || 0) + ' Tage erfasst';
+
+        // Token Chart
+        const days = (data.daily || []).map(d => d.date);
+        const inputTokens = (data.daily || []).map(d => d.total_input_tokens);
+        const outputTokens = (data.daily || []).map(d => d.total_output_tokens);
+
+        new Chart(document.getElementById('tokenChart'), {
+          type: 'line',
+          data: {
+            labels: days,
+            datasets: [
+              { label: 'Input Tokens', data: inputTokens, borderColor: ACTA.petroleum, backgroundColor: 'rgba(44,95,124,0.1)', fill: true, tension: 0.3 },
+              { label: 'Output Tokens', data: outputTokens, borderColor: ACTA.teal, backgroundColor: 'rgba(61,139,139,0.1)', fill: true, tension: 0.3 }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(138,155,168,0.15)' } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+
+        // Cost Chart
+        const costs = (data.daily || []).map(d => d.total_cost);
+        new Chart(document.getElementById('costChart'), {
+          type: 'bar',
+          data: {
+            labels: days,
+            datasets: [{ label: 'Kosten ($)', data: costs, backgroundColor: ACTA.warning, borderRadius: 4 }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: 'rgba(138,155,168,0.15)' } },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+
+        // Model Charts
+        const models = data.modelTotals || [];
+        const modelColors = [ACTA.petroleum, ACTA.teal, ACTA.slate, ACTA.success, ACTA.warning, ACTA.alert,
+          '#6366f1', '#8b5cf6', '#06b6d4', '#f59e0b'];
+
+        new Chart(document.getElementById('modelCostChart'), {
+          type: 'doughnut',
+          data: {
+            labels: models.map(m => m.model),
+            datasets: [{ data: models.map(m => m.total_cost), backgroundColor: modelColors.slice(0, models.length), borderWidth: 0 }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8', boxWidth: 12 } } }
+          }
+        });
+
+        new Chart(document.getElementById('modelCallsChart'), {
+          type: 'doughnut',
+          data: {
+            labels: models.map(m => m.model),
+            datasets: [{ data: models.map(m => m.total_calls), backgroundColor: modelColors.slice(0, models.length), borderWidth: 0 }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8', boxWidth: 12 } } }
+          }
+        });
+
+        // Model Table
+        const totalCost = models.reduce((s, m) => s + m.total_cost, 0);
+        document.getElementById('modelTableBody').innerHTML = models.map(m => {
+          const pct = totalCost > 0 ? ((m.total_cost / totalCost) * 100).toFixed(1) : '0';
+          return `<tr>
+            <td><strong>${m.model}</strong></td>
+            <td>${fmtNum(m.total_input)}</td>
+            <td>${fmtNum(m.total_output)}</td>
+            <td>$${m.total_cost.toFixed(2)}</td>
+            <td>${fmtNum(m.total_calls)}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.5rem">
+                <div class="acta-progress" style="flex:1"><div class="acta-progress-fill" style="width:${pct}%"></div></div>
+                <span style="font-size:0.8rem;color:var(--acta-slate)">${pct}%</span>
+              </div>
+            </td>
+          </tr>`;
+        }).join('');
+
+      } catch (e) {
+        console.error('BI load error:', e);
+        document.getElementById('metricCards').innerHTML = '<div class="acta-card acta-empty">Fehler beim Laden der BI-Daten.</div>';
+      }
+    }
+
+    async function loadOllamaMetrics() {
+      try {
+        const res = await fetch('/api/metrics');
+        if (!res.ok) return;
+        const data = await res.json();
+        const usage = data.metrics && data.metrics['ollama-usage'];
+        if (!usage) {
+          document.getElementById('ollamaMetrics').innerHTML = '<div class="acta-empty">Keine Live-Daten verfügbar</div>';
+          return;
+        }
+        const s = usage.session || {};
+        const w = usage.weekly || {};
+        const models = usage.models || [];
+        document.getElementById('ollamaMetrics').innerHTML = `
+          <div class="acta-grid acta-grid-3">
+            <div class="acta-detail-item">
+              <div class="acta-detail-label">Session Usage</div>
+              <div class="acta-detail-value">${s.usage_pct || 0}%</div>
+              <div class="acta-progress" style="margin-top:0.5rem"><div class="acta-progress-fill" style="width:${s.usage_pct || 0}%"></div></div>
+            </div>
+            <div class="acta-detail-item">
+              <div class="acta-detail-label">Weekly Usage</div>
+              <div class="acta-detail-value">${w.usage_pct || 0}%</div>
+              <div class="acta-progress" style="margin-top:0.5rem"><div class="acta-progress-fill teal" style="width:${w.usage_pct || 0}%"></div></div>
+            </div>
+            <div class="acta-detail-item">
+              <div class="acta-detail-label">Top Model</div>
+              <div class="acta-detail-value">${models.length > 0 ? models[0].name : '—'}</div>
+              <div style="font-size:0.8rem;color:var(--acta-slate)">${models.length > 0 ? models[0].request_count + ' Requests' : ''}</div>
+            </div>
+          </div>
+        `;
+      } catch (e) {
+        document.getElementById('ollamaMetrics').innerHTML = '<div class="acta-empty">Live-Metriken nicht verfügbar</div>';
+      }
+    }
+
+    loadBI();
+    loadOllamaMetrics();
+  </script>
+</body>
+</html>

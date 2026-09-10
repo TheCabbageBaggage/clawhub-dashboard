@@ -892,6 +892,109 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // === FINANZ API ===
+        if (pathname === '/api/finanz/monthly') {
+            try {
+                const dbPath = path.join(WORKSPACE_DIR, 'projects', 'finanzanalyse', 'finances.db');
+                if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
+                const finDb = new Database(dbPath, { readonly: true });
+                const monthly = finDb.prepare(`
+                    SELECT month, income, expenses, savings, savings_pct, txn_count
+                    FROM monthly_summary ORDER BY month
+                `).all();
+                const categories = finDb.prepare(`
+                    SELECT month, category, amount, txn_count
+                    FROM category_monthly ORDER BY month, amount
+                `).all();
+                const recurring = finDb.prepare(`
+                    SELECT merchant, category, avg_monthly, frequency, first_seen, last_seen
+                    FROM recurring_costs ORDER BY avg_monthly ASC
+                `).all();
+                const totals = finDb.prepare(`
+                    SELECT
+                        SUM(income) as total_income,
+                        SUM(expenses) as total_expenses,
+                        SUM(savings) as total_savings,
+                        COUNT(*) as month_count
+                    FROM monthly_summary
+                `).get();
+                finDb.close();
+                jsonResponse(res, 200, { monthly, categories, recurring, totals });
+            } catch (e) {
+                console.error('Finanz API:', e.message);
+                jsonResponse(res, 500, { error: 'Finanz-Datenbank Fehler' });
+            }
+            return;
+        }
+        if (pathname === '/api/finanz/transactions') {
+            try {
+                const dbPath = path.join(WORKSPACE_DIR, 'projects', 'finanzanalyse', 'finances.db');
+                if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
+                const finDb = new Database(dbPath, { readonly: true });
+                const q = parsedUrl.query || {};
+                const limit = parseInt(q.limit) || 50;
+                const offset = parseInt(q.offset) || 0;
+                const category = q.category || null;
+                const month = q.month || null;
+                let where = [];
+                let params = [];
+                if (category) { where.push('category = ?'); params.push(category); }
+                if (month) { where.push('strftime("%Y-%m", date) = ?'); params.push(month); }
+                const whereClause = where.length > 0 ? 'WHERE ' + where.join(' AND ') : '';
+                const transactions = finDb.prepare(`
+                    SELECT id, date, amount, currency, description, merchant, source, category, subcategory, is_recurring
+                    FROM transactions ${whereClause} ORDER BY date DESC LIMIT ? OFFSET ?
+                `).all(...params, limit, offset);
+                const count = finDb.prepare(`SELECT COUNT(*) as cnt FROM transactions ${whereClause}`).get(...params);
+                finDb.close();
+                jsonResponse(res, 200, { transactions, total: count.cnt, limit, offset });
+            } catch (e) {
+                console.error('Finanz transactions:', e.message);
+                jsonResponse(res, 500, { error: 'Finanz-Datenbank Fehler' });
+            }
+            return;
+        }
+
+        // === BI / TOKEN USAGE API ===
+        if (pathname === '/api/bi/summary') {
+            try {
+                const dbPath = path.join(WORKSPACE_DIR, 'token_usage.db');
+                if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Token-Usage-Datenbank nicht gefunden' }); return; }
+                const biDb = new Database(dbPath, { readonly: true });
+                const daily = biDb.prepare(`
+                    SELECT date, total_input_tokens, total_output_tokens, total_cost, session_count
+                    FROM daily_summary ORDER BY date
+                `).all();
+                const modelDaily = biDb.prepare(`
+                    SELECT model, date, input_tokens, output_tokens, total_cost, usage_count
+                    FROM model_summary ORDER BY date, model
+                `).all();
+                const modelTotals = biDb.prepare(`
+                    SELECT model,
+                           SUM(input_tokens) as total_input,
+                           SUM(output_tokens) as total_output,
+                           SUM(total_cost) as total_cost,
+                           SUM(usage_count) as total_calls
+                    FROM model_summary GROUP BY model ORDER BY total_cost DESC
+                `).all();
+                const overall = biDb.prepare(`
+                    SELECT
+                        SUM(total_input_tokens) as total_input,
+                        SUM(total_output_tokens) as total_output,
+                        SUM(total_cost) as total_cost,
+                        SUM(session_count) as total_sessions,
+                        COUNT(*) as day_count
+                    FROM daily_summary
+                `).get();
+                biDb.close();
+                jsonResponse(res, 200, { daily, modelDaily, modelTotals, overall });
+            } catch (e) {
+                console.error('BI summary:', e.message);
+                jsonResponse(res, 500, { error: 'Token-Usage-Datenbank Fehler' });
+            }
+            return;
+        }
+
         // === LIVE METRICS API (Ollama Usage + System Dashboard) ===
         // Liefert die vom Watcher exportierten Metriken live aus dem data-Verzeichnis
         if (pathname === '/api/metrics') {
