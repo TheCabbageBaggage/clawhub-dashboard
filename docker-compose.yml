@@ -14,6 +14,7 @@ services:
       - ./auth.json:/app/data/auth.json:ro
       - ./.oidc_client_secret:/app/.oidc_client_secret:ro
       - ./tasks.db:/app/data/tasks.db
+      - ./finances.db:/app/data/finances.db
       - ../infra/storagebox:/infra/storagebox:ro
     environment:
       - NODE_ENV=production

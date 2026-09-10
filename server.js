@@ -895,7 +895,7 @@ const server = http.createServer(async (req, res) => {
         // === FINANZ API ===
         if (pathname === '/api/finanz/monthly') {
             try {
-                const dbPath = path.join(WORKSPACE_DIR, 'projects', 'finanzanalyse', 'finances.db');
+                const dbPath = '/app/data/finances.db';
                 if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
                 const finDb = new Database(dbPath, { readonly: true });
                 const monthly = finDb.prepare(`
@@ -928,7 +928,7 @@ const server = http.createServer(async (req, res) => {
         }
         if (pathname === '/api/finanz/transactions') {
             try {
-                const dbPath = path.join(WORKSPACE_DIR, 'projects', 'finanzanalyse', 'finances.db');
+                const dbPath = '/app/data/finances.db';
                 if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
                 const finDb = new Database(dbPath, { readonly: true });
                 const q = parsedUrl.query || {};
@@ -1105,8 +1105,13 @@ const server = http.createServer(async (req, res) => {
         }
 
         // Static files (protected)
+        // Root -> Redirect auf /redesign/index.html, damit relative Pfade (css/js) korrekt aufgelöst werden
+        if (pathname === '/') {
+            res.writeHead(302, { 'Location': '/redesign/index.html' });
+            res.end();
+            return;
+        }
         let filePath = path.join(DASHBOARD_DIR, pathname);
-        if (pathname === '/') filePath = path.join(DASHBOARD_DIR, 'redesign', 'index.html');
         const resolvedPath = path.resolve(filePath);
         if (!resolvedPath.startsWith(DASHBOARD_DIR)) { jsonResponse(res, 403, { error: 'Forbidden' }); return; }
         fs.stat(filePath, (err, stats) => {

@@ -59,7 +59,9 @@
   function injectSidebar() {
     const layout = document.querySelector('.acta-layout');
     if (!layout) return;
-    const base = document.querySelector('script[data-shell]')?.getAttribute('data-shell') || '';
+    // Basis-Pfad robust ableiten: funktioniert unter / und /redesign/ egal wie die Seite geladen wird
+    const path = window.location.pathname;
+    const base = path.startsWith('/redesign/') ? '/redesign/' : '/redesign/';
     fetch(base + 'js/sidebar.html')
       .then(function (r) { return r.text(); })
       .then(function (html) {

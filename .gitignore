@@ -20,3 +20,4 @@ package-lock.json
 tasks.db-shm
 tasks.db-wal
 __pycache__/
+finances.db
