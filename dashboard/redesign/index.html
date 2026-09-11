@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ClawHub — ACTA Pilot</title>
+  <title>ClawHub — Dashboard</title>
   <link rel="stylesheet" href="css/acta-theme.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
@@ -12,158 +12,211 @@
 
     <!-- ===== Main (Sidebar + Topbar werden von acta-shell.js injiziert) ===== -->
     <main class="acta-main">
-
-      <!-- Metric Cards -->
-      <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
-        <div class="acta-card acta-metric">
-          <div class="acta-metric-label">Weekly Usage</div>
-          <div class="acta-metric-value">35.5%</div>
-          <div class="acta-metric-sub">3,552 / 10,006 Requests</div>
-        </div>
-        <div class="acta-card acta-metric">
-          <div class="acta-metric-label">Session Usage</div>
-          <div class="acta-metric-value">46.3%</div>
-          <div class="acta-metric-sub">644 / 1,391 Requests</div>
-        </div>
-        <div class="acta-card acta-metric">
-          <div class="acta-metric-label">Aktive Jobs</div>
-          <div class="acta-metric-value">12</div>
-          <div class="acta-metric-sub">3 fehlerhaft</div>
-        </div>
-        <div class="acta-card acta-metric">
-          <div class="acta-metric-label">System Status</div>
-          <div class="acta-metric-value" style="color:var(--acta-success);">Healthy</div>
-          <div class="acta-metric-sub">Alle Dienste online</div>
-        </div>
-      </div>
-
-      <!-- Chart + Table -->
-      <div class="acta-grid acta-grid-2">
-        <div class="acta-card">
-          <div class="acta-card-title">Usage über 7 Tage</div>
-          <canvas id="usageChart" height="220"></canvas>
-        </div>
-        <div class="acta-card">
-          <div class="acta-card-title">Request-Verteilung</div>
-          <canvas id="distChart" height="220"></canvas>
-        </div>
-      </div>
-
-      <div class="acta-card" style="margin-top:1.25rem;">
-        <div class="acta-card-title">Cron-Jobs <span class="acta-badge acta-badge-success">12 aktiv</span></div>
-        <div class="acta-table-wrap">
-          <table class="acta-table">
-            <thead>
-              <tr>
-                <th>Job</th>
-                <th>Intervall</th>
-                <th>Modell</th>
-                <th>Status</th>
-                <th>Letzter Lauf</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Ops Hub Status Monitor</td>
-                <td>1h</td>
-                <td>nemotron-mini</td>
-                <td><span class="acta-badge acta-badge-success">OK</span></td>
-                <td>vor 12 min</td>
-              </tr>
-              <tr>
-                <td>MCP Prozess-Cleanup</td>
-                <td>1h</td>
-                <td>nemotron-mini</td>
-                <td><span class="acta-badge acta-badge-success">OK</span></td>
-                <td>vor 5 min</td>
-              </tr>
-              <tr>
-                <td>Ollama Dashboard Pipeline</td>
-                <td>1h</td>
-                <td>nemotron-mini</td>
-                <td><span class="acta-badge acta-badge-success">OK</span></td>
-                <td>vor 3 min</td>
-              </tr>
-              <tr>
-                <td>Weekly Memory Distillation</td>
-                <td>wöchentlich</td>
-                <td>deepseek-v4-pro</td>
-                <td><span class="acta-badge acta-badge-warning">Rate Limit</span></td>
-                <td>vor 5 Tagen</td>
-              </tr>
-              <tr>
-                <td>Nightly Dreaming</td>
-                <td>täglich 03:00</td>
-                <td>deepseek-v4-flash</td>
-                <td><span class="acta-badge acta-badge-warning">Cooldown</span></td>
-                <td>gestern</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Dashboard…</div>
       </div>
     </main>
   </div>
 
   <script src="js/acta-shell.js" data-shell=""></script>
   <script>
-    // --- Charts im ACTA-Stil ---
-    const ACTA = {
-      petroleum: '#2C5F7C',
-      teal: '#3D8B8B',
-      slate: '#8A9BA8',
-      success: '#387359',
-      warning: '#CC9A33',
-      alert: '#BF3939'
-    };
+    const ACTA = { petroleum:'#2C5F7C', teal:'#3D8B8B', slate:'#8A9BA8', success:'#387359', warning:'#CC9A33', alert:'#BF3939' };
+    let charts = {};
 
-    // Usage Line Chart
-    const usageCtx = document.getElementById('usageChart');
-    if (usageCtx) {
-      new Chart(usageCtx, {
-        type: 'line',
-        data: {
-          labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
-          datasets: [{
-            label: 'Requests',
-            data: [420, 510, 480, 560, 620, 480, 482],
-            borderColor: ACTA.petroleum,
-            backgroundColor: 'rgba(44,95,124,0.1)',
-            fill: true,
-            tension: 0.3,
-            pointBackgroundColor: ACTA.petroleum
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { beginAtZero: true, grid: { color: 'rgba(138,155,168,0.2)' } },
-            x: { grid: { display: false } }
-          }
-        }
-      });
+    function destroyCharts() {
+      Object.values(charts).forEach(c => { if (c) c.destroy(); });
+      charts = {};
     }
 
-    // Distribution Doughnut
-    const distCtx = document.getElementById('distChart');
-    if (distCtx) {
-      new Chart(distCtx, {
+    function fmt(n, d=0) {
+      if (n === null || n === undefined || isNaN(n)) return '—';
+      return Number(n).toLocaleString('de-DE', { maximumFractionDigits: d });
+    }
+
+    function fmtMoney(n) {
+      if (n === null || n === undefined || isNaN(n)) return '—';
+      return Number(n).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    }
+
+    function fmtUptime(sec) {
+      if (!sec) return '—';
+      const d = Math.floor(sec/86400), h = Math.floor((sec%86400)/3600), m = Math.floor((sec%3600)/60);
+      return d + 'd ' + h + 'h ' + m + 'm';
+    }
+
+    function badge(state) {
+      const s = String(state || '').toLowerCase();
+      if (['green','running','ok','healthy','up','active'].includes(s)) return '<span class="acta-badge acta-badge-success">' + state + '</span>';
+      if (['yellow','warning','rate limit','paused'].includes(s)) return '<span class="acta-badge acta-badge-warning">' + state + '</span>';
+      if (['red','stopped','error','exited','down','blocked','failed'].includes(s)) return '<span class="acta-badge acta-badge-alert">' + state + '</span>';
+      return '<span class="acta-badge acta-badge-neutral">' + (state || '—') + '</span>';
+    }
+
+    function pctColor(p) {
+      if (p >= 90) return 'var(--acta-alert)';
+      if (p >= 70) return 'var(--acta-warning)';
+      return 'var(--acta-success)';
+    }
+
+    async function jfetch(url) {
+      const res = await fetch(url);
+      if (res.status === 401) { window.location.href = '/login'; throw new Error('auth'); }
+      if (!res.ok) return null;
+      try { return await res.json(); } catch(e) { return null; }
+    }
+
+    // ---- Karten-Helfer ----
+    function metricCard(label, value, sub, color) {
+      return '<div class="acta-card acta-metric">' +
+        '<div class="acta-metric-label">' + label + '</div>' +
+        '<div class="acta-metric-value"' + (color ? ' style="color:' + color + ';"' : '') + '>' + value + '</div>' +
+        (sub ? '<div class="acta-metric-sub">' + sub + '</div>' : '') +
+        '</div>';
+    }
+
+    function linkCard(href, icon, title, desc) {
+      return '<a class="acta-link-card" href="' + href + '">' +
+        '<div class="acta-link-card-icon">' + icon + '</div>' +
+        '<div class="acta-link-card-body">' +
+          '<div class="acta-link-card-title">' + title + '</div>' +
+          (desc ? '<div class="acta-link-card-desc">' + desc + '</div>' : '') +
+        '</div>' +
+        '<div class="acta-link-card-arrow">→</div>' +
+        '</a>';
+    }
+
+    async function load() {
+      const content = document.getElementById('content');
+      const [metrics, tasksSum, finanz] = await Promise.all([
+        jfetch('/api/metrics'),
+        jfetch('/api/tasks/summary'),
+        jfetch('/api/finanz/monthly')
+      ]);
+
+      const m = (metrics && metrics.metrics) || {};
+      const sys = m['system'] || {};
+      const ollama = m['ollama-usage'] || {};
+      const fin = (finanz && finanz.totals) || {};
+      const nMonths = (finanz && finanz.monthly && finanz.monthly.length) || 0;
+      // Projekt-KPIs robust aus tasks-summary ableiten
+      const sum = (tasksSum && !tasksSum.error) ? tasksSum : {};
+
+      // ---- Überschrift ----
+      let html = '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.25rem;">' +
+        '<h1 style="font-size:1.3rem;margin:0;font-weight:600;">Kommandozentrale</h1>' +
+        '<div style="font-size:0.8rem;color:var(--acta-slate);">Live-Daten · aktualisiert ' + (sys.timestamp ? new Date(sys.timestamp).toLocaleString('de-DE') : '—') + '</div>' +
+        '</div>';
+
+      // ---- Row 1: Key Performance ---- 
+      const sysPct = sys.memory ? sys.memory.pct : null;
+      const diskPct = sys.disk ? sys.disk.pct : null;
+      const weekPct = (ollama.weekly && ollama.weekly.usage_pct) || null;
+      const sessPct = (ollama.session && ollama.session.usage_pct) || null;
+      const savings = (fin.total_savings !== undefined) ? fin.total_savings : null;
+      const income = (fin.total_income !== undefined) ? fin.total_income : null;
+      const sysStatus = sys.status || 'healthy';
+
+      html += '<div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">' +
+        metricCard('Weekly Usage', (weekPct !== null ? fmt(weekPct,1) + '%' : '—'),
+          (ollama.weekly ? fmt(ollama.weekly.requests) + ' / ' + fmt(ollama.weekly.limit) + ' Requests' : '—'), pctColor(weekPct||0)) +
+        metricCard('System Last', (sys.cpu_load !== undefined ? fmt(sys.cpu_load,1) : '—'),
+          (sys.memory ? 'RAM ' + fmt(sys.memory.pct) + '% · Disk ' + fmt(diskPct) + '% · ' + fmtUptime(sys.uptime_seconds) : '')) +
+        metricCard('Gesparte Summe', (savings !== null ? fmtMoney(savings) : '—'),
+          (income !== null ? 'Einnahmen ' + fmtMoney(income) + ' · ' + nMonths + ' Monate' : ''), 'var(--acta-success)') +
+        metricCard('System Status', (sysStatus ? (sysStatus==='healthy' ? 'Healthy' : sysStatus) : '—'),
+          (sys.cpu_load !== undefined ? 'CPU ' + fmt(sys.cpu_load,1) + ' · RAM ' + fmt(sysPct) + '% · ' + fmtUptime(sys.uptime_seconds) : ''), 'var(--acta-success)') +
+        '</div>';
+
+      // ---- Row 2: Ollama-Usage + System Charts ----
+      html += '<div class="acta-grid acta-grid-2">' +
+        '<div class="acta-card"><div class="acta-card-title">Ollama Usage <a href="bi.html" style="float:right;font-size:0.75rem;color:var(--acta-teal);">Details →</a></div><canvas id="usageChart" height="200"></canvas></div>' +
+        '<div class="acta-card"><div class="acta-card-title">System-Auslastung <a href="dashboard.html" style="float:right;font-size:0.75rem;color:var(--acta-teal);">Details →</a></div><canvas id="sysChart" height="200"></canvas></div>' +
+        '</div>';
+
+      // ---- Row 3: KPIs Projekte + Finanz ----
+      // Projekte: Epics/Stories aus den Listen-APIs, Tasks/Status aus tasks-summary
+      const epicsList = (await jfetch('/api/epics')) || [];
+      const storiesList = (await jfetch('/api/stories')) || [];
+      const tasksList = (await jfetch('/api/tasks')) || [];
+      const projEpics = epicsList.length || '—';
+      const projStories = storiesList.length || '—';
+      const projTasks = (sum.total || tasksList.length) || '—';
+      const projDone = sum.done || 0;
+      const projBlocked = sum.blocked || 0;
+
+      html += '<div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">' +
+        metricCard('Epics', fmt(projEpics), 'Projekte auf dem Board') +
+        metricCard('Stories', fmt(projStories), projStories === '—' ? '' : 'User Stories') +
+        metricCard('Tasks', fmt(projTasks), (projDone ? fmt(projDone) + ' erledigt' : '')) +
+        metricCard('Blockiert', fmt(projBlocked), '', (projBlocked > 0 ? 'var(--acta-alert)' : 'var(--acta-success)')) +
+        '</div>';
+
+      // ---- Row 4: Schnellzugriff auf alle Bereiche ----
+      html += '<div class="acta-card" style="margin-top:1.25rem;">' +
+        '<div class="acta-card-title">Alle Bereiche</div>' +
+        '<div class="acta-grid acta-grid-4">' +
+          linkCard('dashboard.html','🖥️','System','Ollama-Usage, CPU, RAM, Container') +
+          linkCard('plan.html','🗂️','Projekte','Kanban-Board: Epics, Stories, Tasks') +
+          linkCard('finanz.html','💰','Finanz','Sparquote, Durchschnittsmonat, Transaktionen') +
+          linkCard('bi.html','📊','BI Plattform','Metriken, Analysen, Auswertungen') +
+          linkCard('knowledge.html','📚','Knowledge Base','Wissensbestand durchsuchen') +
+          linkCard('graph.html','🕸️','Knowledge Graph','Verknüpfungen visualisieren') +
+          linkCard('medium.html','✍️','Medium','Artikel und Publikationen') +
+          linkCard('research.html','🔍','Recherchen','Recherche-Katalog') +
+          linkCard('influencer.html','🌟','Influencer','Influencer-Übersicht') +
+          linkCard('ssh.html','🔐','SSH & Storage','Zugriffe, Storagebox') +
+          linkCard('status.html','📡','Status','Dienste und Health') +
+          linkCard('index.html','🏠','Dashboard','Diese Übersicht') +
+        '</div>' +
+        '</div>';
+
+      content.innerHTML = html;
+      renderCharts(sys, ollama);
+    }
+
+    function renderCharts(sys, ollama) {
+      if (typeof Chart === 'undefined') return;
+
+      // Ollama Usage — Modelle
+      const models = (ollama.models || []).slice(0, 6);
+      const ctx1 = document.getElementById('usageChart');
+      charts.usage = new Chart(ctx1, {
         type: 'doughnut',
         data: {
-          labels: ['deepseek-v4-flash', 'deepseek-v4-pro', 'minimax-m2.7', 'kimi-k2.6'],
+          labels: models.map(m => m.name.split(':')[0]),
           datasets: [{
-            data: [2924, 445, 182, 1],
-            backgroundColor: [ACTA.petroleum, ACTA.teal, ACTA.slate, ACTA.warning],
+            data: models.map(m => m.request_count || 0),
+            backgroundColor: ['#2C5F7C','#3D8B8B','#8A9BA8','#D4A24A','#387359','#BF3939'],
             borderWidth: 0
           }]
         },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom' } } }
+      });
+
+      // System — CPU/RAM/Disk als 3 Balken
+      const ctx2 = document.getElementById('sysChart');
+      const ram = sys.memory ? Math.round(sys.memory.pct) : 0;
+      const disk = sys.disk ? Math.round(sys.disk.pct) : 0;
+      const cpu = Math.min(100, Math.round((sys.cpu_load || 0) / 8 * 100));
+      charts.sys = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['CPU','RAM','Disk'],
+          datasets: [{
+            data: [cpu, ram, disk],
+            backgroundColor: ['#2C5F7C','#3D8B8B','#D4A24A'],
+            borderRadius: 4
+          }]
+        },
         options: {
-          responsive: true,
-          plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8' } } }
+          responsive:true, maintainAspectRatio:false,
+          scales: { y: { max: 100, ticks:{ callback: v => v + '%' } } },
+          plugins: { legend:{ display:false } }
         }
       });
     }
+
+    load();
   </script>
 </body>
 </html>
