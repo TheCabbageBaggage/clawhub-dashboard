@@ -6,6 +6,64 @@
   <title>ClawHub — Finanz Dashboard</title>
   <link rel="stylesheet" href="css/acta-theme.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .acta-grid-4-avg { margin-top: 0.75rem; }
+    .cat-select {
+      background: var(--acta-off-white, #F5F6F7);
+      border: 1px solid var(--acta-border, #E2E8EC);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.82rem;
+      color: var(--acta-dark-text, #1A1A1A);
+      cursor: pointer;
+      max-width: 170px;
+    }
+    .cat-select:focus { outline: 2px solid var(--acta-teal, #3D8B8B); outline-offset: -1px; }
+    [data-theme="dark"] .cat-select { background: #1A2228; color: #E6EDF2; border-color: #2A363E; }
+    .cat-saved { background: rgba(56,115,89,0.12) !important; border-color: var(--acta-success) !important; }
+    .cat-error { background: rgba(191,57,57,0.12) !important; border-color: var(--acta-alert) !important; }
+    .uncategorized-section { margin-top: 1.25rem; }
+    .uncategorized-section .acta-card-title { display: flex; align-items: center; justify-content: space-between; }
+    .uncat-filters { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .uncat-filters select, .uncat-filters input {
+      background: var(--acta-off-white, #F5F6F7);
+      border: 1px solid var(--acta-border, #E2E8EC);
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      color: var(--acta-dark-text, #1A1A1A);
+    }
+    [data-theme="dark"] .uncat-filters select, [data-theme="dark"] .uncat-filters input {
+      background: #1A2228; color: #E6EDF2; border-color: #2A363E;
+    }
+    .uncat-filters input { flex: 1; min-width: 180px; }
+    .batch-row { display: flex; align-items: center; gap: 0.5rem; }
+    .btn-sm {
+      background: var(--acta-teal, #3D8B8B);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-sm:hover { opacity: 0.85; }
+    .btn-sm:disabled { opacity: 0.5; cursor: not-allowed; }
+    .txn-check { width: 16px; height: 16px; cursor: pointer; accent-color: var(--acta-teal, #3D8B8B); }
+    .new-label-row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem; }
+    .new-label-row input {
+      background: var(--acta-off-white, #F5F6F7);
+      border: 1px solid var(--acta-border, #E2E8EC);
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      color: var(--acta-dark-text, #1A1A1A);
+      flex: 1;
+      max-width: 220px;
+    }
+    [data-theme="dark"] .new-label-row input { background: #1A2228; color: #E6EDF2; border-color: #2A363E; }
+  </style>
 </head>
 <body>
   <div class="acta-layout">
@@ -32,6 +90,30 @@
           <div class="acta-metric-label">Monate erfasst</div>
           <div class="acta-metric-value" id="monthCount">—</div>
           <div class="acta-metric-sub">Datenpunkte</div>
+        </div>
+      </div>
+
+      <!-- Average Month Cards -->
+      <div class="acta-grid acta-grid-4 acta-grid-4-avg" id="avgCards" style="margin-top:0.75rem;">
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Ø Einnahmen / Monat</div>
+          <div class="acta-metric-value" id="avgIncome">—</div>
+          <div class="acta-metric-sub">Ø pro Monat</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Ø Ausgaben / Monat</div>
+          <div class="acta-metric-value" id="avgExpenses">—</div>
+          <div class="acta-metric-sub">Ø pro Monat</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Ø Sparquote / Monat</div>
+          <div class="acta-metric-value" id="avgSavingsPct">—</div>
+          <div class="acta-metric-sub">Ø pro Monat</div>
+        </div>
+        <div class="acta-card acta-metric">
+          <div class="acta-metric-label">Ø Ersparnis / Monat</div>
+          <div class="acta-metric-value" id="avgSavingsAmt">—</div>
+          <div class="acta-metric-sub">Ø pro Monat</div>
         </div>
       </div>
 
@@ -73,7 +155,7 @@
         </div>
       </div>
 
-      <!-- Recent Transactions -->
+      <!-- Recent Transactions (with category editable) -->
       <div class="acta-card" style="margin-top:1.25rem;">
         <div class="acta-card-title">Letzte Transaktionen <span class="acta-badge acta-badge-neutral" id="txnTotal">—</span></div>
         <div class="acta-table-wrap">
@@ -93,6 +175,49 @@
         </div>
       </div>
 
+      <!-- Uncategorized Transactions (Labeling Section) -->
+      <div class="acta-card uncategorized-section" style="margin-top:1.25rem;">
+        <div class="acta-card-title">
+          <span>Kategorisieren <span class="acta-badge acta-badge-neutral" id="uncatCount">0</span></span>
+          <div class="batch-row">
+            <select id="batchCategory" class="cat-select"><option value="">— Batch-Kategorie —</option></select>
+            <button class="btn-sm" id="batchAssignBtn" disabled>Ausgewählte zuordnen</button>
+          </div>
+        </div>
+        <div class="uncat-filters">
+          <select id="uncatFilter">
+            <option value="uncategorized">Nur unkategorisiert (Sonstiges / leer)</option>
+            <option value="all">Alle Transaktionen</option>
+          </select>
+          <input type="text" id="uncatSearch" placeholder="Suche nach Beschreibung…">
+        </div>
+        <div class="new-label-row">
+          <input type="text" id="newLabelInput" placeholder="Neues Label erstellen…">
+          <button class="btn-sm" id="newLabelBtn">Label hinzufügen</button>
+        </div>
+        <div class="acta-table-wrap" style="margin-top:0.75rem;">
+          <table class="acta-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAllUncat" class="txn-check"></th>
+                <th>Datum</th>
+                <th>Beschreibung</th>
+                <th>Kategorie</th>
+                <th>Betrag</th>
+              </tr>
+            </thead>
+            <tbody id="uncatBody">
+              <tr><td colspan="5" class="acta-loading"><span class="acta-spinner"></span>Laden…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:0.5rem; display:flex; gap:0.5rem; align-items:center;">
+          <button class="btn-sm" id="uncatPrev">←</button>
+          <span id="uncatPage" style="font-size:0.85rem;">1</span>
+          <button class="btn-sm" id="uncatNext">→</button>
+        </div>
+      </div>
+
     </main>
   </div>
 
@@ -102,9 +227,40 @@
       petroleum: '#2C5F7C', teal: '#3D8B8B', slate: '#8A9BA8',
       success: '#387359', warning: '#CC9A33', alert: '#BF3939'
     };
+    const DEFAULT_CATEGORIES = [
+      'Einkünfte', 'Wohnen & Haushalt', 'Mobilität', 'Lebensmittel & Gastronomie',
+      'Kommunikation & Medien', 'Gesundheit', 'Freizeit & Genuss', 'Kleidung',
+      'Berufliche Ausgaben', 'Sparen & Veranlagung', 'Bargeld',
+      'Versicherung & Finanzen', 'Familie & Unterstützung', 'Interne Transfers', 'Sonstiges'
+    ];
+    let allCategories = [...DEFAULT_CATEGORIES];
+    let customLabels = JSON.parse(localStorage.getItem('finanz_custom_labels') || '[]');
+    allCategories = mergeCategories(allCategories, customLabels);
 
     const fmt = (n) => new Intl.NumberFormat('de-AT', { style: 'currency', currency: 'EUR' }).format(n);
 
+    function mergeCategories(base, extra) {
+      const set = new Set(base);
+      extra.forEach(l => set.add(l));
+      return [...set].sort((a, b) => a.localeCompare(b, 'de'));
+    }
+
+    function buildCategoryOptions(selected) {
+      return allCategories.map(c =>
+        `<option value="${c}" ${c === selected ? 'selected' : ''}>${c}</option>`
+      ).join('');
+    }
+
+    async function apiPost(url, body) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    }
+
+    // --- Main data load ---
     async function loadFinanz() {
       try {
         const res = await fetch('/api/finanz/monthly');
@@ -113,6 +269,7 @@
 
         // Metrics
         const t = data.totals || {};
+        const mc = t.month_count || 1;
         document.getElementById('totalIncome').textContent = fmt(t.total_income || 0);
         document.getElementById('totalExpenses').textContent = fmt(Math.abs(t.total_expenses || 0));
         document.getElementById('totalSavings').textContent = fmt(t.total_savings || 0);
@@ -122,11 +279,27 @@
         document.getElementById('savingsPct').textContent = `Ø Sparquote ${pct}%`;
         document.getElementById('monthCount').textContent = t.month_count || '0';
 
+        // Average month cards
+        const avgIncome = mc > 0 ? (t.total_income || 0) / mc : 0;
+        const avgExpenses = mc > 0 ? Math.abs(t.total_expenses || 0) / mc : 0;
+        const avgSavingsAmt = mc > 0 ? (t.total_savings || 0) / mc : 0;
+        const monthlyArr = data.monthly || [];
+        const avgSavingsPct = monthlyArr.length > 0
+          ? monthlyArr.reduce((s, m) => s + (m.savings_pct || 0), 0) / monthlyArr.length
+          : 0;
+
+        document.getElementById('avgIncome').textContent = fmt(avgIncome);
+        document.getElementById('avgExpenses').textContent = fmt(avgExpenses);
+        document.getElementById('avgSavingsPct').textContent = avgSavingsPct.toFixed(1) + '%';
+        document.getElementById('avgSavingsPct').style.color = avgSavingsPct >= 0 ? ACTA.success : ACTA.alert;
+        document.getElementById('avgSavingsAmt').textContent = fmt(avgSavingsAmt);
+        document.getElementById('avgSavingsAmt').style.color = avgSavingsAmt >= 0 ? ACTA.success : ACTA.alert;
+
         // Monthly Chart
-        const months = (data.monthly || []).map(m => m.month);
-        const incomes = (data.monthly || []).map(m => m.income);
-        const expenses = (data.monthly || []).map(m => Math.abs(m.expenses));
-        const savings = (data.monthly || []).map(m => m.savings);
+        const months = monthlyArr.map(m => m.month);
+        const incomes = monthlyArr.map(m => m.income);
+        const expenses = monthlyArr.map(m => Math.abs(m.expenses));
+        const savings = monthlyArr.map(m => m.savings);
 
         new Chart(document.getElementById('monthlyChart'), {
           type: 'bar',
@@ -147,26 +320,40 @@
           }
         });
 
-        // Savings Line Chart
+        // Savings Line Chart — ensure 0 for null/undefined savings_pct
+        const savingsPctData = monthlyArr.map(m => m.savings_pct != null ? m.savings_pct : 0);
+
         new Chart(document.getElementById('savingsChart'), {
           type: 'line',
           data: {
             labels: months,
             datasets: [{
               label: 'Sparquote (%)',
-              data: (data.monthly || []).map(m => m.savings_pct),
+              data: savingsPctData,
               borderColor: ACTA.teal,
               backgroundColor: 'rgba(61,139,139,0.1)',
               fill: true,
               tension: 0.3,
-              pointBackgroundColor: ACTA.teal
+              pointBackgroundColor: ACTA.teal,
+              pointRadius: 4,
+              pointHoverRadius: 6
             }]
           },
           options: {
             responsive: true,
-            plugins: { legend: { display: false } },
+            plugins: {
+              legend: { display: true, position: 'top', labels: { color: '#8A9BA8' } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `Sparquote: ${ctx.parsed.y.toFixed(1)}%`
+                }
+              }
+            },
             scales: {
-              y: { grid: { color: 'rgba(138,155,168,0.15)' } },
+              y: {
+                grid: { color: 'rgba(138,155,168,0.15)' },
+                ticks: { callback: (v) => v + '%' }
+              },
               x: { grid: { display: false } }
             }
           }
@@ -212,6 +399,7 @@
       }
     }
 
+    // --- Transaction list (recent, editable category) ---
     async function loadTransactions() {
       try {
         const res = await fetch('/api/finanz/transactions?limit=20');
@@ -222,7 +410,7 @@
           <tr>
             <td>${t.date}</td>
             <td>${(t.description || '').slice(0, 50)}</td>
-            <td><span class="acta-badge acta-badge-neutral">${t.category || '—'}</span></td>
+            <td><select class="cat-select" data-txn-id="${t.id}" onchange="assignCategory(this)">${buildCategoryOptions(t.category)}</select></td>
             <td style="color:${t.amount >= 0 ? ACTA.success : ACTA.alert};font-weight:600">${fmt(t.amount)}</td>
           </tr>
         `).join('');
@@ -231,8 +419,168 @@
       }
     }
 
+    // --- Category assignment (POST) ---
+    async function assignCategory(selEl) {
+      const txnId = selEl.dataset.txnId;
+      const category = selEl.value;
+      try {
+        const result = await apiPost('/api/finanz/label', { ids: [parseInt(txnId)], category });
+        if (result.ok) {
+          selEl.classList.add('cat-saved');
+          setTimeout(() => selEl.classList.remove('cat-saved'), 1200);
+        } else {
+          selEl.classList.add('cat-error');
+          setTimeout(() => selEl.classList.remove('cat-error'), 2000);
+        }
+      } catch (e) {
+        selEl.classList.add('cat-error');
+        setTimeout(() => selEl.classList.remove('cat-error'), 2000);
+      }
+    }
+
+    // --- Labels / Categories ---
+    async function loadLabels() {
+      try {
+        const res = await fetch('/api/finanz/labels');
+        if (!res.ok) return;
+        const data = await res.json();
+        // Merge static defaults + server categories + custom labels
+        const serverCats = (data.categories || []).map(c => c.name);
+        allCategories = mergeCategories([...DEFAULT_CATEGORIES, ...serverCats], customLabels);
+        populateBatchDropdown();
+      } catch (e) {
+        console.error('Labels load error:', e);
+      }
+    }
+
+    function populateBatchDropdown() {
+      const sel = document.getElementById('batchCategory');
+      if (!sel) return;
+      const current = sel.value;
+      sel.innerHTML = '<option value="">— Batch-Kategorie —</option>' +
+        allCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+      sel.value = current;
+    }
+
+    // --- Uncategorized section ---
+    let uncatData = [];
+    let uncatPage = 0;
+    const uncatPageSize = 30;
+    let uncatFilter = 'uncategorized';
+    let uncatSearch = '';
+
+    async function loadUncategorized() {
+      try {
+        const res = await fetch('/api/finanz/transactions?limit=500');
+        if (!res.ok) return;
+        const data = await res.json();
+        let txns = data.transactions;
+        if (uncatFilter === 'uncategorized') {
+          txns = txns.filter(t => !t.category || t.category === 'Sonstiges' || t.category.trim() === '');
+        }
+        if (uncatSearch) {
+          const q = uncatSearch.toLowerCase();
+          txns = txns.filter(t => (t.description || '').toLowerCase().includes(q) || (t.merchant || '').toLowerCase().includes(q));
+        }
+        uncatData = txns;
+        document.getElementById('uncatCount').textContent = txns.length;
+        renderUncatPage();
+      } catch (e) {
+        console.error('Uncategorized load error:', e);
+      }
+    }
+
+    function renderUncatPage() {
+      const start = uncatPage * uncatPageSize;
+      const pageData = uncatData.slice(start, start + uncatPageSize);
+      const totalPages = Math.ceil(uncatData.length / uncatPageSize) || 1;
+      document.getElementById('uncatPage').textContent = `${uncatPage + 1} / ${totalPages}`;
+      document.getElementById('uncatPrev').disabled = uncatPage <= 0;
+      document.getElementById('uncatNext').disabled = uncatPage >= totalPages - 1;
+
+      document.getElementById('uncatBody').innerHTML = pageData.length === 0
+        ? '<tr><td colspan="5" style="text-align:center;padding:1rem;color:var(--acta-slate);">Keine Einträge</td></tr>'
+        : pageData.map(t => `
+          <tr>
+            <td><input type="checkbox" class="txn-check uncat-check" data-txn-id="${t.id}"></td>
+            <td>${t.date}</td>
+            <td>${(t.description || '').slice(0, 60)}</td>
+            <td><select class="cat-select" data-txn-id="${t.id}" onchange="assignCategory(this)">${buildCategoryOptions(t.category)}</select></td>
+            <td style="color:${t.amount >= 0 ? ACTA.success : ACTA.alert};font-weight:600">${fmt(t.amount)}</td>
+          </tr>
+        `).join('');
+    }
+
+    // Batch assign
+    document.getElementById('batchAssignBtn').addEventListener('click', async () => {
+      const checked = [...document.querySelectorAll('.uncat-check:checked')].map(cb => parseInt(cb.dataset.txnId));
+      const category = document.getElementById('batchCategory').value;
+      if (!checked.length || !category) return;
+      try {
+        const result = await apiPost('/api/finanz/label', { ids: checked, category });
+        if (result.ok) {
+          // Refresh the uncategorized list
+          await loadUncategorized();
+          await loadTransactions();
+        }
+      } catch (e) {
+        console.error('Batch assign error:', e);
+      }
+    });
+
+    document.getElementById('batchCategory').addEventListener('change', () => {
+      document.getElementById('batchAssignBtn').disabled = !document.getElementById('batchCategory').value;
+    });
+
+    // Select all checkbox
+    document.getElementById('selectAllUncat').addEventListener('change', (e) => {
+      document.querySelectorAll('.uncat-check').forEach(cb => cb.checked = e.target.checked);
+    });
+
+    // Pagination
+    document.getElementById('uncatPrev').addEventListener('click', () => { if (uncatPage > 0) { uncatPage--; renderUncatPage(); } });
+    document.getElementById('uncatNext').addEventListener('click', () => { uncatPage++; renderUncatPage(); });
+
+    // Filter & search
+    document.getElementById('uncatFilter').addEventListener('change', (e) => {
+      uncatFilter = e.target.value;
+      uncatPage = 0;
+      loadUncategorized();
+    });
+    let searchTimeout;
+    document.getElementById('uncatSearch').addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        uncatSearch = e.target.value;
+        uncatPage = 0;
+        loadUncategorized();
+      }, 300);
+    });
+
+    // New label
+    document.getElementById('newLabelBtn').addEventListener('click', () => {
+      const input = document.getElementById('newLabelInput');
+      const label = input.value.trim();
+      if (!label) return;
+      if (!allCategories.includes(label)) {
+        customLabels.push(label);
+        localStorage.setItem('finanz_custom_labels', JSON.stringify(customLabels));
+        allCategories = mergeCategories(allCategories, [label]);
+        populateBatchDropdown();
+        // Re-render all dropdowns in uncategorized section
+        renderUncatPage();
+        loadTransactions();
+      }
+      input.value = '';
+    });
+    document.getElementById('newLabelInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('newLabelBtn').click();
+    });
+
+    // Init
     loadFinanz();
     loadTransactions();
+    loadLabels().then(() => loadUncategorized());
   </script>
 </body>
 </html>

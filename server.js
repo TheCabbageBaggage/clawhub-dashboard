@@ -955,6 +955,77 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // === FINANZ LABELS API ===
+        if (pathname === '/api/finanz/labels') {
+            try {
+                const dbPath = '/app/data/finances.db';
+                if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
+                const finDb = new Database(dbPath, { readonly: true });
+                const categories = finDb.prepare(`
+                    SELECT category as name, COUNT(*) as c, SUM(amount) as total
+                    FROM transactions
+                    WHERE category IS NOT NULL AND category != ''
+                    GROUP BY category
+                    ORDER BY c DESC
+                `).all();
+                finDb.close();
+                const all = [
+                    'Einkünfte', 'Wohnen & Haushalt', 'Mobilität', 'Lebensmittel & Gastronomie',
+                    'Kommunikation & Medien', 'Gesundheit', 'Freizeit & Genuss', 'Kleidung',
+                    'Berufliche Ausgaben', 'Sparen & Veranlagung', 'Bargeld',
+                    'Versicherung & Finanzen', 'Familie & Unterstützung', 'Interne Transfers', 'Sonstiges'
+                ];
+                const usedNames = new Set(categories.map(c => c.name));
+                all.forEach(c => { if (!usedNames.has(c)) categories.push({ name: c, c: 0, total: 0 }); });
+                jsonResponse(res, 200, { categories, all });
+            } catch (e) {
+                console.error('Finanz labels GET:', e.message);
+                jsonResponse(res, 500, { error: 'Finanz-Datenbank Fehler' });
+            }
+            return;
+        }
+
+        if (pathname === '/api/finanz/label' && req.method === 'POST') {
+            try {
+                const dbPath = '/app/data/finances.db';
+                if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
+                let body = '';
+                req.on('data', chunk => { body += chunk; });
+                req.on('end', () => {
+                    try {
+                        const data = JSON.parse(body);
+                        const category = (data.category || '').trim();
+                        if (!category) { jsonResponse(res, 400, { error: 'Kategorie fehlt' }); return; }
+                        const finDb = new Database(dbPath); // read-write connection
+                        let updated = 0;
+                        if (data.ids && Array.isArray(data.ids) && data.ids.length > 0) {
+                            const placeholders = data.ids.map(() => '?').join(',');
+                            const stmt = finDb.prepare(`UPDATE transactions SET category = ? WHERE id IN (${placeholders})`);
+                            const result = stmt.run(category, ...data.ids);
+                            updated = result.changes;
+                        } else if (data.merchant) {
+                            const stmt = finDb.prepare(`UPDATE transactions SET category = ? WHERE merchant = ?`);
+                            const result = stmt.run(category, data.merchant);
+                            updated = result.changes;
+                        } else {
+                            finDb.close();
+                            jsonResponse(res, 400, { error: 'ids oder merchant erforderlich' });
+                            return;
+                        }
+                        finDb.close();
+                        jsonResponse(res, 200, { ok: true, updated });
+                    } catch (e2) {
+                        console.error('Finanz label POST parse:', e2.message);
+                        jsonResponse(res, 500, { error: 'Fehler beim Aktualisieren' });
+                    }
+                });
+            } catch (e) {
+                console.error('Finanz label POST:', e.message);
+                jsonResponse(res, 500, { error: 'Finanz-Datenbank Fehler' });
+            }
+            return;
+        }
+
         // === BI / TOKEN USAGE API ===
         if (pathname === '/api/bi/summary') {
             try {
