@@ -346,18 +346,49 @@ html, body {
 .acta-grid-3 { grid-template-columns: repeat(3, 1fr); }
 .acta-grid-4 { grid-template-columns: repeat(4, 1fr); }
 
+/* Tablet / kleine Laptops: Sidebar bleibt, Inhalt wird schmaler ->
+   4 Spalten brechen deutlich frueher um, sonst werden die Karten unlesbar. */
+@media (max-width: 1400px) {
+  .acta-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 1100px) {
+  .acta-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .acta-grid-2 { grid-template-columns: 1fr; }
+}
 @media (max-width: 1024px) {
   .acta-grid-4 { grid-template-columns: repeat(2, 1fr); }
   .acta-grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Bis hierhin ist die fixe 260px-Sidebar aktiv (margin-left:260px).
+   Unter 900px wird sie ausgeblendet, damit der Inhalt die volle Breite bekommt. */
+@media (max-width: 900px) {
+  .acta-sidebar { transform: translateX(-100%); }
+  .acta-sidebar.open { transform: translateX(0); }
+  .acta-main { margin-left: 0; padding: 1rem 1rem; }
+  .acta-hamburger { display: inline-flex; }
+}
+
 @media (max-width: 640px) {
   .acta-grid-2, .acta-grid-3, .acta-grid-4 { grid-template-columns: 1fr; }
-  .acta-sidebar { transform: translateX(-100%); }
-  .acta-main { margin-left: 0; padding: 0.75rem 0.75rem; }
-  .acta-sidebar.open { transform: translateX(0); }
+  .acta-main { padding: 0.75rem 0.75rem; }
   .acta-topbar-title { font-size: 1.1rem; }
   .acta-toolbar { flex-direction: column; align-items: stretch; }
   .acta-search { min-width: 0; }
+}
+
+/* KPI-/Metric-Karten: Text darf nicht ueberlaufen */
+.acta-metric-value, .acta-metric-label, .acta-metric-sub {
+  overflow-wrap: anywhere;
+}
+.acta-card { min-width: 0; }
+.acta-grid > * { min-width: 0; }
+
+/* Topbar + Tabellen auf schmalen Screens */
+.acta-table-wrap { -webkit-overflow-scrolling: touch; }
+@media (max-width: 900px) {
+  .acta-topbar { flex-wrap: wrap; }
+  .acta-table { min-width: 640px; }
 }
 
 /* --- Sidebar Overlay (Mobile) --- */

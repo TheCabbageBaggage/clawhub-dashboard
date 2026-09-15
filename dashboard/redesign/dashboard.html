@@ -298,7 +298,40 @@
               datasets: [{ data: models.map(x => x.request_count),
                            backgroundColor: PALETTE, borderWidth: 0 }]
             },
-            options: { cutout: '58%', plugins: { legend: { position: 'bottom' } } }
+            options: {
+              cutout: '58%',
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: {
+                    boxWidth: 12,
+                    padding: 8,
+                    font: { size: 11 },
+                    // lange Modellnamen kuerzen, voller Name im Tooltip
+                    generateLabels: (chart) => {
+                      const ds = chart.data.datasets[0];
+                      return chart.data.labels.map((l, i) => ({
+                        text: (l.length > 22 ? l.slice(0, 21) + '\u2026' : l) + ' (' + ds.data[i] + ')',
+                        fillStyle: ds.backgroundColor[i],
+                        strokeStyle: ds.backgroundColor[i],
+                        lineWidth: 0,
+                        index: i
+                      }));
+                    }
+                  }
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (ctx) => {
+                      const total = ctx.dataset.data.reduce((a, b) => a + b, 0) || 1;
+                      const v = ctx.parsed;
+                      return ctx.label + ': ' + v + ' (' + (v / total * 100).toFixed(1) + '%)';
+                    }
+                  }
+                }
+              }
+            }
           });
         }
 
