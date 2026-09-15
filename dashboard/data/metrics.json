@@ -1,18 +1,18 @@
 {
   "system": {
-    "last_check": "2026-09-10T20:15:13.731710+00:00",
+    "last_check": "2026-09-15T12:15:05.249556+00:00",
     "status": "healthy",
-    "uptime_seconds": 2786640,
-    "cpu_load": 2.04,
+    "uptime_seconds": 3188947,
+    "cpu_load": 1.47,
     "memory": {
-      "used_mb": 8340,
+      "used_mb": 7748,
       "total_mb": 15992,
-      "pct": 52.2
+      "pct": 48.4
     },
     "disk": {
-      "used_gb": 140.0,
+      "used_gb": 143.0,
       "total_gb": 193.0,
-      "pct": 73.0
+      "pct": 74.0
     }
   },
   "scraping": {
@@ -48,39 +48,37 @@
   },
   "ollama_usage": {
     "session": {
-      "usage_pct": 30.0,
-      "requests": 309,
-      "limit": 1030.0
+      "usage_pct": 1.0,
+      "requests": 2,
+      "limit": 200.0
     },
     "weekly": {
-      "usage_pct": 62.2,
-      "requests": 2171,
-      "limit": 3490.3536977491963
+      "usage_pct": 17.9,
+      "requests": 1362,
+      "limit": 7608.938547486034
     },
     "cost_4weeks": 0.0,
     "models": [
       {
         "name": "deepseek-v4-pro:0813",
-        "request_count": 298
+        "request_count": 96
+      },
+      {
+        "name": "deepseek-v4.1-flash",
+        "request_count": 921
       },
       {
         "name": "deepseek-v4-flash:0731",
-        "request_count": 1700
-      },
-      {
-        "name": "glm-5.1",
-        "request_count": 157
-      },
-      {
-        "name": "minimax-m2.7",
-        "request_count": 16
+        "request_count": 345
       }
     ]
   },
   "security": {
     "open_ports": [
       "0.0.0.0:45681",
+      "127.0.0.1:45181",
       "127.0.0.1:18900",
+      "127.0.0.1:43927",
       "0.0.0.0:18789",
       "127.0.0.11:33043"
     ],
@@ -90,7 +88,7 @@
     }
   },
   "storage": {
-    "used_gb": 100.37,
+    "used_gb": 100.8,
     "total_gb": 1099.51,
     "last_sync": "Elapsed time:     13m44.4s=== Sync abgeschlossen 09:47:06 (nur Drive → Storage Box) ==="
   }

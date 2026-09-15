@@ -1,0 +1,265 @@
+{
+  "timestamp": "2026-09-15T12:15:17.448043+00:00",
+  "days": 14,
+  "tasks": [
+    {
+      "task_id": "cron:9a04d3d4",
+      "task_name": "ClawHub Research+Metrics Pipeline",
+      "lane": "cron",
+      "models": [
+        {
+          "name": "deepseek-v4-flash:cloud",
+          "requests": 558
+        },
+        {
+          "name": "deepseek-v4-pro:cloud",
+          "requests": 41
+        }
+      ],
+      "requests": 599,
+      "tokens_in": 22455855,
+      "tokens_out": 66092
+    },
+    {
+      "task_id": "chat:main",
+      "task_name": "Chat \u2014 Main Lane",
+      "lane": "main",
+      "models": [
+        {
+          "name": "deepseek-v4-flash:cloud",
+          "requests": 346
+        },
+        {
+          "name": "deepseek-v4-pro:cloud",
+          "requests": 109
+        },
+        {
+          "name": "deepseek-v4.1-flash:cloud",
+          "requests": 66
+        },
+        {
+          "name": "minimax-m2.7:cloud",
+          "requests": 29
+        },
+        {
+          "name": "kimi-k2.5:cloud",
+          "requests": 1
+        }
+      ],
+      "requests": 551,
+      "tokens_in": 638586767,
+      "tokens_out": 1230554
+    },
+    {
+      "task_id": "cron:2861f709",
+      "task_name": "Google Token Refresh (LLM)",
+      "lane": "cron",
+      "models": [
+        {
+          "name": "deepseek-v4-flash:cloud",
+          "requests": 33
+        },
+        {
+          "name": "llama3.1:8b",
+          "requests": 8
+        }
+      ],
+      "requests": 41,
+      "tokens_in": 1448475,
+      "tokens_out": 3093
+    },
+    {
+      "task_id": "chat:subagent:main",
+      "task_name": "Chat \u2014 Subagent",
+      "lane": "subagent",
+      "models": [
+        {
+          "name": "deepseek-v4-flash:cloud",
+          "requests": 17
+        },
+        {
+          "name": "glm-5.1:cloud",
+          "requests": 5
+        },
+        {
+          "name": "gemini-3-flash-preview",
+          "requests": 4
+        },
+        {
+          "name": "kimi-k2.5:cloud",
+          "requests": 1
+        }
+      ],
+      "requests": 27,
+      "tokens_in": 13222884,
+      "tokens_out": 141467
+    },
+    {
+      "task_id": "cron:c795625f",
+      "task_name": "Task-Engine Automatismus",
+      "lane": "cron",
+      "models": [
+        {
+          "name": "deepseek-v4-flash:cloud",
+          "requests": 10
+        },
+        {
+          "name": "deepseek-v4-pro:cloud",
+          "requests": 4
+        }
+      ],
+      "requests": 14,
+      "tokens_in": 254613,
+      "tokens_out": 2598
+    },
+    {
+      "task_id": "cron:sonstige",
+      "task_name": "Cron: sonstige",
+      "lane": "cron",
+      "models": [
+        {
+          "name": "deepseek-v4-flash:cloud",
+          "requests": 1
+        }
+      ],
+      "requests": 1,
+      "tokens_in": 187871,
+      "tokens_out": 1115
+    }
+  ],
+  "scrum": [
+    {
+      "id": "d8b31797-d53a-4740-8e6c-2ba554555b6a",
+      "title": "M7: Abschluss & Betriebs\u00fcbergabe",
+      "status": "pending",
+      "priority": 1,
+      "planned_date": "2026-10-01"
+    },
+    {
+      "id": "c0236430-b99b-4b71-a7b1-2163e34b9683",
+      "title": "M6: Such-/Retrieval-Layer + Identity",
+      "status": "pending",
+      "priority": 1,
+      "planned_date": "2026-09-28"
+    },
+    {
+      "id": "f7244527-68bc-4eff-9692-3792ab6999e9",
+      "title": "M5: Objekt-Store & Backup-Strategie",
+      "status": "pending",
+      "priority": 1,
+      "planned_date": "2026-09-25"
+    },
+    {
+      "id": "fd4084dc-16de-48e5-9c00-6cd20a502d5b",
+      "title": "M4: Data-Warehouse & Reporting-Layer",
+      "status": "pending",
+      "priority": 1,
+      "planned_date": "2026-09-22"
+    },
+    {
+      "id": "3e265f96-e551-46d1-8792-d71fa81bda44",
+      "title": "M3: Knowledge-Graph-Ausbau",
+      "status": "pending",
+      "priority": 1,
+      "planned_date": "2026-09-19"
+    },
+    {
+      "id": "cf8b0561-9b80-46a6-a78f-287a43134a82",
+      "title": "M2: ETL-Grundger\u00fcst & Ingestion-Pipeline",
+      "status": "pending",
+      "priority": 1,
+      "planned_date": "2026-09-16"
+    },
+    {
+      "id": "4a94cb3b-fbed-4685-aea1-a88174097f71",
+      "title": "M1: Metadaten-Registry & Datenkatalog",
+      "status": "in_progress",
+      "priority": 1,
+      "planned_date": "2026-09-13"
+    },
+    {
+      "id": "9182909c-554b-4437-9bae-62bde7256a40",
+      "title": "M0: Foundation & Governance",
+      "status": "in_progress",
+      "priority": 1,
+      "planned_date": "2026-09-11"
+    },
+    {
+      "id": "d634f8e8-8341-437e-afdc-6f49bcf29f43",
+      "title": "Engagement-Tracking (Views, Likes, Follower)",
+      "status": "pending",
+      "priority": 3,
+      "planned_date": "2026-09-08"
+    },
+    {
+      "id": "00aeff23-1d1d-4fb5-a26a-9f3b9df748bc",
+      "title": "Recovery-Test durchf\u00fchren (Backup wiederherstellen)",
+      "status": "pending",
+      "priority": 2,
+      "planned_date": "2026-09-07"
+    },
+    {
+      "id": "95ed14ff-387b-4b69-a078-b8d9405d9454",
+      "title": "MVP testen + erste Nutzer einladen",
+      "status": "pending",
+      "priority": 2,
+      "planned_date": "2026-09-06"
+    },
+    {
+      "id": "bd93b0bf-547d-4935-8622-3f748ed03df4",
+      "title": "Vorlesungs-Material (Folien, \u00dcbungen) erstellen",
+      "status": "pending",
+      "priority": 2,
+      "planned_date": "2026-09-05"
+    },
+    {
+      "id": "1f8eaf50-212d-44a8-96de-e4c823190e7b",
+      "title": "Syllabus f\u00fcr AI/Prozess-Automatisierung entwerfen",
+      "status": "pending",
+      "priority": 2,
+      "planned_date": "2026-09-04"
+    },
+    {
+      "id": "2da82535-e4b8-471f-b15d-778adbef1bd3",
+      "title": "Monitoring + Feedback-Schleife einrichten",
+      "status": "pending",
+      "priority": 3,
+      "planned_date": "2026-09-03"
+    },
+    {
+      "id": "8cb57a85-68cb-4c39-ab7c-342ee16ea7ef",
+      "title": "Framework an Beispiel validieren (echter Prozess)",
+      "status": "pending",
+      "priority": 2,
+      "planned_date": "2026-09-03"
+    },
+    {
+      "id": "7c8e0c32-a7c9-4e55-994c-239769a85288",
+      "title": "4-Wochen-Stabilit\u00e4tstest: keine wegbrechenden Tools",
+      "status": "in_progress",
+      "priority": 1,
+      "planned_date": "2026-09-02"
+    },
+    {
+      "id": "3152c68a-c705-4826-9564-0c2ca92961a8",
+      "title": "Produktion-Deployment vorbereiten (Domain, Hosting)",
+      "status": "pending",
+      "priority": 3,
+      "planned_date": "2026-09-02"
+    },
+    {
+      "id": "27bbba27-bda9-492f-9067-fd5a16c49ace",
+      "title": "MVP-Kernfunktion implementieren",
+      "status": "pending",
+      "priority": 2,
+      "planned_date": "2026-09-01"
+    },
+    {
+      "id": "612c2099-f1fd-4844-955e-ccb1fe66ebca",
+      "title": "Blog-Artikel aus Medium-Content ableiten",
+      "status": "pending",
+      "priority": 2,
+      "planned_date": "2026-09-01"
+    }
+  ]
+}

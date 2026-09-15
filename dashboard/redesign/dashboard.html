@@ -18,7 +18,9 @@
 
   <script src="js/acta-shell.js" data-shell=""></script>
   <script>
-    const ACTA = { petroleum:'#2C5F7C', teal:'#3D8B8B', slate:'#8A9BA8', success:'#387359', warning:'#CC9A33', alert:'#BF3939' };
+    const ACTA = { petroleum:'#2C5F7C', navy:'#1A3440', teal:'#3D8B8B', slate:'#8A9BA8',
+                   success:'#387359', warning:'#CC9A33', alert:'#BF3939' };
+    const PALETTE = [ACTA.petroleum, ACTA.teal, ACTA.slate, ACTA.navy, ACTA.warning, ACTA.success, ACTA.alert];
     let charts = {};
 
     function destroyCharts() {
@@ -29,6 +31,15 @@
     function fmt(n, d=0) {
       if (n === null || n === undefined || isNaN(n)) return '—';
       return Number(n).toLocaleString('de-DE', { maximumFractionDigits: d });
+    }
+
+    function fmtBig(n) {
+      if (n === null || n === undefined || isNaN(n)) return '—';
+      const v = Number(n);
+      if (v >= 1e9) return (v/1e9).toFixed(2) + ' Mrd';
+      if (v >= 1e6) return (v/1e6).toFixed(1) + ' Mio';
+      if (v >= 1e3) return (v/1e3).toFixed(1) + ' K';
+      return String(v);
     }
 
     function fmtBytes(mb) {
@@ -44,37 +55,53 @@
     }
 
     function badge(state) {
-      if (state === 'green' || state === 'running' || state === 'ok' || state === 'healthy') return '<span class="acta-badge acta-badge-success">' + state + '</span>';
-      if (state === 'yellow' || state === 'warning') return '<span class="acta-badge acta-badge-warning">' + state + '</span>';
-      if (state === 'red' || state === 'stopped' || state === 'error' || state === 'exited') return '<span class="acta-badge acta-badge-alert">' + state + '</span>';
+      const s = (state || '').toLowerCase();
+      if (['green','running','ok','healthy','up'].includes(s)) return '<span class="acta-badge acta-badge-success">' + state + '</span>';
+      if (['yellow','warning','paused','restarting'].includes(s)) return '<span class="acta-badge acta-badge-warning">' + state + '</span>';
+      if (['red','stopped','error','exited','dead'].includes(s)) return '<span class="acta-badge acta-badge-alert">' + state + '</span>';
       return '<span class="acta-badge acta-badge-neutral">' + (state || '—') + '</span>';
+    }
+
+    function laneBadge(lane) {
+      const map = { cron:'neutral', main:'success', subagent:'warning',
+                    'admin-agent':'success', hanna:'success', codex:'warning' };
+      return '<span class="acta-badge acta-badge-' + (map[lane] || 'neutral') + '">' + (lane || '—') + '</span>';
     }
 
     async function load() {
       const content = document.getElementById('content');
       try {
-        const res = await fetch('/api/metrics');
-        if (res.status === 401) { window.location.href = '/login'; return; }
-        const data = await res.json();
+        const [resM, resT] = await Promise.all([
+          fetch('/api/metrics'),
+          fetch('/api/task-usage').catch(() => null)
+        ]);
+        if (resM.status === 401) { window.location.href = '/login'; return; }
+        const data = await resM.json();
+        let taskData = { tasks: [], scrum: [] };
+        if (resT && resT.ok) { try { taskData = await resT.json(); } catch (e) {} }
+
         const m = data.metrics || {};
         const ollama = m['ollama-usage'] || {};
         const sys = m.system || {};
         const containers = Array.isArray(m.containers) ? m.containers : [];
         const sec = m.security || {};
         const storage = m.storage || {};
+        const history = Array.isArray(ollama.history) ? ollama.history : [];
 
-        const running = containers.filter(c => c.state === 'running').length;
+        const running = containers.filter(c => (c.state||'').toLowerCase() === 'running').length;
         const stopped = containers.length - running;
         const memPct = sys.memory ? sys.memory.pct : null;
         const diskPct = sys.disk ? sys.disk.pct : null;
         const storagePct = storage.total_gb ? Math.round(storage.used_gb / storage.total_gb * 100) : null;
+        const tasks = taskData.tasks || [];
 
         content.innerHTML = `
+          <!-- KPI-Karten -->
           <div class="acta-grid acta-grid-4" style="margin-bottom:1.25rem;">
             <div class="acta-card acta-metric">
               <div class="acta-metric-label">Ollama Weekly</div>
               <div class="acta-metric-value">${fmt(ollama.weekly && ollama.weekly.usage_pct, 1)}%</div>
-              <div class="acta-metric-sub">${fmt(ollama.weekly && ollama.weekly.requests)} / ${fmt(ollama.weekly && ollama.weekly.limit)} Requests</div>
+              <div class="acta-metric-sub">${fmt(ollama.weekly && ollama.weekly.requests)} Requests</div>
             </div>
             <div class="acta-card acta-metric">
               <div class="acta-metric-label">Ollama Session</div>
@@ -87,23 +114,89 @@
               <div class="acta-metric-sub">${stopped} gestoppt</div>
             </div>
             <div class="acta-card acta-metric">
-              <div class="acta-metric-label">System</div>
-              <div class="acta-metric-value" style="color:var(--acta-success);">Healthy</div>
+              <div class="acta-metric-label">Kosten 4 Wochen</div>
+              <div class="acta-metric-value" style="color:var(--acta-success);">$${fmt(ollama.cost_4weeks, 2)}</div>
               <div class="acta-metric-sub">Uptime ${fmtUptime(sys.uptime_seconds)}</div>
             </div>
           </div>
 
-          <div class="acta-grid acta-grid-2" style="margin-bottom:1.25rem;">
-            <div class="acta-card">
-              <div class="acta-card-title">Ollama Model-Verteilung</div>
-              <canvas id="modelChart" height="200"></canvas>
-            </div>
-            <div class="acta-card">
-              <div class="acta-card-title">Container-Status</div>
-              <canvas id="containerChart" height="200"></canvas>
+          <!-- 14-Tage-Verlauf -->
+          <div class="acta-card" style="margin-bottom:1.25rem;">
+            <div class="acta-card-title">Ollama Usage — Verlauf (14 Tage)</div>
+            <div class="acta-chart-box acta-chart-box-lg"><canvas id="trendChart"></canvas></div>
+            <div class="acta-metric-sub" style="margin-top:0.5rem;">
+              Linie = Weekly-Usage-%-Wert pro Tag (Tagesendstand) · Balken = Requests pro Tag
             </div>
           </div>
 
+          <!-- Modell-Verteilung + Container-Doughnut -->
+          <div class="acta-grid acta-grid-2" style="margin-bottom:1.25rem;">
+            <div class="acta-card">
+              <div class="acta-card-title">Ollama Modell-Verteilung</div>
+              <div class="acta-chart-box"><canvas id="modelChart"></canvas></div>
+            </div>
+            <div class="acta-card">
+              <div class="acta-card-title">Container-Status</div>
+              <div class="acta-chart-box"><canvas id="containerChart"></canvas></div>
+            </div>
+          </div>
+
+          <!-- Task-Tabelle -->
+          <div class="acta-card" style="margin-bottom:1.25rem;">
+            <div class="acta-card-title">Tasks — Usage &amp; Modell <span class="acta-badge acta-badge-neutral">${tasks.length}</span></div>
+            <div class="acta-metric-sub" style="margin-bottom:0.75rem;">Quellen: Cron-Jobs · Chat-Lanes · Scrum-Board · Zeitfenster: letzte ${taskData.days || 14} Tage</div>
+            <div class="acta-table-wrap">
+              <table class="acta-table">
+                <thead><tr><th>Task</th><th>Quelle</th><th>Agent-Lane</th><th style="text-align:right;">Requests</th><th style="text-align:right;">Tokens In</th><th style="text-align:right;">Tokens Out</th><th>Modell(e)</th></tr></thead>
+                <tbody>
+                  ${tasks.map(t => `
+                    <tr>
+                      <td>${t.task_name}</td>
+                      <td>${laneBadge(t.lane)}</td>
+                      <td>${t.lane || '—'}</td>
+                      <td style="text-align:right;">${fmt(t.requests)}</td>
+                      <td style="text-align:right;">${fmtBig(t.tokens_in)}</td>
+                      <td style="text-align:right;">${fmtBig(t.tokens_out)}</td>
+                      <td>${(t.models || []).map(x => `${x.name} <span style="color:var(--acta-slate);">(${x.requests})</span>`).join('<br>') || '—'}</td>
+                    </tr>`).join('') || '<tr><td colspan="7" class="acta-empty">Keine Task-Daten</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Scrum-Board -->
+          ${(taskData.scrum || []).length ? `
+          <div class="acta-card" style="margin-bottom:1.25rem;">
+            <div class="acta-card-title">Scrum-Board (geplante Tasks)</div>
+            <div class="acta-table-wrap">
+              <table class="acta-table">
+                <thead><tr><th>Task</th><th>Status</th><th>Priorität</th><th>Geplant</th></tr></thead>
+                <tbody>
+                  ${taskData.scrum.map(s => `<tr><td>${s.title}</td><td>${badge(s.status)}</td><td>${s.priority || '—'}</td><td>${s.planned_date || '—'}</td></tr>`).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>` : ''}
+
+          <!-- Container-Übersicht -->
+          <div class="acta-card" style="margin-bottom:1.25rem;">
+            <div class="acta-card-title">Container-Status <span class="acta-badge acta-badge-neutral">${running} running / ${containers.length}</span></div>
+            <div class="acta-table-wrap">
+              <table class="acta-table">
+                <thead><tr><th>Container</th><th>State</th><th>Status</th></tr></thead>
+                <tbody>
+                  ${containers.map(c => `
+                    <tr>
+                      <td>${c.name}</td>
+                      <td>${badge(c.state)}</td>
+                      <td style="color:var(--acta-slate);">${c.status || '—'}</td>
+                    </tr>`).join('') || '<tr><td colspan="3" class="acta-empty">Keine Container-Daten</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- System-Balken -->
           <div class="acta-grid acta-grid-3" style="margin-bottom:1.25rem;">
             <div class="acta-card">
               <div class="acta-card-title">Memory</div>
@@ -125,24 +218,7 @@
             </div>
           </div>
 
-          <div class="acta-card" style="margin-bottom:1.25rem;">
-            <div class="acta-card-title">Container-Liste <span class="acta-badge acta-badge-neutral">${containers.length}</span></div>
-            <div class="acta-table-wrap">
-              <table class="acta-table">
-                <thead><tr><th>Projekt</th><th>Status</th><th>State</th><th>Container</th></tr></thead>
-                <tbody>
-                  ${containers.map(c => `
-                    <tr>
-                      <td>${c.name}</td>
-                      <td>${badge(c.state)}</td>
-                      <td>${c.status || '—'}</td>
-                      <td>${(c.containers || []).map(x => x.name + ' (' + x.status + ')').join('<br>') || '—'}</td>
-                    </tr>`).join('') || '<tr><td colspan="4" class="acta-empty">Keine Container-Daten</td></tr>'}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
+          <!-- Ports + Security -->
           <div class="acta-grid acta-grid-2">
             <div class="acta-card">
               <div class="acta-card-title">Offene Ports</div>
@@ -154,35 +230,89 @@
               <div class="acta-card-title">Security</div>
               <div class="acta-detail-list">
                 <div class="acta-detail-item"><div class="acta-detail-label">Monarx</div><div class="acta-detail-value">${(sec.monarx && sec.monarx.status) || '—'}</div></div>
-                <div class="acta-detail-item"><div class="acta-detail-label">Letzter Sync</div><div class="acta-detail-value">${storage.last_sync || '—'}</div></div>
-                <div class="acta-detail-item"><div class="acta-detail-label">Kosten 4 Wochen</div><div class="acta-detail-value">€ ${fmt(ollama.cost_4weeks, 2)}</div></div>
+                <div class="acta-detail-item"><div class="acta-detail-label">Letzter Sync</div><div class="acta-detail-value">${(storage.last_sync || '—').slice(0, 80)}</div></div>
               </div>
             </div>
           </div>
         `;
 
-        // Charts
+        // ---- Chart-Defaults (verhindern den Endlos-Grow) ----
+        Chart.defaults.maintainAspectRatio = false;
+        Chart.defaults.responsive = true;
+        Chart.defaults.plugins.legend.labels.color = '#8A9BA8';
+
+        // ---- 14-Tage-Verlauf (Line + Bar, dual axis) ----
+        if (history.length) {
+          charts.trend = new Chart(document.getElementById('trendChart'), {
+            data: {
+              labels: history.map(h => h.label),
+              datasets: [
+                {
+                  type: 'line', label: 'Weekly Usage %',
+                  data: history.map(h => h.usage_pct),
+                  borderColor: ACTA.petroleum, backgroundColor: 'rgba(44,95,124,0.12)',
+                  borderWidth: 2.5, tension: 0.3, fill: true, pointRadius: 3,
+                  pointBackgroundColor: ACTA.petroleum, yAxisID: 'y'
+                },
+                {
+                  type: 'bar', label: 'Requests',
+                  data: history.map(h => h.requests),
+                  backgroundColor: 'rgba(61,139,139,0.35)', borderWidth: 0,
+                  yAxisID: 'y1', order: 2
+                }
+              ]
+            },
+            options: {
+              interaction: { mode: 'index', intersect: false },
+              plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                  callbacks: {
+                    afterLabel: (ctx) => {
+                      const h = history[ctx.dataIndex];
+                      return h ? ('Modell top: ' + (h.top_model || '—')) : '';
+                    }
+                  }
+                }
+              },
+              scales: {
+                x: { grid: { display: false }, ticks: { color: '#8A9BA8', maxRotation: 0, autoSkip: true } },
+                y: { position: 'left', beginAtZero: true, max: 100,
+                     title: { display: true, text: 'Usage %', color: '#8A9BA8' },
+                     ticks: { color: '#8A9BA8', callback: v => v + '%' }, grid: { color: 'rgba(138,155,168,0.15)' } },
+                y1: { position: 'right', beginAtZero: true,
+                      title: { display: true, text: 'Requests', color: '#8A9BA8' },
+                      ticks: { color: '#8A9BA8' }, grid: { display: false } }
+              }
+            }
+          });
+        }
+
+        // ---- Modell-Doughnut ----
         const models = ollama.models || [];
         if (models.length) {
           charts.model = new Chart(document.getElementById('modelChart'), {
             type: 'doughnut',
             data: {
               labels: models.map(x => x.name),
-              datasets: [{ data: models.map(x => x.request_count), backgroundColor: [ACTA.petroleum, ACTA.teal, ACTA.slate, ACTA.warning, ACTA.success], borderWidth: 0 }]
+              datasets: [{ data: models.map(x => x.request_count),
+                           backgroundColor: PALETTE, borderWidth: 0 }]
             },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8' } } } }
+            options: { cutout: '58%', plugins: { legend: { position: 'bottom' } } }
           });
         }
-        if (containers.length) {
-          charts.container = new Chart(document.getElementById('containerChart'), {
-            type: 'doughnut',
-            data: {
-              labels: ['Running', 'Stopped'],
-              datasets: [{ data: [running, stopped], backgroundColor: [ACTA.success, ACTA.alert], borderWidth: 0 }]
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#8A9BA8' } } } }
-          });
-        }
+
+        // ---- Container-Doughnut ----
+        charts.container = new Chart(document.getElementById('containerChart'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Running', 'Gestoppt'],
+            datasets: [{ data: [running, stopped],
+                         backgroundColor: [ACTA.success, ACTA.alert], borderWidth: 0 }]
+          },
+          options: { cutout: '58%', plugins: { legend: { position: 'bottom' } } }
+        });
+
       } catch (e) {
         content.innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + e.message + '</div>';
       }

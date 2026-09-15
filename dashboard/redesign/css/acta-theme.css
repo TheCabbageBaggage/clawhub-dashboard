@@ -263,6 +263,23 @@ html, body {
 .acta-btn-ghost:hover { background-color: var(--acta-petroleum-soft); }
 
 /* ============================================================
+   Charts
+   Fix: Canvas in feste Höhe wrappen, sonst wächst Chart.js endlos
+   (responsive:true + auto-grow = Feedback-Loop -> rutscht nach unten)
+   ============================================================ */
+.acta-chart-box {
+  position: relative;
+  height: 280px;
+  width: 100%;
+}
+.acta-chart-box canvas {
+  display: block;
+  max-height: 100%;
+}
+.acta-chart-box-lg { height: 340px; }
+.acta-chart-box-sm { height: 200px; }
+
+/* ============================================================
    Tables
    ============================================================ */
 .acta-table-wrap {

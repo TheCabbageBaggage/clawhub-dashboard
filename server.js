@@ -1101,6 +1101,18 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // Task-Usage API (aus task-usage.json, vom Watcher-Pipeline exportiert)
+        if (pathname === '/api/task-usage') {
+            const filePath = path.join(DASHBOARD_DIR, 'data', 'task-usage.json');
+            fs.readFile(filePath, 'utf8', (err, content) => {
+                if (err) { jsonResponse(res, 200, { timestamp: new Date().toISOString(), days: 14, tasks: [], scrum: [] }); return; }
+                setSecurityHeaders(res);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(content);
+            });
+            return;
+        }
+
         // Research catalog
         if (pathname === '/api/research') {
             const catalogPath = path.join(DASHBOARD_DIR, 'data', 'research_catalog.json');
