@@ -149,10 +149,17 @@ html, body {
 }
 
 .acta-main {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   margin-left: 260px;
   padding: 1.5rem 2rem;
   min-height: 100vh;
+}
+
+.acta-content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Topbar */
@@ -284,6 +291,9 @@ html, body {
    ============================================================ */
 .acta-table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  min-width: 0;
   border-radius: 0.5rem;
   border: 1px solid var(--acta-border);
 }
@@ -361,8 +371,9 @@ html, body {
 }
 
 /* Bis hierhin ist die fixe 260px-Sidebar aktiv (margin-left:260px).
-   Unter 900px wird sie ausgeblendet, damit der Inhalt die volle Breite bekommt. */
-@media (max-width: 900px) {
+   Unter 1100px wird sie als Off-Canvas-Sidebar geführt, damit der Inhalt
+   die volle Breite bekommt (260px Sidebar + Grid passen darunter nicht mehr). */
+@media (max-width: 1100px) {
   .acta-sidebar { transform: translateX(-100%); }
   .acta-sidebar.open { transform: translateX(0); }
   .acta-main { margin-left: 0; padding: 1rem 1rem; }
@@ -375,6 +386,7 @@ html, body {
   .acta-topbar-title { font-size: 1.1rem; }
   .acta-toolbar { flex-direction: column; align-items: stretch; }
   .acta-search { min-width: 0; }
+  .acta-table { min-width: 560px; }
 }
 
 /* KPI-/Metric-Karten: Text darf nicht ueberlaufen */
@@ -385,10 +397,8 @@ html, body {
 .acta-grid > * { min-width: 0; }
 
 /* Topbar + Tabellen auf schmalen Screens */
-.acta-table-wrap { -webkit-overflow-scrolling: touch; }
 @media (max-width: 900px) {
   .acta-topbar { flex-wrap: wrap; }
-  .acta-table { min-width: 640px; }
 }
 
 /* --- Sidebar Overlay (Mobile) --- */

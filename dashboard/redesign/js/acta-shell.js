@@ -56,12 +56,29 @@
   }
 
   // --- Sidebar injizieren (aus js/sidebar.html) ---
+  function shellBase() {
+    // Basis-Pfad robust aus der eigenen <script src> ableiten.
+    // Funktioniert unter /, /redesign/ und jedem Unterpfad.
+    const me = document.currentScript || (function () {
+      const all = document.getElementsByTagName('script');
+      for (let i = all.length - 1; i >= 0; i--) {
+        if ((all[i].getAttribute('src') || '').indexOf('acta-shell.js') !== -1) return all[i];
+      }
+      return null;
+    })();
+    if (me && me.getAttribute('src')) {
+      const src = me.getAttribute('src');
+      const abs = new URL(src, window.location.href).href;
+      return abs.replace(/js\/acta-shell\.js.*$/, '');
+    }
+    // Fallback: Verzeichnis der aktuellen Seite
+    return window.location.pathname.replace(/[^/]*$/, '');
+  }
+
   function injectSidebar() {
     const layout = document.querySelector('.acta-layout');
     if (!layout) return;
-    // Basis-Pfad robust ableiten: funktioniert unter / und /redesign/ egal wie die Seite geladen wird
-    const path = window.location.pathname;
-    const base = path.startsWith('/redesign/') ? '/redesign/' : '/redesign/';
+    const base = shellBase();
     fetch(base + 'js/sidebar.html')
       .then(function (r) { return r.text(); })
       .then(function (html) {
