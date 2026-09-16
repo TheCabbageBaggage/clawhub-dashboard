@@ -356,18 +356,21 @@ html, body {
 .acta-grid-3 { grid-template-columns: repeat(3, 1fr); }
 .acta-grid-4 { grid-template-columns: repeat(4, 1fr); }
 
-/* Tablet / kleine Laptops: Sidebar bleibt, Inhalt wird schmaler ->
-   4 Spalten brechen deutlich frueher um, sonst werden die Karten unlesbar. */
-@media (max-width: 1400px) {
+/* Responsive Grids — bemessen an der INHALTSBREITE, nicht am Viewport.
+   Ab 1101px ist die 260px-Sidebar fix (margin-left), d.h. Inhaltsbreite =
+   Viewport - 260px - Padding. 4 KPI-Karten brauchen je >=180px, also
+   viewport >= ~1080px. Unter 1101px ist die Sidebar off-canvas -> Inhalt
+   bekommt volle Breite, dann wieder 4 Spalten moeglich.
+   WICHTIG: keine 1400px-Regel mehr — die liess bei 1366/1440px nur 2
+   ueberbreite Karten zu und brach damit das Layout auf normalen Laptops. */
+@media (min-width: 1101px) and (max-width: 1279px) {
   .acta-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .acta-grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 1100px) {
-  .acta-grid-3 { grid-template-columns: repeat(2, 1fr); }
-  .acta-grid-2 { grid-template-columns: 1fr; }
-}
-@media (max-width: 1024px) {
   .acta-grid-4 { grid-template-columns: repeat(2, 1fr); }
   .acta-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .acta-grid-2 { grid-template-columns: 1fr; }
 }
 
 /* Bis hierhin ist die fixe 260px-Sidebar aktiv (margin-left:260px).
@@ -728,6 +731,40 @@ html, body {
 .acta-modal-body blockquote { border-left: 3px solid var(--acta-teal); margin: 0.5rem 0; padding-left: 1rem; color: var(--acta-slate); }
 .acta-modal-body a { color: var(--acta-petroleum); }
 .acta-modal-body hr { border: none; border-top: 1px solid var(--acta-border); margin: 1rem 0; }
+.acta-modal-body h4 { color: var(--acta-petroleum); margin: 0.9rem 0 0.4rem; font-size: 0.9rem; }
+.acta-modal-body p { margin: 0.55rem 0; line-height: 1.6; }
+.acta-modal-body ul { margin: 0.5rem 0 0.5rem 1.1rem; }
+.acta-modal-body li { margin: 0.25rem 0; line-height: 1.55; }
+.acta-modal-body li.acta-md-sublist { margin-left: 1rem; list-style: circle; }
+.acta-modal-body table.acta-md-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.9rem 0;
+  font-size: 0.78rem;
+  display: block;
+  overflow-x: auto;
+  white-space: normal;
+}
+.acta-modal-body table.acta-md-table thead,
+.acta-modal-body table.acta-md-table tr:first-child { background-color: var(--acta-light-gray); }
+.acta-modal-body table.acta-md-table th {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 2px solid var(--acta-petroleum);
+  color: var(--acta-navy);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.acta-modal-body table.acta-md-table td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid var(--acta-border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.acta-modal-body table.acta-md-table tr:last-child td { border-bottom: none; }
+.acta-modal-body table.acta-md-table tr:nth-child(even) { background-color: rgba(44, 95, 124, 0.03); }
+.acta-modal-body table.acta-md-table-narrow code { font-size: 0.75rem; }
+
 .acta-modal-body ul { padding-left: 1.25rem; }
 
 /* --- Textarea --- */
@@ -858,3 +895,38 @@ html, body {
   line-height: 1.5;
   margin: 0;
 }
+
+/* ============================================================
+   Utility-Helfer (Layout-Rebuild Index, 2026-09-15)
+   ============================================================ */
+.acta-page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.acta-page-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0 0 0.15rem 0;
+  line-height: 1.25;
+}
+.acta-page-sub {
+  font-size: 0.8rem;
+  color: var(--acta-slate);
+}
+.acta-page-head-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.acta-mb { margin-bottom: 1.25rem; }
+.acta-dim { color: var(--acta-slate); }
+.acta-ta-r { text-align: right; }
+.acta-metric-of { font-size: 0.9rem; color: var(--acta-slate); font-weight: 400; }
+.acta-card-link {
+  float: right;
+  font-size: 0.75rem;
+  color: var(--acta-teal);
+  text-decoration: none;
+  font-weight: 500;
+}
+.acta-card-link:hover { text-decoration: underline; }
