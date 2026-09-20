@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Learnings</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .lrn-toolbar { display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-bottom:1rem; }
+    .lrn-chip {
+      display:inline-flex; align-items:center; gap:0.35rem;
+      padding:0.35rem 0.7rem; border-radius:999px; cursor:pointer;
+      border:1px solid var(--acta-border); background:var(--acta-white);
+      color:var(--acta-charcoal); font-size:0.8rem; user-select:none;
+      transition:all .15s ease;
+    }
+    .lrn-chip:hover { border-color:var(--acta-petroleum); }
+    .lrn-chip.active { background:var(--acta-petroleum); border-color:var(--acta-petroleum); color:#fff; }
+    .lrn-chip .n { opacity:.75; font-variant-numeric:tabular-nums; }
+    .lrn-search {
+      flex:1 1 220px; min-width:180px; padding:0.5rem 0.75rem;
+      border:1px solid var(--acta-border); border-radius:0.5rem;
+      background:var(--acta-white); color:var(--acta-charcoal); font-size:0.85rem;
+    }
+    .lrn-row { cursor:pointer; }
+    .lrn-row td { vertical-align:top; }
+    .lrn-summary { max-width:520px; }
+    .lrn-meta { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; margin-bottom:0.75rem; }
+    .lrn-sla {
+      display:inline-flex; align-items:center; gap:0.3rem;
+      font-size:0.75rem; padding:0.15rem 0.5rem; border-radius:999px;
+      border:1px solid currentColor;
+    }
+    .sla-ok      { color:var(--acta-success); }
+    .sla-warn    { color:var(--acta-warning); }
+    .sla-breach  { color:var(--acta-alert); }
+    .sla-na      { color:var(--acta-slate); }
+    .lrn-flag { font-size:0.9rem; }
+    .lrn-detail h4 { margin:1rem 0 0.4rem; font-size:0.85rem; text-transform:uppercase; letter-spacing:.04em; color:var(--acta-slate); }
+    .lrn-detail pre {
+      background:var(--acta-light-gray); border:1px solid var(--acta-border);
+      border-radius:0.5rem; padding:0.75rem; overflow:auto; max-height:40vh;
+      font-size:0.78rem; line-height:1.45; white-space:pre-wrap; word-break:break-word;
+    }
+    .lrn-pipeline { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .lrn-stage {
+      flex:1 1 90px; padding:0.6rem 0.5rem; border-radius:0.5rem;
+      background:var(--acta-light-gray); border:1px solid var(--acta-border); text-align:center;
+    }
+    .lrn-stage .v { font-size:1.25rem; font-weight:700; color:var(--acta-petroleum); }
+    .lrn-stage .k { font-size:0.7rem; color:var(--acta-slate); text-transform:uppercase; letter-spacing:.03em; }
+    .lrn-note {
+      padding:0.75rem 1rem; border-radius:0.5rem; font-size:0.83rem;
+      border-left:3px solid var(--acta-warning); background:var(--acta-light-gray);
+      margin-bottom:1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Learnings…</div>
+      </div>
+    </main>
+  </div>
+
+  <div class="acta-modal" id="lrnModal" style="display:none;">
+    <div class="acta-modal-backdrop" onclick="closeModal()"></div>
+    <div class="acta-modal-content">
+      <div class="acta-modal-header">
+        <div class="acta-modal-title" id="modalTitle"></div>
+        <button class="acta-modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="acta-modal-body lrn-detail" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="js/acta-shell.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    var DATA = null;
+    var filterStatus = 'all';
+    var filterPriority = 'all';
+    var filterType = 'all';
+    var searchTerm = '';
+    var chart = null;
+
+    function esc(s) {
+      return String(s === null || s === undefined ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function dateStr(d) { return d ? String(d).slice(0, 10) : '—'; }
+    function days(n) { return n === null || n === undefined ? '—' : n + ' d'; }
+
+    function get(url) {
+      return fetch(url, { credentials: 'same-origin' })
+        .then(function (r) {
+          if (r.status === 401) { window.location.href = '/login'; return null; }
+          if (!r.ok) return null;
+          return r.json().catch(function () { return null; });
+        })
+        .catch(function () { return null; });
+    }
+
+    function slaClass(e) {
+      if (e.sla_class) return e.sla_class;
+      if (!e.sla_due) return 'sla-na';
+      if (e.sla_state === 'breach') return 'sla-breach';
+      if (e.sla_state === 'warning') return 'sla-warn';
+      return 'sla-ok';
+    }
+    function prioBadge(p) {
+      var map = { critical: 'acta-badge-alert', high: 'acta-badge-warning',
+                  medium: 'acta-badge-neutral', low: 'acta-badge-success' };
+      return '<span class="acta-badge ' + (map[p] || 'acta-badge-neutral') + '">' + esc(p || '—') + '</span>';
+    }
+    function statusBadge(s) {
+      var closed = ['resolved', 'promoted', 'closed', 'verified', 'closed_obsolete', 'wont_fix', 'done', 'accepted'];
+      var open = ['pending', 'captured', 'tagged', 'clustered', 'prioritized', 'proposed', 'approved', 'deferred', 'escalated', 'in_progress'];
+      if (closed.indexOf(s) !== -1) return '<span class="acta-badge acta-badge-success">' + esc(s) + '</span>';
+      if (open.indexOf(s) !== -1) return '<span class="acta-badge acta-badge-warning">' + esc(s) + '</span>';
+      return '<span class="acta-badge acta-badge-neutral">' + esc(s || '—') + '</span>';
+    }
+
+    /* ---------- Filter ---------- */
+    function visible() {
+      var all = (DATA && DATA.entries) || [];
+      return all.filter(function (e) {
+        if (filterStatus === 'open' && e.is_closed) return false;
+        if (filterStatus === 'closed' && !e.is_closed) return false;
+        if (filterStatus === 'sla_breach' && e.sla_state !== 'breach') return false;
+        if (filterStatus === 'stale' && !e.stale) return false;
+        if (filterPriority !== 'all' && e.priority !== filterPriority) return false;
+        if (filterType !== 'all' && e.type !== filterType) return false;
+        if (searchTerm) {
+          var hay = (e.id + ' ' + e.summary + ' ' + (e.tags || []).join(' ') + ' ' + (e.pattern_key || '')).toLowerCase();
+          if (hay.indexOf(searchTerm.toLowerCase()) === -1) return false;
+        }
+        return true;
+      });
+    }
+
+    function chip(key, label, count, group) {
+      var active = (group === 'status' ? filterStatus : group === 'priority' ? filterPriority : filterType) === key;
+      return '<div class="lrn-chip' + (active ? ' active' : '') + '" data-group="' + group + '" data-key="' + esc(key) + '">' +
+        esc(label) + ' <span class="n">' + count + '</span></div>';
+    }
+
+    /* ---------- Render ---------- */
+    function render() {
+      var c = document.getElementById('content');
+      if (!DATA) {
+        c.innerHTML = '<div class="acta-empty">Keine Learning-Daten verfügbar. Läuft <code>scripts/self-improvement/learning_dashboard_export.py</code>?</div>';
+        return;
+      }
+      var s = DATA.summary || {};
+      var rows = visible();
+      var html = '';
+
+      html += '<div class="acta-hero"><div class="acta-hero-text"><h1>Learnings</h1>' +
+        '<p>Lebenszyklus aller Learnings, Errors und Feature-Requests — mit SLA-Überwachung und Pipeline-Status.</p></div>' +
+        '<div class="acta-hero-actions"><span class="acta-metric-sub">Aktualisiert: ' + esc(dateStr(DATA.generated_at)) + ' ' +
+        esc(String(DATA.generated_at || '').slice(11, 16)) + '</span></div></div>';
+
+      if (s.health) {
+        html += '<div class="lrn-note">' + esc(s.health) + '</div>';
+      }
+
+      // KPI-Karten
+      html += '<div class="acta-grid acta-grid-4" style="margin-bottom:1rem;">';
+      html += metricCard('Learnings gesamt', s.total_entries, (s.total_learnings || 0) + ' LRN · ' + (s.total_errors || 0) + ' ERR · ' + (s.total_features || 0) + ' FEAT');
+      html += metricCard('Offen', s.open_count, (s.pending_count || 0) + ' pending', s.open_count > 0 ? 'var(--acta-warning)' : 'var(--acta-success)');
+      html += metricCard('SLA-Verletzungen', s.sla_breach_count, 'High-Ziel: 7 Tage', s.sla_breach_count > 0 ? 'var(--acta-alert)' : 'var(--acta-success)');
+      html += metricCard('Ältester High-Eintrag', days(s.oldest_high_age_days), 'Ziel: < 7 Tage', (s.oldest_high_age_days || 0) > 7 ? 'var(--acta-alert)' : 'var(--acta-success)');
+      html += '</div>';
+
+      // Pipeline + Chart
+      html += '<div class="acta-grid acta-grid-2" style="margin-bottom:1rem;">';
+      html += '<div class="acta-card"><div class="acta-card-title">Status-Pipeline</div><div class="lrn-pipeline">';
+      var stages = DATA.pipeline || {};
+      Object.keys(stages).forEach(function (k) {
+        html += '<div class="lrn-stage"><div class="v">' + stages[k] + '</div><div class="k">' + esc(k) + '</div></div>';
+      });
+      html += '</div></div>';
+      html += '<div class="acta-card"><div class="acta-card-title">Alter nach Priority</div>' +
+        '<div class="acta-chart-box" style="height:210px;"><canvas id="ageChart"></canvas></div></div>';
+      html += '</div>';
+
+      // Toolbar
+      html += '<div class="lrn-toolbar">';
+      html += chip('all', 'Alle', s.total_entries, 'status');
+      html += chip('open', 'Offen', s.open_count, 'status');
+      html += chip('closed', 'Abgeschlossen', (s.total_entries - s.open_count), 'status');
+      html += chip('sla_breach', 'SLA-Verletzt', s.sla_breach_count, 'status');
+      html += chip('stale', 'Vergessen (>120 d)', s.stale_count, 'status');
+      html += '<span style="width:1px;height:1.4rem;background:var(--acta-border);margin:0 0.25rem;"></span>';
+      ['critical', 'high', 'medium', 'low'].forEach(function (p) {
+        html += chip(p, p, (s.by_priority || {})[p] || 0, 'priority');
+      });
+      html += '<span style="width:1px;height:1.4rem;background:var(--acta-border);margin:0 0.25rem;"></span>';
+      Object.keys(s.by_type || {}).forEach(function (t) {
+        html += chip(t, t, s.by_type[t], 'type');
+      });
+      html += '<input class="lrn-search" id="lrnSearch" placeholder="Suche ID, Summary, Tag, Pattern-Key…" value="' + esc(searchTerm) + '">';
+      html += '</div>';
+
+      // Tabelle
+      html += '<div class="acta-card"><div class="acta-card-title">Einträge <span class="acta-metric-sub">(' + rows.length + ')</span></div>';
+      html += '<div class="acta-table-wrap"><table class="acta-table"><thead><tr>' +
+        '<th>ID</th><th>Typ</th><th>Prio</th><th>Status</th><th class="lrn-summary">Summary</th>' +
+        '<th>Alter</th><th>SLA</th><th>Tags</th></tr></thead><tbody>';
+      if (!rows.length) {
+        html += '<tr><td colspan="8" style="text-align:center;color:var(--acta-slate);">Keine Einträge für diesen Filter.</td></tr>';
+      }
+      rows.forEach(function (e, i) {
+        html += '<tr class="lrn-row" data-idx="' + i + '">' +
+          '<td><code style="font-size:0.75rem;">' + esc(e.id) + '</code>' + (e.stale ? ' <span class="lrn-flag" title="Seit >120 Tagen ohne Abschluss">🔴</span>' : '') + '</td>' +
+          '<td style="font-size:0.78rem;">' + esc(e.type) + '</td>' +
+          '<td>' + prioBadge(e.priority) + '</td>' +
+          '<td>' + statusBadge(e.status) + '</td>' +
+          '<td class="lrn-summary" style="font-size:0.82rem;">' + esc(e.summary) + '</td>' +
+          '<td style="font-variant-numeric:tabular-nums;">' + days(e.age_days) + '</td>' +
+          '<td><span class="lrn-sla ' + slaClass(e) + '">' + esc(e.sla_label || '—') + '</span></td>' +
+          '<td style="font-size:0.72rem;color:var(--acta-slate);">' + esc((e.tags || []).slice(0, 3).join(', ')) + '</td>' +
+          '</tr>';
+      });
+      html += '</tbody></table></div></div>';
+
+      // Recurrence
+      if (DATA.recurring && DATA.recurring.length) {
+        html += '<div class="acta-card" style="margin-top:1rem;"><div class="acta-card-title">Wiederkehrende Pattern-Keys</div>' +
+          '<div class="acta-table-wrap"><table class="acta-table"><thead><tr><th>Pattern-Key</th><th>Vorkommen</th><th>Einträge</th></tr></thead><tbody>';
+        DATA.recurring.forEach(function (r) {
+          html += '<tr><td><code style="font-size:0.75rem;">' + esc(r.pattern_key) + '</code></td>' +
+            '<td>' + r.count + '</td><td style="font-size:0.75rem;">' + esc(r.ids.join(', ')) + '</td></tr>';
+        });
+        html += '</tbody></table></div></div>';
+      }
+
+      c.innerHTML = html;
+      bind(rows);
+      drawChart();
+    }
+
+    function metricCard(label, value, sub, color) {
+      return '<div class="acta-card acta-metric">' +
+        '<div class="acta-metric-label">' + esc(label) + '</div>' +
+        '<div class="acta-metric-value"' + (color ? ' style="color:' + color + ';"' : '') + '>' +
+        esc(value === null || value === undefined ? '—' : value) + '</div>' +
+        '<div class="acta-metric-sub">' + esc(sub || '') + '</div></div>';
+    }
+
+    function bind(rows) {
+      document.querySelectorAll('.lrn-chip').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var g = el.getAttribute('data-group'), k = el.getAttribute('data-key');
+          if (g === 'status') filterStatus = k;
+          else if (g === 'priority') filterPriority = k;
+          else filterType = k;
+          render();
+        });
+      });
+      var si = document.getElementById('lrnSearch');
+      if (si) {
+        si.addEventListener('input', function () { searchTerm = si.value; render(); setTimeout(function () { var n = document.getElementById('lrnSearch'); if (n) { n.focus(); n.setSelectionRange(n.value.length, n.value.length); } }, 0); });
+      }
+      document.querySelectorAll('.lrn-row').forEach(function (tr) {
+        tr.addEventListener('click', function () {
+          var e = rows[parseInt(tr.getAttribute('data-idx'), 10)];
+          if (e) openEntry(e);
+        });
+      });
+    }
+
+    function drawChart() {
+      var el = document.getElementById('ageChart');
+      if (!el || typeof Chart === 'undefined') return;
+      if (chart) chart.destroy();
+      var bp = (DATA.summary && DATA.summary.age_by_priority) || {};
+      var labels = Object.keys(bp);
+      chart = new Chart(el, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'p50', data: labels.map(function (k) { return bp[k].p50; }), backgroundColor: '#2C5F7C' },
+            { label: 'p90', data: labels.map(function (k) { return bp[k].p90; }), backgroundColor: '#3D8B8B' },
+            { label: 'max', data: labels.map(function (k) { return bp[k].max; }), backgroundColor: '#CC9A33' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+          scales: { y: { beginAtZero: true, title: { display: true, text: 'Tage' } } }
+        }
+      });
+    }
+
+    function openEntry(e) {
+      document.getElementById('modalTitle').textContent = e.id + ' — ' + e.type;
+      var b = document.getElementById('modalBody');
+      var h = '<div class="lrn-meta">' + prioBadge(e.priority) + statusBadge(e.status) +
+        '<span class="lrn-sla ' + slaClass(e) + '">' + esc(e.sla_label || '—') + '</span>' +
+        (e.area ? '<span class="acta-badge acta-badge-neutral">' + esc(e.area) + '</span>' : '') + '</div>';
+      h += '<table class="acta-table"><tbody>' +
+        row('Logged', dateStr(e.captured_at)) + row('Alter', days(e.age_days)) +
+        row('Last Seen', dateStr(e.last_seen)) + row('SLA Due', dateStr(e.sla_due)) +
+        row('Pattern-Key', e.pattern_key ? '<code>' + esc(e.pattern_key) + '</code>' : '—') +
+        row('Recurrence', e.recurrence_count === null || e.recurrence_count === undefined ? '—' : e.recurrence_count) +
+        row('Tags', (e.tags || []).join(', ') || '—') +
+        row('Quelle', e.source || '—') +
+        row('Next Action', e.next_action || '<em>nicht gesetzt</em>') +
+        '</tbody></table>';
+      h += '<h4>Summary</h4><p>' + esc(e.full_summary || e.summary) + '</p>';
+      if (e.body) h += '<h4>Volltext</h4><pre>' + esc(e.body) + '</pre>';
+      b.innerHTML = h;
+      document.getElementById('lrnModal').style.display = 'flex';
+    }
+    function row(k, v) { return '<tr><td style="width:30%;color:var(--acta-slate);font-size:0.78rem;">' + esc(k) + '</td><td>' + v + '</td></tr>'; }
+    function closeModal() { document.getElementById('lrnModal').style.display = 'none'; }
+    window.closeModal = closeModal;
+
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closeModal(); });
+
+    get('/api/learnings').then(function (d) { DATA = d; render(); });
+  })();
+  </script>
+</body>
+</html>

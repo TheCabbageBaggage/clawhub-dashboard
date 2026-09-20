@@ -1113,6 +1113,29 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // === Self-Improvement: Learning status ===
+        // Quelle: dashboard/data/learnings.json, erzeugt von
+        // scripts/self-improvement/learning_dashboard_export.py
+        if (pathname === '/api/learnings' && req.method === 'GET') {
+            const filePath = path.join(DASHBOARD_DIR, 'data', 'learnings.json');
+            fs.readFile(filePath, 'utf8', (err, content) => {
+                if (err) {
+                    jsonResponse(res, 200, {
+                        generated_at: new Date().toISOString(),
+                        error: 'export_missing',
+                        hint: 'python3 scripts/self-improvement/learning_dashboard_export.py',
+                        summary: { total_entries: 0, open_count: 0, sla_breach_count: 0, health: 'Kein Export vorhanden.' },
+                        pipeline: {}, recurring: [], entries: []
+                    });
+                    return;
+                }
+                setSecurityHeaders(res);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(content);
+            });
+            return;
+        }
+
         // Research catalog
         if (pathname === '/api/research') {
             const catalogPath = path.join(DASHBOARD_DIR, 'data', 'research_catalog.json');
@@ -1178,6 +1201,7 @@ const server = http.createServer(async (req, res) => {
             '/ssh.html': '/redesign/ssh.html',
             '/medium.html': '/redesign/medium.html',
             '/influencer.html': '/redesign/influencer.html',
+            '/learnings.html': '/redesign/learnings.html',
             '/ollama.html': '/redesign/dashboard.html',
             '/graph.html': '/redesign/graph.html',
         };
