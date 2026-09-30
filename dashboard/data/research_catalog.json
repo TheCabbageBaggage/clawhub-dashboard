@@ -832,5 +832,62 @@
       "ai-governance",
       "voestalpine"
     ]
+  },
+  {
+    "id": "acta-2026-039-publikationsstrategie-v2",
+    "title": "Publikationsstrategie v2 — industrielle Steuerungsfähigkeit statt AI-Spezialistenlabel",
+    "category": "Strategie & Karriere",
+    "date": "2026-09-29",
+    "summary": "Linus' Engstelle ist nicht Kompetenz, sondern Zuschreibung. Ein weiterer Beleg für Architektur-, Governance- oder AI-Kompetenz verbessert sein Profil als Bereichsleiter Digitalisierung & IT; er beweist noch nicht, dass man ihm einen Wertstrom, Ergebnisgrößen und Menschen jenseits der IT anvertrauen sollte. Die Publikationsstrategie muss daher eine einzige Behauptung belegen: **Agentische industrielle Systeme sind dann wertvoll, wenn sie die Qualität, Geschwindigkeit und Verantwortlichkeit realer Geschäftsentscheidungen verbessern — und wenn diese Verbesserung in OEE, Kosten, Cash, Qualität, Liefertreue oder Durchlaufzeit sichtbar wird.** Die sechs Essays entfalten diese These vom Operating Model über den Rollenwandel der IT, die Führung hybrider Teams, Entscheidungsmessung und industrielles Gedächtnis bis zur Transformation des gesamten Wertstroms. Sie sind kein sechsfaches Plädoyer für ",
+    "source_url": "https://clawhub.cabbagebaggage.net/medium?open=acta-2026-039-publikationsstrategie-v2",
+    "tags": [
+      "publikationsstrategie",
+      "executive-essays",
+      "agentic-ai",
+      "general-management",
+      "acta",
+      "ACTA-2026-039"
+    ],
+    "path": "acta/ACTA-2026-039_publikationsstrategie.pdf",
+    "type": "PDF",
+    "report_id": "ACTA-2026-039",
+    "subtitle": "Sechs Executive Essays, zwei Papers und die Evidenz- und Aufwandslogik für ein GM-Zielbild"
+  },
+  {
+    "id": "acta-2026-039-essays",
+    "title": "Executive Essay-Serie (6 Teile) — Agentic Industrial Enterprise",
+    "category": "Strategie & Karriere",
+    "date": "2026-09-29",
+    "summary": "Sechs Essay-Outlines als sichtbare Serie: The Agentic Industrial Enterprise · What Is Corporate IT For? · The Factory Manager of 2030 · Stop Counting AI Pilots. Measure Decisions. · Why Industrial AI Needs Memory · From Digital Transformation to Industrial Transformation. Jeweils mit Kernthese, Audience, Hook, Argumentationslinie und CTA.",
+    "source_url": "https://clawhub.cabbagebaggage.net/medium",
+    "tags": [
+      "executive-essays",
+      "thought-leadership",
+      "agentic-ai",
+      "acta"
+    ],
+    "path": "acta/ACTA-2026-039_publikationsstrategie.pdf",
+    "type": "PDF",
+    "report_id": "ACTA-2026-039",
+    "subtitle": "Essay-Portfolio für industrielle Positionierung"
+  },
+  {
+    "id": "acta-2026-039-papers",
+    "title": "Wissenschaftliche Agenda v2 — 2 Papers (Reference Architecture + Maturity Model)",
+    "category": "Paper Outlines",
+    "date": "2026-09-29",
+    "summary": "Fokussierte Agenda statt vier Governance-Papers: Paper 1 entwirft und evaluiert eine Referenzarchitektur für Human–AI Collaboration in Brownfield Manufacturing (DSR, ICIS/ECIS/BISE). Paper 2 operationalisiert den Übergang von Assistenz zu Agency als Reife- und Fähigkeitsmodell (BISE/CIRP CMS). Gemeinsamer Kern: Entscheidung, Autonomie, Übergabe, Kontext, Eingriffsrecht, wirtschaftliches Outcome.",
+    "source_url": "https://clawhub.cabbagebaggage.net/medium",
+    "tags": [
+      "paper-agenda",
+      "agentic-ai",
+      "reference-architecture",
+      "maturity-model",
+      "acta"
+    ],
+    "path": "acta/ACTA-2026-039_publikationsstrategie.pdf",
+    "type": "PDF",
+    "report_id": "ACTA-2026-039",
+    "subtitle": "Zwei methodisch verbundene Papers"
   }
 ]
