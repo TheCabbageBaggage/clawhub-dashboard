@@ -766,6 +766,15 @@ html, body {
 .acta-modal-body table.acta-md-table-narrow code { font-size: 0.75rem; }
 
 .acta-modal-body ul { padding-left: 1.25rem; }
+.acta-modal-body img.acta-md-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border: 1px solid var(--acta-border, #DDE3E6);
+  border-radius: 6px;
+  background: #F5F6F7;
+}
 
 /* --- Textarea --- */
 .acta-textarea {

@@ -75,6 +75,8 @@
       // Blockquote
       html = html.replace(/^(?:&gt; ?.*\n?)+/gm, (block) =>
         '<blockquote>' + block.replace(/^&gt; ?/gm, '').trim() + '</blockquote>');
+      // Images (before links)
+      html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" class="acta-md-img" loading="lazy">');
       // Bold/Italic
       html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -119,7 +121,7 @@
       if (activeStatus !== 'all') filtered = filtered.filter(a => a.status === activeStatus);
       if (searchTerm) {
         const q = searchTerm.toLowerCase();
-        filtered = filtered.filter(a => (a.title + ' ' + (a.subtitle||'') + ' ' + (a.category||'')).toLowerCase().includes(q));
+        filtered = filtered.filter(a => (a.title + ' ' + (a.subtitle||'') + ' ' + (a.category||'') + ' ' + (a.date||'')).toLowerCase().includes(q));
       }
       filtered = filtered.slice().sort((a, b) => {
         const av = (a[sortKey] || '').toString().toLowerCase();
@@ -157,6 +159,7 @@
               <thead>
                 <tr>
                   <th style="cursor:pointer;" onclick="sortBy('title')">Titel ${sortIcon('title')}</th>
+                  <th style="cursor:pointer;" onclick="sortBy('date')">Datum ${sortIcon('date')}</th>
                   <th style="cursor:pointer;" onclick="sortBy('category')">Kategorie ${sortIcon('category')}</th>
                   <th style="cursor:pointer;" onclick="sortBy('status')">Status ${sortIcon('status')}</th>
                   <th>Draft</th>
@@ -168,12 +171,13 @@
                 ${filtered.map(a => `
                   <tr>
                     <td style="font-weight:500;color:var(--acta-petroleum);cursor:pointer;" onclick="openModal(${JSON.stringify(a).replace(/"/g,'&quot;')})">${esc(a.title)}</td>
+                    <td style="font-size:0.8rem;color:var(--acta-slate);white-space:nowrap;">${esc(a.date || '—')}</td>
                     <td><span class="acta-badge" style="background:var(--acta-petroleum);color:#fff;">${esc(a.category || '—')}</span></td>
                     <td><span class="acta-badge" style="background:${statusColor(a.status)};color:#fff;">${esc(a.status || '—')}</span></td>
                     <td>${a.hasDraft ? '<span class="acta-badge acta-badge-warning">Draft</span>' : '—'}</td>
                     <td style="font-size:0.8rem;color:var(--acta-slate);">${a.target ? '🎯 ' + esc(a.target) : '—'}</td>
                     <td><button class="acta-btn acta-btn-sm" onclick="openModal(${JSON.stringify(a).replace(/"/g,'&quot;')})">Outline</button></td>
-                  </tr>`).join('') || '<tr><td colspan="6" class="acta-empty">Keine Artikel gefunden</td></tr>'}
+                  </tr>`).join('') || '<tr><td colspan="7" class="acta-empty">Keine Artikel gefunden</td></tr>'}
               </tbody>
             </table>
           </div>
