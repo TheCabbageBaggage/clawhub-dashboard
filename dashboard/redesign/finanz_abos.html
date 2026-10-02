@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Fixkosten &amp; Abos</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+  <style>
+    .fa-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; }
+    .fa-kpi-value { font-size: 1.5rem; font-weight: 700; }
+    .fa-bar { height: 8px; border-radius: 4px; background: var(--acta-border, #E2E8EC); overflow: hidden; margin-top: 6px; }
+    .fa-bar > span { display: block; height: 100%; background: var(--acta-teal, #3D8B8B); }
+    .fa-badge { display: inline-block; font-size: 0.7rem; padding: 1px 7px; border-radius: 10px; font-weight: 600; }
+    .fa-b-red { background: rgba(191,57,57,0.15); color: #BF3939; }
+    .fa-b-yellow { background: rgba(204,154,51,0.18); color: #A6791F; }
+    .fa-b-green { background: rgba(56,115,89,0.15); color: #387359; }
+    .fa-b-neutral { background: rgba(138,155,168,0.18); color: #5B6B77; }
+    .fa-sub { font-size: 0.8rem; color: var(--acta-slate, #8A9BA8); }
+    .fa-num { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+
+      <div class="acta-page-head">
+        <h1>Fixkosten &amp; Abos</h1>
+        <div class="fa-sub" id="faStand">Laden…</div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="fa-grid" id="faKpis">
+        <div class="acta-card">
+          <div class="acta-metric-label">Fixkosten / Monat</div>
+          <div class="fa-kpi-value acta-num" id="faFixMonth">—</div>
+          <div class="fa-sub" id="faFixYear">—</div>
+        </div>
+        <div class="acta-card">
+          <div class="acta-metric-label">Fixkostenquote</div>
+          <div class="fa-kpi-value acta-num" id="faFixQuote">—</div>
+          <div class="fa-sub">Anteil am Einkommen</div>
+        </div>
+        <div class="acta-card">
+          <div class="acta-metric-label">Abos / Monat</div>
+          <div class="fa-kpi-value acta-num" id="faAboMonth">—</div>
+          <div class="fa-sub" id="faAboYear">—</div>
+        </div>
+        <div class="acta-card">
+          <div class="acta-metric-label">Schnell kündbar</div>
+          <div class="fa-kpi-value acta-num" id="faCancel">—</div>
+          <div class="fa-sub">Klein-Abos ≤25 €/Monat</div>
+        </div>
+      </div>
+
+      <!-- Fixkosten nach Kategorie -->
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Fixkosten nach Kategorie</div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead><tr><th>Kategorie</th><th>€/Monat</th><th>Anteil</th></tr></thead>
+            <tbody id="faFixCats"><tr><td colspan="3" class="acta-loading">Laden…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Fixkosten-Bestandteile -->
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Fixkosten-Bestandteile (wiederkehrend)</div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead><tr><th>Bestandteil</th><th>Kategorie</th><th>€/Monat</th><th>Δ Preis</th><th>zuletzt</th></tr></thead>
+            <tbody id="faFixComp"><tr><td colspan="5" class="acta-loading">Laden…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Abos -->
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Abos <span class="fa-badge fa-b-neutral" id="faAboCount">—</span></div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead><tr><th>Abo</th><th>Kategorie</th><th>€/Monat</th><th>€/Jahr</th><th>Δ Preis</th><th>zuletzt</th><th>kündbar</th></tr></thead>
+            <tbody id="faAbos"><tr><td colspan="7" class="acta-loading">Laden…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Preisänderungen -->
+      <div class="acta-card" style="margin-top:1.25rem;">
+        <div class="acta-card-title">Preisänderungen seit Beginn</div>
+        <div class="acta-table-wrap">
+          <table class="acta-table">
+            <thead><tr><th>Abo</th><th>Δ €/Monat</th><th>Zeitraum</th></tr></thead>
+            <tbody id="faPrice"><tr><td colspan="3" class="acta-loading">Laden…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    const fmt = (n) => new Intl.NumberFormat('de-AT', { style: 'currency', currency: 'EUR' }).format(n || 0);
+    const pct = (n) => (n == null ? '—' : n.toFixed(1) + ' %');
+
+    function deltaBadge(pc) {
+      if (pc == null) return '<span class="fa-sub">–</span>';
+      const cls = pc > 0 ? 'fa-b-red' : 'fa-b-green';
+      return `<span class="fa-badge ${cls}">${pc > 0 ? '+' : ''}${pc.toFixed(2)} €</span>`;
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('/api/finanz/detail');
+        if (!res.ok) throw new Error('API ' + res.status);
+        const d = await res.json();
+        const f = d.fixkosten || {}, a = d.abos || {};
+
+        document.getElementById('faStand').textContent =
+          `Stand ${f.last_month || d.generated_month || '—'} · wiederkehrende Basis`;
+
+        document.getElementById('faFixMonth').textContent = fmt(f.monthly_total);
+        document.getElementById('faFixYear').textContent = fmt(f.yearly_total) + ' / Jahr';
+        document.getElementById('faFixQuote').textContent = pct(f.share_of_income_pct);
+        document.getElementById('faAboMonth').textContent = fmt(a.monthly_total);
+        document.getElementById('faAboYear').textContent = fmt(a.yearly_total) + ' / Jahr';
+        document.getElementById('faCancel').textContent = fmt(a.small_subs_yearly);
+
+        const cats = f.by_category || [];
+        const maxc = Math.max(1, ...cats.map(c => c.monthly));
+        document.getElementById('faFixCats').innerHTML = cats.map(c => `
+          <tr>
+            <td>${c.category}</td>
+            <td class="fa-num">${fmt(c.monthly)}</td>
+            <td style="min-width:120px;">
+              <div class="fa-bar"><span style="width:${(c.monthly / maxc * 100).toFixed(1)}%"></span></div>
+            </td>
+          </tr>`).join('') || '<tr><td colspan="3" class="fa-sub">keine Daten</td></tr>';
+
+        document.getElementById('faFixComp').innerHTML = (f.components || []).map(c => `
+          <tr>
+            <td>${c.merchant}</td>
+            <td>${c.category || '—'}</td>
+            <td class="fa-num">${fmt(c.monthly)}</td>
+            <td>${deltaBadge(c.price_change)}</td>
+            <td class="fa-sub">${c.last_seen || '—'}</td>
+          </tr>`).join('') || '<tr><td colspan="5" class="fa-sub">keine Daten</td></tr>';
+
+        document.getElementById('faAboCount').textContent = (a.count || 0) + ' Abos';
+        document.getElementById('faAbos').innerHTML = (a.items || []).map(x => `
+          <tr>
+            <td>${x.merchant}</td>
+            <td>${x.category || '—'}</td>
+            <td class="fa-num">${fmt(x.monthly)}</td>
+            <td class="fa-num">${fmt(x.yearly)}</td>
+            <td>${deltaBadge(x.price_change)}</td>
+            <td class="fa-sub">${x.last_seen || '—'}</td>
+            <td>${x.cancel_candidate ? '<span class="fa-badge fa-b-yellow">✓</span>' : ''}</td>
+          </tr>`).join('') || '<tr><td colspan="7" class="fa-sub">keine Daten</td></tr>';
+
+        document.getElementById('faPrice').innerHTML = (a.price_changes || []).map(x => `
+          <tr>
+            <td>${x.merchant}</td>
+            <td class="fa-num">${deltaBadge(x.price_change)}</td>
+            <td class="fa-sub">${x.first_seen} → ${x.last_seen}</td>
+          </tr>`).join('') || '<tr><td colspan="3" class="fa-sub">keine Preisänderungen</td></tr>';
+      } catch (e) {
+        console.error('Fixkosten/Abos load error:', e);
+        document.getElementById('faKpis').innerHTML =
+          '<div class="acta-card acta-empty">Fehler beim Laden — ist die Pipeline gelaufen?</div>';
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

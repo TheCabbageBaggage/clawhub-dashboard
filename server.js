@@ -955,6 +955,21 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // === FINANZ DETAIL (Fixkosten & Abos) ===
+        if (pathname === '/api/finanz/detail') {
+            try {
+                const detailPath = path.join(DASHBOARD_DIR, 'data', 'finance_detail.json');
+                if (!fs.existsSync(detailPath)) { jsonResponse(res, 503, { error: 'Finanz-Detail nicht vorhanden (Pipeline ausstehend)' }); return; }
+                const raw = fs.readFileSync(detailPath, 'utf8');
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(raw);
+            } catch (e) {
+                console.error('Finanz detail:', e.message);
+                jsonResponse(res, 500, { error: 'Finanz-Detail Fehler' });
+            }
+            return;
+        }
+
         // === FINANZ LABELS API ===
         if (pathname === '/api/finanz/labels') {
             try {
@@ -1204,6 +1219,8 @@ const server = http.createServer(async (req, res) => {
             '/learnings.html': '/redesign/learnings.html',
             '/ollama.html': '/redesign/dashboard.html',
             '/graph.html': '/redesign/graph.html',
+            '/finanz_abos.html': '/redesign/finanz_abos.html',
+            '/finanz.html': '/redesign/finanz.html',
         };
         if (REDESIGN_REDIRECTS[pathname]) {
             res.writeHead(302, { 'Location': REDESIGN_REDIRECTS[pathname] });
