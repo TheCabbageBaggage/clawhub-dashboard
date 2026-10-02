@@ -67,7 +67,7 @@
             '<div class="acta-table-wrap"><table class="acta-table"><thead><tr><th>Dienst</th><th>Tier</th><th>Status</th><th>Endpunkt</th><th>Container</th><th>Owner</th></tr></thead><tbody>';
           for (const sv of groups[g]) {
             const url = sv.url ? '<a href="' + esc(sv.url) + '" target="_blank" rel="noopener" style="color:var(--acta-teal);">' + esc(sv.url.replace(/^https?:\/\//,'').replace(/\/$/,'')) + '</a>' : '<span style="color:var(--acta-slate);">—</span>';
-            const conts = (sv.containers || []).map(c => '<span title="' + esc(c.status) + '" style="white-space:nowrap;">' + esc(c.name) + ' ' + badge(c.state) + '</span>').join('<br>') || '<span style="color:var(--acta-slate);">—</span>';
+            const conts = (sv.containers || []).map(c => '<span title="' + esc(c.status) + '" style="white-space:nowrap;">' + esc(c.name) + ' ' + badge(c.state) + '</span>').join('<br>') || (sv.probe ? '<span style="color:var(--acta-teal);">Probe: ' + (sv.probe.latency_ms!=null?sv.probe.latency_ms+' ms':'erreichbar') + '</span>' : '<span style="color:var(--acta-slate);">—</span>');
             html += '<tr><td><strong>' + esc(sv.name) + '</strong><div style="font-size:0.78rem;color:var(--acta-slate);">' + esc(sv.description) + '</div></td>' +
               '<td>' + tierBadge(sv.tier) + '</td>' +
               '<td>' + badge(sv.state) + '</td>' +

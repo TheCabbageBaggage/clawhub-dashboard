@@ -92,10 +92,18 @@ function containerStateMap() {
     return map;
 }
 
+// Optionaler externer Erreichbarkeits-Snapshot (Oracle Availability-Monitor).
+// Format: { "<Dienstname>": { "up": true, "latency_ms": 123, "checked": "ISO" } }
+function externalStatusMap() {
+    const s = readJson(path.join(DATA_DIR, 'status.json'), null);
+    return (s && typeof s === 'object') ? s : {};
+}
+
 async function getServices() {
     return cached('services', async () => {
         const services = loadRegistry();
         const containers = containerStateMap();
+        const ext = externalStatusMap();
         const enriched = services.map(s => {
             const conts = (s.containers || []).map(name => {
                 const c = containers[name];
@@ -108,6 +116,13 @@ async function getServices() {
             else if (running === known.length) status = 'green';
             else if (running === 0) status = 'red';
             else status = 'yellow';
+            // Externer Snapshot (sofern vorhanden) hat Vorrang fuer external-Dienste.
+            const probe = ext[s.name];
+            let probeInfo = null;
+            if (probe && typeof probe === 'object') {
+                status = probe.up ? 'green' : 'red';
+                probeInfo = { latency_ms: probe.latency_ms ?? null, checked: probe.checked || null };
+            }
             return {
                 name: s.name,
                 group: s.group || 'Weitere',
@@ -117,6 +132,7 @@ async function getServices() {
                 owner: s.owner || 'Clowie',
                 external: !!s.external,
                 containers: conts,
+                probe: probeInfo,
                 state: status,
             };
         });
