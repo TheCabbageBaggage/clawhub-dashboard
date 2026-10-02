@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Workstream</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Workstream…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const fmtDate = d => { try { return new Date(d).toLocaleString('de-DE', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); } catch(e){ return '—'; } };
+    function prioBadge(p) {
+      if (!p) return '<span class="acta-badge acta-badge-neutral">P—</span>';
+      const cls = p === 'P1' ? 'alert' : p === 'P2' ? 'warning' : 'neutral';
+      return '<span class="acta-badge acta-badge-' + cls + '">' + p + '</span>';
+    }
+
+    async function load() {
+      const content = document.getElementById('content');
+      try {
+        const res = await fetch('/api/workstream');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        const g = data.gitea || {};
+        const gh = data.github || {};
+        const kpi = (label, val, sub) => '<div class="acta-card acta-metric"><div class="acta-metric-label">' + label + '</div><div class="acta-metric-value">' + val + '</div>' + (sub?'<div class="acta-metric-sub">'+esc(sub)+'</div>':'') + '</div>';
+
+        let html = '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">' +
+          '<h1 style="font-size:1.3rem;margin:0;font-weight:600;">Workstream</h1>' +
+          '<div style="font-size:0.8rem;color:var(--acta-slate);">Gitea = Betrieb · GitHub = Code · ' + (data.timestamp ? new Date(data.timestamp).toLocaleString('de-DE') : '—') + '</div></div>' +
+          '<p style="font-size:0.85rem;color:var(--acta-slate);margin:0 0 1.25rem 0;">Zwei getrennte Systeme, eine Oberfläche: <strong>Gitea</strong> ist der vertragliche Betriebs-Kanal (AG↔AN, Tickets/Changes), <strong>GitHub</strong> ist Code &amp; CI.</p>';
+
+        // ---- Gitea ----
+        html += '<div class="acta-card" style="margin-bottom:1.25rem;">';
+        if (!g.ok) {
+          html += '<div class="acta-card-title">Gitea · Betrieb</div><div class="acta-empty">Nicht verfügbar: ' + esc(g.error || 'unbekannt') + '</div>';
+        } else {
+          html += '<div class="acta-card-title">Gitea · Betrieb <a href="' + esc(g.repo_url) + '" target="_blank" rel="noopener" style="float:right;font-size:0.78rem;color:var(--acta-teal);">' + esc(g.repo) + ' →</a></div>' +
+            '<div class="acta-grid acta-grid-4" style="margin-bottom:1rem;">' +
+              kpi('Offene Tickets', g.open ?? '—') +
+              kpi('P1', (g.by_priority||{}).P1 ?? 0, 'kritisch') +
+              kpi('P2', (g.by_priority||{}).P2 ?? 0, 'hoch') +
+              kpi('P3/P4', ((g.by_priority||{}).P3||0) + ' / ' + ((g.by_priority||{}).P4||0)) +
+            '</div>' +
+            '<div class="acta-table-wrap"><table class="acta-table"><thead><tr><th>#</th><th>Titel</th><th>Prio</th><th>Labels</th><th>Aktualisiert</th></tr></thead><tbody>';
+          const recent = g.recent || [];
+          html += recent.map(i => '<tr><td><a href="' + esc(i.url) + '" target="_blank" rel="noopener" style="color:var(--acta-teal);">#' + i.number + '</a></td>' +
+            '<td>' + esc(i.title) + '</td>' +
+            '<td>' + prioBadge(i.priority) + '</td>' +
+            '<td style="font-size:0.78rem;color:var(--acta-slate);">' + esc((i.labels||[]).join(', ')) + '</td>' +
+            '<td style="font-size:0.8rem;">' + fmtDate(i.updated_at) + '</td></tr>').join('') || '<tr><td colspan="5" class="acta-empty">Keine offenen Tickets</td></tr>';
+          html += '</tbody></table></div>';
+        }
+        html += '</div>';
+
+        // ---- GitHub ----
+        html += '<div class="acta-card">';
+        html += '<div class="acta-card-title">GitHub · Code &amp; CI</div>';
+        const repos = (gh.repos || []);
+        if (!gh.ok || repos.length === 0) {
+          html += '<div class="acta-empty">Nicht verfügbar: ' + esc(gh.error || 'keine Repos') + '</div>';
+        } else {
+          for (const r of repos) {
+            if (r.error) { html += '<div class="acta-empty"><strong>' + esc(r.full_name) + '</strong>: ' + esc(r.error) + '</div>'; continue; }
+            html += '<div style="margin-bottom:1rem;">' +
+              '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;align-items:baseline;">' +
+                '<a href="' + esc(r.url) + '" target="_blank" rel="noopener" style="color:var(--acta-teal);font-weight:600;">' + esc(r.full_name) + '</a>' +
+                '<span style="font-size:0.78rem;color:var(--acta-slate);">' + (r.private?'privat':'öffentlich') + ' · Branch <code>' + esc(r.default_branch) + '</code> · ' + (r.open_issues ?? 0) + ' offene Issues · zuletzt ' + fmtDate(r.pushed_at) + '</span>' +
+              '</div>' +
+              '<div class="acta-table-wrap" style="margin-top:0.5rem;"><table class="acta-table"><thead><tr><th>SHA</th><th>Commit</th><th>Autor</th><th>Datum</th></tr></thead><tbody>' +
+              (r.commits||[]).map(c => '<tr><td><code>' + esc(c.sha) + '</code></td><td>' + esc(c.message) + '</td><td>' + esc(c.author) + '</td><td style="font-size:0.8rem;">' + fmtDate(c.date) + '</td></tr>').join('') +
+              '</tbody></table></div></div>';
+          }
+        }
+        html += '</div>';
+
+        content.innerHTML = html;
+      } catch (e) {
+        content.innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + esc(e.message) + '</div>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "note": "Service-Registry ClawHub. Gepflegt im Repo. containers[] mappt auf docker-Namen (Host-Cron containers.json). tier: T1=kritisch, T2=wichtig. external=true => kein lokaler Container.",
+  "services": [
+    { "name": "Carl-Functional", "group": "Agenten", "tier": "T1", "owner": "Carl Clow", "url": null, "containers": ["carl-tunnel"], "description": "Funktionaler Probe-Chat gegen Carls Gateway (Oracle-Monitor, alle 5 min)." },
+    { "name": "OpenClaw Gateway", "group": "Agenten", "tier": "T1", "owner": "Clowie", "url": null, "containers": ["openclaw-lrk0-openclaw-1"], "description": "Agent-Runtime, Cron-Jobs, Sessions." },
+    { "name": "Ollama LLM", "group": "Agenten", "tier": "T1", "owner": "Clowie", "url": null, "containers": ["ollama-xwy9-ollama-1"], "description": "Modell-Provider für alle Modelle (flash/glm/kimi). KRITISCH." },
+
+    { "name": "ClawHub Dashboard", "group": "Steuerung", "tier": "T1", "owner": "Clowie", "url": "https://clawhub.cabbagebaggage.net/", "containers": ["clawhub-dashboard"], "description": "Diese Oberfläche — Projekte, System, Finanz, Workstream, Dienste." },
+    { "name": "Traefik", "group": "Steuerung", "tier": "T1", "owner": "Clowie", "url": null, "containers": ["traefik-traefik-1"], "description": "Reverse-Proxy + Let's Encrypt TLS (Port 80/443)." },
+    { "name": "Authentik SSO", "group": "Steuerung", "tier": "T1", "owner": "Clowie", "url": "https://auth.cabbagebaggage.net/", "containers": ["authentik-server", "authentik-worker", "authentik-postgresql", "authentik-redis"], "description": "Single-Sign-On für ClawHub, Chat, Cloud, Paperless." },
+    { "name": "Gitea", "group": "Steuerung", "tier": "T1", "owner": "Clowie/Carl", "url": "https://issues.clawhub.cabbagebaggage.net/", "containers": ["gitea"], "description": "Ops-Tracker (AG↔AN): Tickets, P1–P4, Kanban." },
+
+    { "name": "Open WebUI", "group": "Chat", "tier": "T1", "owner": "Clowie", "url": "https://chat.cabbagebaggage.net/", "containers": ["open-webui"], "description": "Chat-Oberfläche für Modelle (Clowie/Hanna)." },
+    { "name": "Nextcloud", "group": "Kollaboration", "tier": "T1", "owner": "Clowie", "url": "https://cloud.cabbagebaggage.net/", "containers": ["nextcloud", "nextcloud-cron", "nextcloud-db", "nextcloud-redis"], "description": "Dateien, Kalender, Kontakte (ex-ownCloud), SSO." },
+    { "name": "Collabora CODE", "group": "Kollaboration", "tier": "T2", "owner": "Clowie", "url": "https://collabora.clawhub.cabbagebaggage.net/", "containers": ["collabora"], "description": "Office-Editor (WOPI) für Nextcloud." },
+    { "name": "Excalidraw", "group": "Kollaboration", "tier": "T2", "owner": "Clowie", "url": "https://excalidraw.clawhub.cabbagebaggage.net/", "containers": ["excalidraw"], "description": "Whiteboard, Mermaid→Excalidraw." },
+    { "name": "SiYuan", "group": "Kollaboration", "tier": "T2", "owner": "Clowie", "url": "https://note.cabbagebaggage.net/", "containers": ["siyuan"], "description": "Notizen / Knowledge-Base." },
+
+    { "name": "Paperless-ngx", "group": "Dokumente", "tier": "T2", "owner": "Clowie", "url": "https://paperless.clawhub.cabbagebaggage.net/", "containers": ["paperless", "paperless-db", "paperless-broker", "paperless-gotenberg"], "description": "Dokumenten-Archiv + OCR; Scanner→Mail-Pipeline." },
+    { "name": "Postfix / Mailserver", "group": "Dokumente", "tier": "T2", "owner": "Clowie", "url": null, "containers": ["postfix", "mailserver"], "description": "Drucker-Postfach + Mail-Ingest (DKIM/SPF/STARTTLS)." },
+    { "name": "Mail-Ingest (Worker)", "group": "Dokumente", "tier": "T2", "owner": "Clowie", "url": "https://mail.cabbagebaggage.net/", "external": true, "containers": [], "description": "Cloudflare Email Routing → Paperless." },
+
+    { "name": "Vaultwarden", "group": "Sicherheit", "tier": "T1", "owner": "Clowie", "url": "https://vault.cabbagebaggage.net/", "containers": ["vaultwarden"], "description": "Passwort-Manager (Bitwarden-kompatibel)." },
+    { "name": "Backup (restic)", "group": "Sicherheit", "tier": "T1", "owner": "Clowie/Carl", "url": null, "containers": ["backup-container"], "description": "Tägliche Off-Site-Sicherung (7d/4w/6m)." },
+
+    { "name": "Clowie Agent Hub", "group": "Steuerung", "tier": "T1", "owner": "Clowie", "url": "https://claw.lkohl.duckdns.org/", "containers": ["clawhub-dashboard"], "description": "Alias-Einstieg der Kommandozentrale." },
+    { "name": "Audiobookshelf", "group": "Medien", "tier": "T2", "owner": "Clowie", "url": "https://audio.cabbagebaggage.net/", "containers": ["audiobookshelf"], "description": "Hörbücher / Podcasts." },
+    { "name": "Calibre-Web", "group": "Medien", "tier": "T2", "owner": "Clowie", "url": "https://books.cabbagebaggage.net/", "containers": ["calibre-web-automated"], "description": "E-Book-Bibliothek." },
+    { "name": "Media", "group": "Medien", "tier": "T2", "owner": "Clowie", "url": "https://media.cabbagebaggage.net/", "containers": ["claw-media"], "description": "Medien-/Asset-Auslieferung." },
+    { "name": "Starkpark", "group": "Projekte", "tier": "T2", "owner": "Hanna", "url": "https://starkpark.cabbagebaggage.net/", "containers": ["starkpark"], "description": "Starkpark Website." },
+    { "name": "Opengym", "group": "Projekte", "tier": "T2", "owner": "Linus", "url": "https://gym.cabbagebaggage.net/", "containers": ["opengym-web-1", "opengym-api-1"], "description": "Trainings-App (OpenGym)." },
+    { "name": "Opengym Hybrid", "group": "Projekte", "tier": "T2", "owner": "Linus", "url": "https://hybrid.gym.cabbagebaggage.net/", "containers": ["opengym-hybrid-web-1", "opengym-hybrid-api-1"], "description": "Hybrid-Trainingsplaner." },
+    { "name": "Finanzlabel", "group": "Projekte", "tier": "T2", "owner": "Clowie", "url": "https://finanzlabel.cabbagebaggage.net/", "containers": ["finanzlabel", "finanzlabel-outpost"], "description": "Finanz-Labeling (Authentik-Proxy-Outpost)." },
+    { "name": "ACTA Homepage", "group": "Projekte", "tier": "T2", "owner": "Linus", "url": "https://acta.cabbagebaggage.net/", "containers": ["acta-homepage"], "description": "ACTA Website." },
+    { "name": "Linus Page", "group": "Projekte", "tier": "T2", "owner": "Linus", "url": "https://linus.cabbagebaggage.net/", "containers": ["linus-page"], "description": "Persönliche Seite." },
+    { "name": "Drive-Sync", "group": "Storage", "tier": "T2", "owner": "Clowie", "url": null, "containers": ["drive-sync-container"], "description": "Google-Drive → Storage-Box Spiegelung." }
+  ]
+}

@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const Database = require('better-sqlite3');
 const kgEngine = require('./kg-engine.js');
+const collectors = require('./collectors.js');
 
 const PORT = process.env.PORT || 3001;
 const DASHBOARD_DIR = path.join(__dirname, 'dashboard');
@@ -895,11 +896,11 @@ const server = http.createServer(async (req, res) => {
         // === FINANZ API ===
         if (pathname === '/api/finanz/monthly') {
             try {
-                const dbPath = '/app/data/finances.db';
+                const dbPath = path.join(DATA_DIR, 'finances.db');
                 if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
                 const finDb = new Database(dbPath, { readonly: true });
                 const monthly = finDb.prepare(`
-                    SELECT month, income, expenses, net as savings, savings_rate as savings_pct, txn_count
+                    SELECT month, income, expenses, savings, savings_rate AS savings_pct, txn_count
                     FROM monthly_summary ORDER BY month
                 `).all();
                 const categories = finDb.prepare(`
@@ -914,8 +915,9 @@ const server = http.createServer(async (req, res) => {
                     SELECT
                         SUM(income) as total_income,
                         SUM(expenses) as total_expenses,
-                        SUM(net) as total_savings,
-                        COUNT(*) as month_count
+                        SUM(savings) as total_savings,
+                        COUNT(*) as month_count,
+                        ROUND(100.0 * SUM(savings) / NULLIF(SUM(income),0), 1) as avg_savings_pct
                     FROM monthly_summary
                 `).get();
                 finDb.close();
@@ -928,7 +930,7 @@ const server = http.createServer(async (req, res) => {
         }
         if (pathname === '/api/finanz/transactions') {
             try {
-                const dbPath = '/app/data/finances.db';
+                const dbPath = path.join(DATA_DIR, 'finances.db');
                 if (!fs.existsSync(dbPath)) { jsonResponse(res, 503, { error: 'Finanz-Datenbank nicht gefunden' }); return; }
                 const finDb = new Database(dbPath, { readonly: true });
                 const q = parsedUrl.query || {};
@@ -1040,6 +1042,7 @@ const server = http.createServer(async (req, res) => {
             }
             return;
         }
+
 
         // === BI / TOKEN USAGE API ===
         if (pathname === '/api/bi/summary') {
@@ -1205,6 +1208,31 @@ const server = http.createServer(async (req, res) => {
         }
 
 
+        // === SERVICE REGISTRY (Dienste-Übersicht) ===
+        if (pathname === '/api/services' && req.method === 'GET') {
+            try {
+                const data = await collectors.getServices();
+                jsonResponse(res, 200, data);
+            } catch (e) {
+                console.error('Services error:', e.message);
+                jsonResponse(res, 500, { error: e.message });
+            }
+            return;
+        }
+
+        // === WORKSTREAM (Gitea Ops + GitHub Code) ===
+        if (pathname === '/api/workstream' && req.method === 'GET') {
+            try {
+                const data = await collectors.getWorkstream();
+                jsonResponse(res, 200, data);
+            } catch (e) {
+                console.error('Workstream error:', e.message);
+                jsonResponse(res, 500, { error: e.message });
+            }
+            return;
+        }
+
+
         // Redirect old dashboard pages to new redesign pages
         const REDESIGN_REDIRECTS = {
             '/index.html': '/redesign/index.html',
@@ -1220,7 +1248,11 @@ const server = http.createServer(async (req, res) => {
             '/ollama.html': '/redesign/dashboard.html',
             '/graph.html': '/redesign/graph.html',
             '/finanz_abos.html': '/redesign/finanz_abos.html',
+            '/bi.html': '/redesign/bi.html',
             '/finanz.html': '/redesign/finanz.html',
+            '/site.html': '/redesign/site.html',
+            '/workstream.html': '/redesign/workstream.html',
+            '/dienste.html': '/redesign/dienste.html',
         };
         if (REDESIGN_REDIRECTS[pathname]) {
             res.writeHead(302, { 'Location': REDESIGN_REDIRECTS[pathname] });
@@ -1229,13 +1261,13 @@ const server = http.createServer(async (req, res) => {
         }
 
         // Static files (protected)
-        // Root -> Redirect auf /redesign/index.html, damit relative Pfade (css/js) korrekt aufgelöst werden
+        let filePath = path.join(DASHBOARD_DIR, pathname);
         if (pathname === '/') {
+            // Redirect (not rewrite) so relative css/js paths resolve under /redesign/
             res.writeHead(302, { 'Location': '/redesign/index.html' });
             res.end();
             return;
         }
-        let filePath = path.join(DASHBOARD_DIR, pathname);
         const resolvedPath = path.resolve(filePath);
         if (!resolvedPath.startsWith(DASHBOARD_DIR)) { jsonResponse(res, 403, { error: 'Forbidden' }); return; }
         fs.stat(filePath, (err, stats) => {

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Dienste</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+      <div class="acta-content" id="content">
+        <div class="acta-loading"><span class="acta-spinner"></span>Lade Dienste…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    const esc = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function badge(state) {
+      const map = { green:'success', running:'success', external:'neutral', yellow:'warning', red:'alert', unknown:'neutral' };
+      const label = { green:'OK', yellow:'Degradiert', red:'Fehler', external:'Extern', unknown:'Unbekannt' };
+      return '<span class="acta-badge acta-badge-' + (map[state]||'neutral') + '">' + (label[state]||state||'—') + '</span>';
+    }
+    function tierBadge(t) {
+      if (!t) return '';
+      const cls = t === 'T1' ? 'alert' : 'warning';
+      return '<span class="acta-badge acta-badge-' + cls + '" title="' + (t==='T1'?'kritisch':'wichtig') + '">' + t + '</span>';
+    }
+
+    async function load() {
+      const content = document.getElementById('content');
+      try {
+        const res = await fetch('/api/services');
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        const data = await res.json();
+        const s = data.summary || {};
+        const services = data.services || [];
+
+        const kpi = (label, val, color) => '<div class="acta-card acta-metric"><div class="acta-metric-label">' + label + '</div><div class="acta-metric-value"' + (color?' style="color:'+color+';"':'') + '>' + val + '</div></div>';
+
+        // Gruppieren
+        const groups = {};
+        for (const sv of services) { (groups[sv.group] = groups[sv.group] || []).push(sv); }
+        const order = ['Agenten','Steuerung','Chat','Kollaboration','Dokumente','Sicherheit','Medien','Projekte','Storage','Weitere'];
+        const keys = Object.keys(groups).sort((a,b) => order.indexOf(a) - order.indexOf(b));
+
+        let html = '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.25rem;">' +
+          '<h1 style="font-size:1.3rem;margin:0;font-weight:600;">Dienste-Übersicht</h1>' +
+          '<div style="font-size:0.8rem;color:var(--acta-slate);">Registry + Live-Container-Status · ' + (data.timestamp ? new Date(data.timestamp).toLocaleString('de-DE') : '—') + '</div></div>';
+
+        html += '<div class="acta-grid acta-grid-4" style="margin-bottom:1.5rem;">' +
+          kpi('Dienste gesamt', s.total ?? '—') +
+          kpi('OK', s.running ?? '—', 'var(--acta-success)') +
+          kpi('Degradiert', s.degraded ?? '—', 'var(--acta-warning)') +
+          kpi('Fehler', s.down ?? '—', 'var(--acta-alert)') +
+          kpi('T1 (kritisch)', s.t1 ?? '—') +
+          kpi('T2', s.t2 ?? '—') +
+          kpi('Öffentl. Endpunkte', s.public_endpoints ?? '—') +
+          kpi('Extern / ohne Container', s.external ?? '—') +
+          '</div>';
+
+        for (const g of keys) {
+          html += '<div class="acta-card" style="margin-bottom:1.25rem;">' +
+            '<div class="acta-card-title">' + esc(g) + ' <span style="color:var(--acta-slate);font-weight:400;">(' + groups[g].length + ')</span></div>' +
+            '<div class="acta-table-wrap"><table class="acta-table"><thead><tr><th>Dienst</th><th>Tier</th><th>Status</th><th>Endpunkt</th><th>Container</th><th>Owner</th></tr></thead><tbody>';
+          for (const sv of groups[g]) {
+            const url = sv.url ? '<a href="' + esc(sv.url) + '" target="_blank" rel="noopener" style="color:var(--acta-teal);">' + esc(sv.url.replace(/^https?:\/\//,'').replace(/\/$/,'')) + '</a>' : '<span style="color:var(--acta-slate);">—</span>';
+            const conts = (sv.containers || []).map(c => '<span title="' + esc(c.status) + '" style="white-space:nowrap;">' + esc(c.name) + ' ' + badge(c.state) + '</span>').join('<br>') || '<span style="color:var(--acta-slate);">—</span>';
+            html += '<tr><td><strong>' + esc(sv.name) + '</strong><div style="font-size:0.78rem;color:var(--acta-slate);">' + esc(sv.description) + '</div></td>' +
+              '<td>' + tierBadge(sv.tier) + '</td>' +
+              '<td>' + badge(sv.state) + '</td>' +
+              '<td>' + url + '</td>' +
+              '<td style="font-size:0.8rem;">' + conts + '</td>' +
+              '<td>' + esc(sv.owner) + '</td></tr>';
+          }
+          html += '</tbody></table></div></div>';
+        }
+
+        content.innerHTML = html;
+      } catch (e) {
+        content.innerHTML = '<div class="acta-empty">Fehler beim Laden: ' + esc(e.message) + '</div>';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', load);
+  </script>
+</body>
+</html>

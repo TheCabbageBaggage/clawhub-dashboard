@@ -12,6 +12,7 @@ RUN npm install --production && apk del python3 make g++
 # Copy application files
 COPY server.js ./
 COPY kg-engine.js ./
+COPY collectors.js ./
 COPY login.html ./
 COPY dashboard/ ./dashboard/
 
