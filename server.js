@@ -972,6 +972,50 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // === FINANZ CONSOLIDATED (Vermoegen, Tracker, Forecast, What-if, Einsparpotenziale) ===
+        if (pathname === '/api/finanz/consolidated') {
+            try {
+                const cPath = path.join(DASHBOARD_DIR, 'data', 'finance_consolidated.json');
+                if (!fs.existsSync(cPath)) { jsonResponse(res, 503, { error: 'Finanz-Zentrale noch nicht erzeugt (Pipeline ausstehend)' }); return; }
+                const raw = fs.readFileSync(cPath, 'utf8');
+                res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                res.end(raw);
+            } catch (e) {
+                console.error('Finanz consolidated:', e.message);
+                jsonResponse(res, 500, { error: 'Finanz-Zentrale Fehler' });
+            }
+            return;
+        }
+
+        // === FINANZ VERDICT (Daumen hoch/runter je Einsparpotenzial) ===
+        if (pathname === '/api/finanz/verdict' && req.method === 'POST') {
+            try {
+                const dbPath = '/app/data/finances.db';
+                let body = '';
+                req.on('data', c => { body += c; });
+                req.on('end', () => {
+                    try {
+                        const d = JSON.parse(body);
+                        const id = (d.action_id || '').trim();
+                        const verdict = (d.verdict || '').trim();
+                        if (!id || !['up', 'down', ''].includes(verdict)) { jsonResponse(res, 400, { error: 'action_id/verdict ungueltig' }); return; }
+                        const db = new Database(dbPath);
+                        db.exec("CREATE TABLE IF NOT EXISTS savings_verdicts (action_id TEXT PRIMARY KEY, verdict TEXT, note TEXT, updated_at TEXT)");
+                        if (verdict === '') {
+                            db.prepare('DELETE FROM savings_verdicts WHERE action_id = ?').run(id);
+                        } else {
+                            db.prepare("INSERT INTO savings_verdicts (action_id, verdict, note, updated_at) VALUES (?, ?, NULL, datetime('now')) " +
+                                'ON CONFLICT(action_id) DO UPDATE SET verdict=excluded.verdict, updated_at=excluded.updated_at')
+                                .run(id, verdict);
+                        }
+                        db.close();
+                        jsonResponse(res, 200, { ok: true, action_id: id, verdict });
+                    } catch (e2) { console.error('verdict parse:', e2.message); jsonResponse(res, 500, { error: 'Verdict-Fehler' }); }
+                });
+            } catch (e) { jsonResponse(res, 500, { error: 'Verdict-Fehler' }); }
+            return;
+        }
+
         // === FINANZ LABELS API ===
         if (pathname === '/api/finanz/labels') {
             try {
@@ -1250,6 +1294,7 @@ const server = http.createServer(async (req, res) => {
             '/finanz_abos.html': '/redesign/finanz_abos.html',
             '/bi.html': '/redesign/bi.html',
             '/finanz.html': '/redesign/finanz.html',
+            '/finanz_zentrale.html': '/redesign/finanz_zentrale.html',
             '/site.html': '/redesign/site.html',
             '/workstream.html': '/redesign/workstream.html',
             '/dienste.html': '/redesign/dienste.html',

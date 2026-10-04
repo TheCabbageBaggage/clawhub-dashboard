@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClawHub — Finanz-Zentrale</title>
+  <link rel="stylesheet" href="css/acta-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .fz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; }
+    .fz-kpi { font-size: 1.55rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .fz-sub { font-size: 0.8rem; color: var(--acta-slate, #8A9BA8); }
+    .fz-num { font-variant-numeric: tabular-nums; }
+    .fz-badge { display: inline-block; font-size: 0.7rem; padding: 1px 7px; border-radius: 10px; font-weight: 600; }
+    .fz-b-red { background: rgba(191,57,57,0.15); color: #BF3939; }
+    .fz-b-yellow { background: rgba(204,154,51,0.18); color: #A6791F; }
+    .fz-b-green { background: rgba(56,115,89,0.15); color: #387359; }
+    .fz-b-neutral { background: rgba(138,155,168,0.18); color: #5B6B77; }
+    .fz-bar { height: 10px; border-radius: 5px; background: var(--acta-border, #E2E8EC); overflow: hidden; margin-top: 6px; }
+    .fz-bar > span { display: block; height: 100%; background: var(--acta-teal, #3D8B8B); transition: width .4s; }
+    .fz-bar > span.warn { background: #CC9A33; }
+    .fz-bar > span.bad { background: #BF3939; }
+    .fz-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .fz-tab { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--acta-border, #E2E8EC); cursor: pointer; font-size: 0.85rem; background: transparent; color: inherit; }
+    .fz-tab.active { background: var(--acta-teal, #3D8B8B); color: #fff; border-color: var(--acta-teal, #3D8B8B); }
+    .fz-panel { display: none; }
+    .fz-panel.active { display: block; }
+    .fz-lever { display: flex; align-items: center; gap: 0.6rem; padding: 6px 0; border-bottom: 1px solid var(--acta-border, #E2E8EC); }
+    .fz-lever input { width: 16px; height: 16px; accent-color: var(--acta-teal, #3D8B8B); }
+    .fz-act { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.6rem 0; border-bottom: 1px solid var(--acta-border, #E2E8EC); }
+    .fz-act-vote { display: flex; flex-direction: column; gap: 2px; }
+    .fz-thumb { border: 1px solid var(--acta-border, #E2E8EC); background: transparent; border-radius: 5px; cursor: pointer; padding: 1px 7px; font-size: 0.95rem; line-height: 1.4; }
+    .fz-thumb.on-up { background: rgba(56,115,89,0.18); border-color: #387359; }
+    .fz-thumb.on-down { background: rgba(191,57,57,0.16); border-color: #BF3939; }
+    .fz-act-detail { font-size: 0.78rem; color: var(--acta-slate, #8A9BA8); }
+    .fz-pot { font-weight: 700; color: #387359; white-space: nowrap; }
+    .fz-two { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    @media (max-width: 820px){ .fz-two { grid-template-columns: 1fr; } }
+    .fz-range { width: 100%; }
+    .fz-note { font-size: 0.75rem; color: var(--acta-slate, #8A9BA8); margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="acta-layout">
+    <main class="acta-main">
+
+      <div class="acta-page-head">
+        <h1>Finanz-Zentrale</h1>
+        <div class="fz-sub" id="fzStand">Laden…</div>
+      </div>
+
+      <!-- KPI -->
+      <div class="fz-grid" id="fzKpis">
+        <div class="acta-card"><div class="acta-metric-label">Einnahmen / Monat</div><div class="fz-kpi" id="kIncome">—</div><div class="fz-sub">letzter voller Monat</div></div>
+        <div class="acta-card"><div class="acta-metric-label">Konsum / Monat</div><div class="fz-kpi" id="kCons">—</div><div class="fz-sub">ohne Sparen/Umbuchung</div></div>
+        <div class="acta-card"><div class="acta-metric-label">Sparquote</div><div class="fz-kpi" id="kRate">—</div><div class="fz-sub">letzter voller Monat</div></div>
+        <div class="acta-card"><div class="acta-metric-label">Vermögen (aufgebaut)</div><div class="fz-kpi" id="kNW">—</div><div class="fz-sub">kumuliert, cashflow-basiert</div></div>
+        <div class="acta-card"><div class="acta-metric-label">Fixkosten / Monat</div><div class="fz-kpi" id="kFix">—</div><div class="fz-sub" id="kFixSub">—</div></div>
+        <div class="acta-card"><div class="acta-metric-label">Abos / Monat</div><div class="fz-kpi" id="kAbo">—</div><div class="fz-sub" id="kAboSub">—</div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="fz-tabs" style="margin-top:1.25rem;">
+        <button class="fz-tab active" data-tab="tracker">Spar-Tracker &amp; Forecast</button>
+        <button class="fz-tab" data-tab="whatif">What-if</button>
+        <button class="fz-tab" data-tab="actions">Einsparpotenziale <span class="fz-badge fz-b-neutral" id="fzActCount">—</span></button>
+        <button class="fz-tab" data-tab="budget">Budget vs Ist</button>
+        <button class="fz-tab" data-tab="fixabos">Fixkosten &amp; Abos</button>
+      </div>
+
+      <!-- Tracker -->
+      <div class="fz-panel active" id="panel-tracker">
+        <div class="acta-card">
+          <div class="acta-card-title">Sparziel <span id="fzGoal" class="fz-sub"></span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <div><span class="fz-kpi" id="fzYtd">—</span> <span class="fz-sub">gespart in <span id="fzYear"></span> (transfers)</span></div>
+            <div class="fz-sub" id="fzYtdPct">—</div>
+          </div>
+          <div class="fz-bar"><span id="fzYtdBar" style="width:0%"></span></div>
+          <div class="fz-grid" style="margin-top:1rem;">
+            <div><div class="acta-metric-label">Nachhaltige Sparrate</div><div class="fz-kpi" id="fzRunrate">—</div><div class="fz-sub">struktureller Überschuss (12M)</div></div>
+            <div><div class="acta-metric-label">Ziel-Rate</div><div class="fz-kpi" id="fzGoalRate">—</div><div class="fz-sub">50.000 €/Jahr</div></div>
+            <div><div class="acta-metric-label">Lücke</div><div class="fz-kpi" id="fzGap">—</div><div class="fz-sub">pro Jahr</div></div>
+            <div><div class="acta-metric-label">Status</div><div class="fz-kpi" id="fzStatus">—</div><div class="fz-sub">ggü. Jahresziel</div></div>
+          </div>
+        </div>
+        <div class="acta-card" style="margin-top:1.25rem;">
+          <div class="acta-card-title">Vermögensentwicklung &amp; Forecast</div>
+          <canvas id="fzChart" height="220"></canvas>
+          <div class="fz-note">Kumuliertes Sparen („Sparen &amp; Veranlagung"). Forecast ab letztem Monat mit aktueller Run-Rate; gestrichelt = Kurs zum 50k-Jahresziel.</div>
+        </div>
+      </div>
+
+      <!-- What-if -->
+      <div class="fz-panel" id="panel-whatif">
+        <div class="fz-two">
+          <div class="acta-card">
+            <div class="acta-card-title">Hebel aktivieren</div>
+            <div id="fzLevers"></div>
+            <div class="fz-note">Nur Simulation — es wird nichts umgesetzt. Jeder Hebel erhöht die Sparrate, der Karenz-Effekt greift ab 02/2027.</div>
+          </div>
+          <div class="acta-card">
+            <div class="acta-card-title">Wirkung</div>
+            <div class="fz-grid">
+              <div><div class="acta-metric-label">Neue Sparrate</div><div class="fz-kpi" id="wiRate">—</div><div class="fz-sub">/Jahr</div></div>
+              <div><div class="acta-metric-label">Ziel erreicht</div><div class="fz-kpi" id="wiGoal">—</div><div class="fz-sub">50.000 €/Jahr</div></div>
+              <div><div class="acta-metric-label">Vermögen in 12M</div><div class="fz-kpi" id="wiNW12">—</div><div class="fz-sub">Prognose</div></div>
+              <div><div class="acta-metric-label">Vermögen in 36M</div><div class="fz-kpi" id="wiNW36">—</div><div class="fz-sub">Prognose</div></div>
+            </div>
+            <div class="fz-note" id="wiHint"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="fz-panel" id="panel-actions">
+        <div class="acta-card">
+          <div class="acta-card-title">Top-Einsparpotenziale — mit Daumen bewerten</div>
+          <div class="fz-note">👍 = umsetzen (in die Sparstrategie aufnehmen) · 👎 = verwerfen. Nach 1 Monat schlage ich verworfene/offene Hebel erneut vor, wenn der Forecast nicht auf Kurs ist.</div>
+          <div id="fzActions" style="margin-top:0.75rem;"></div>
+          <div class="fz-note" id="fzActSum"></div>
+        </div>
+      </div>
+
+      <!-- Budget -->
+      <div class="fz-panel" id="panel-budget">
+        <div class="acta-card">
+          <div class="acta-card-title">Budget vs Ist (Ø letzte volle Monate)</div>
+          <div class="acta-table-wrap">
+            <table class="acta-table">
+              <thead><tr><th>Kategorie</th><th>Ist €/Mo</th><th>Soll €/Mo</th><th>Δ</th><th>Ampel</th></tr></thead>
+              <tbody id="fzBudget"><tr><td colspan="5" class="fz-sub">Laden…</td></tr></tbody>
+            </table>
+          </div>
+          <div class="fz-note">Jahrestöpfe (Kleidung, Reisen) sind als Jahres-Soll → Monatsanteil dargestellt.</div>
+        </div>
+        <div class="acta-card" style="margin-top:1.25rem;">
+          <div class="acta-card-title">Monats-Review</div>
+          <div class="fz-grid" id="fzReview"></div>
+        </div>
+      </div>
+
+      <!-- Fixkosten & Abos -->
+      <div class="fz-panel" id="panel-fixabos">
+        <div class="fz-two">
+          <div class="acta-card">
+            <div class="acta-card-title">Fixkosten-Bestandteile</div>
+            <div class="acta-table-wrap"><table class="acta-table">
+              <thead><tr><th>Bestandteil</th><th>€/Mo</th><th>Δ</th><th>zuletzt</th></tr></thead>
+              <tbody id="fzFix"><tr><td colspan="4" class="fz-sub">Laden…</td></tr></tbody>
+            </table></div>
+          </div>
+          <div class="acta-card">
+            <div class="acta-card-title">Abos <span class="fz-badge fz-b-neutral" id="fzAboCount">—</span></div>
+            <div class="acta-table-wrap"><table class="acta-table">
+              <thead><tr><th>Abo</th><th>€/Mo</th><th>Δ</th><th>Status</th></tr></thead>
+              <tbody id="fzAbos"><tr><td colspan="4" class="fz-sub">Laden…</td></tr></tbody>
+            </table></div>
+            <div class="fz-note">Details unter „Fixkosten &amp; Abos" in der Sidebar.</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/acta-shell.js" data-shell=""></script>
+  <script>
+    const fmt = (n) => new Intl.NumberFormat('de-AT',{style:'currency',currency:'EUR'}).format(n||0);
+    const fmt0 = (n) => new Intl.NumberFormat('de-AT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);
+    const pct = (n) => (n==null?'—':Number(n).toFixed(1)+' %');
+    let DATA = null, CHART = null, verdicts = {};
+
+    const ampelCls = (a) => a==='rot'?'fz-b-red':a==='gelb'?'fz-b-yellow':a==='gruen'?'fz-b-green':'fz-b-neutral';
+    const deltaBadge = (pc) => pc==null ? '<span class="fz-sub">–</span>' :
+      `<span class="fz-badge ${pc>0?'fz-b-red':'fz-b-green'}">${pc>0?'+':''}${pc.toFixed(2)} €</span>`;
+
+    document.querySelectorAll('.fz-tab').forEach(t => t.onclick = () => {
+      document.querySelectorAll('.fz-tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.fz-panel').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+    });
+
+    async function load() {
+      const res = await fetch('/api/finanz/consolidated');
+      if (!res.ok) throw new Error('API '+res.status);
+      DATA = await res.json();
+      render();
+    }
+
+    function render() {
+      const d = DATA, k = d.kpi||{}, t = d.savings_tracker||{}, nw = d.net_worth||{};
+      document.getElementById('fzStand').textContent = `Stand ${d.generated_month||'—'} · erzeugt ${(d.generated||'').replace('T',' ')}`;
+
+      document.getElementById('kIncome').textContent = fmt(k.income_monthly);
+      document.getElementById('kCons').textContent = fmt(k.consumption_monthly);
+      document.getElementById('kRate').textContent = pct(k.savings_rate_pct);
+      document.getElementById('kNW').textContent = fmt0(k.net_worth_now);
+      document.getElementById('kFix').textContent = fmt(k.fixkosten_monthly);
+      document.getElementById('kFixSub').textContent = k.fixkosten_share_pct!=null ? (k.fixkosten_share_pct+' % vom Einkommen') : 'Fixkostenbasis';
+      document.getElementById('kAbo').textContent = fmt(k.abos_monthly);
+      document.getElementById('kAboSub').textContent = (k.abos_count||0)+' aktive Abos';
+
+      // Tracker
+      document.getElementById('fzGoal').textContent = `Ziel ${fmt0(t.goal_yearly)} / Jahr`;
+      document.getElementById('fzYear').textContent = t.year||'';
+      document.getElementById('fzYtd').textContent = fmt0(t.ytd_saved);
+      const yp = t.ytd_progress_pct||0;
+      document.getElementById('fzYtdPct').textContent = pct(yp)+' des Jahresziels';
+      const bar = document.getElementById('fzYtdBar');
+      bar.style.width = Math.min(100,yp)+'%';
+      bar.className = yp>=100?'':(yp>=60?'':'warn');
+      document.getElementById('fzRunrate').textContent = fmt0(t.structural_runrate_yearly);
+      document.getElementById('fzGoalRate').textContent = fmt0(t.goal_yearly);
+      document.getElementById('fzGap').textContent = fmt0(t.gap_yearly);
+      const st = document.getElementById('fzStatus');
+      st.textContent = t.on_track? 'auf Kurs' : 'Lücke';
+      st.style.color = t.on_track? '#387359':'#BF3939';
+
+      renderChart();
+      renderWhatIf();
+      renderActions();
+      renderBudget();
+      renderFixAbos();
+    }
+
+    function renderChart() {
+      const nw = DATA.net_worth, hist = nw.series||[];
+      const labels = hist.map(s=>s.month);
+      const vals = hist.map(s=>s.cumulative);
+      const proj = nw.projection_36m||[], goal = nw.projection_goal_36m||[];
+      const pLabels = proj.map(s=>s.month);
+      const all = labels.concat(pLabels);
+      const vCur = vals.concat(pLabels.map(()=>null));
+      const vProj = labels.map(()=>null); vCur[vals.length-1]=vals[vals.length-1];
+      const vP = labels.map(()=>null).concat(proj.map(s=>s.cumulative));
+      const vG = labels.map(()=>null).concat(goal.map(s=>s.cumulative));
+      vProj[vals.length-1]=vals[vals.length-1]; vP[vals.length-1]=vals[vals.length-1];
+      if (vG.length) vG[vals.length-1]=vals[vals.length-1];
+
+      const ctx = document.getElementById('fzChart');
+      if (CHART) CHART.destroy();
+      CHART = new Chart(ctx,{ type:'line', data:{ labels:all, datasets:[
+        {label:'Aufgebaut (Ist)', data:vCur, borderColor:'#3D8B8B', backgroundColor:'rgba(61,139,139,0.12)', fill:true, tension:.2, pointRadius:0},
+        {label:'Forecast (Run-Rate)', data:vP, borderColor:'#2C5F7C', borderDash:[6,4], tension:.2, pointRadius:0, fill:false},
+        {label:'Kurs 50k-Jahresziel', data:vG, borderColor:'#D4A24A', borderDash:[2,3], tension:.2, pointRadius:0, fill:false}
+      ]}, options:{ responsive:true, interaction:{mode:'index',intersect:false},
+        plugins:{legend:{position:'bottom'}}, scales:{ y:{ ticks:{ callback:v=>fmt0(v) } } } }});
+    }
+
+    function renderWhatIf() {
+      const w = DATA.what_if||{};
+      const el = document.getElementById('fzLevers');
+      el.innerHTML = (w.levers||[]).map((l,i)=>`
+        <label class="fz-lever"><input type="checkbox" data-lid="${l.id}" data-m="${l.monthly}">
+          <span style="flex:1">${l.label}</span>
+          <span class="fz-pot">+${fmt(l.monthly)}/Mo</span></label>`).join('') ||
+        '<div class="fz-sub">keine Hebel</div>';
+      el.querySelectorAll('input').forEach(cb => cb.onchange = computeWhatIf);
+      computeWhatIf();
+    }
+
+    function computeWhatIf() {
+      const w = DATA.what_if||{}, nw = DATA.net_worth||{};
+      let extra = 0;
+      document.querySelectorAll('#fzLevers input:checked').forEach(cb=>{ extra += Number(cb.dataset.m)||0; });
+      const baseM = (w.base_structural_monthly||0);
+      const rate = baseM + extra;
+      const yearly = rate*12;
+      document.getElementById('wiRate').textContent = fmt0(yearly);
+      const g = document.getElementById('wiGoal');
+      g.textContent = yearly >= (w.goal_yearly||50000) ? 'erreicht ✓':'nicht erreicht';
+      g.style.color = yearly >= (w.goal_yearly||50000) ? '#387359':'#BF3939';
+      const start = nw.cumulative_now||0;
+      // Karenz-Effekt zeitlich: ab 02/2027. Einfache Monatsprojektion.
+      let c = start, y=null,m=null; const base=(nw.series||[]).slice(-1)[0]?.month||DATA.generated_month;
+      y=Number(base.slice(0,4)); m=Number(base.slice(5));
+      const karenz = (w.levers||[]).find(l=>l.id==='karenz_ende');
+      const karenzOn = document.querySelector('#fzLevers input[data-lid="karenz_ende"]')?.checked;
+      for (let i=1;i<=36;i++){ m++; if(m>12){m=1;y++;} let r=rate;
+        if (karenzOn && karenz && `${y}-${String(m).padStart(2,'0')}` < '2027-02') r = baseM+extra; else r=rate;
+        c += r/1; if(i===12) document.getElementById('wiNW12').textContent = fmt0(c);
+        if(i===36) document.getElementById('wiNW36').textContent = fmt0(c); }
+      const goalM = (w.goal_yearly||50000)/12;
+      document.getElementById('wiHint').textContent = extra>0
+        ? `Hebel bringen +${fmt0(extra*12)}/Jahr. Verbleibende Lücke zur Zielrate: ${fmt0(Math.max(0,goalM-rate)*12)}/Jahr.`
+        : `Noch kein Hebel aktiv. Heutige strukturelle Rate: ${fmt0(baseM*12)}/Jahr, Ziel ${fmt0(w.goal_yearly||50000)}/Jahr.`;
+    }
+
+    function renderActions() {
+      const acts = DATA.actions||[];
+      document.getElementById('fzActCount').textContent = acts.length;
+      const el = document.getElementById('fzActions');
+      el.innerHTML = acts.map(a => {
+        const v = (a.verdict&&a.verdict.verdict)||'';
+        return `<div class="fz-act">
+          <div class="fz-act-vote">
+            <button class="fz-thumb ${v==='up'?'on-up':''}" data-id="${a.key}" data-v="up">👍</button>
+            <button class="fz-thumb ${v==='down'?'on-down':''}" data-id="${a.key}" data-v="down">👎</button>
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:600">${a.rank}. ${a.title} <span class="fz-badge fz-b-neutral">${a.category||''}</span></div>
+            <div class="fz-act-detail">${a.detail||''}</div>
+          </div>
+          <div class="fz-pot">${fmt0(a.yearly_potential)}/Jahr</div>
+        </div>`;
+      }).join('') || '<div class="fz-sub">keine Vorschläge</div>';
+      el.querySelectorAll('.fz-thumb').forEach(b => b.onclick = () => vote(b.dataset.id, b.dataset.v));
+      const up = acts.filter(a=>a.verdict&&a.verdict.verdict==='up').length;
+      const down = acts.filter(a=>a.verdict&&a.verdict.verdict==='down').length;
+      document.getElementById('fzActSum').textContent =
+        `Gesamtpotenzial der Liste: ${fmt0(acts.reduce((s,a)=>s+a.yearly_potential,0))}/Jahr · bewertet: 👍 ${up} / 👎 ${down}`;
+    }
+
+    async function vote(id, v) {
+      try {
+        await fetch('/api/finanz/verdict', { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ action_id:id, verdict:v }) });
+        const a = (DATA.actions||[]).find(x=>x.key===id);
+        if (a) a.verdict = { verdict:(a.verdict&&a.verdict.verdict===v)?'':v };
+        renderActions();
+      } catch(e){ console.error(e); }
+    }
+
+    function renderBudget() {
+      const rows = (DATA.budget&&DATA.budget.rows)||[];
+      document.getElementById('fzBudget').innerHTML = rows.map(r=>`
+        <tr><td>${r.category}</td>
+          <td class="fz-num">${fmt0(r.ist_monthly)}</td>
+          <td class="fz-num">${fmt0(r.soll_monthly)}</td>
+          <td class="fz-num">${(r.delta>0?'+':'')}${fmt0(r.delta)}</td>
+          <td><span class="fz-badge ${ampelCls(r.ampel)}">${r.ampel}</span></td></tr>`).join('')
+        || '<tr><td colspan="5" class="fz-sub">keine Daten</td></tr>';
+      const mr = DATA.monthly_review||{};
+      document.getElementById('fzReview').innerHTML = mr.month ? `
+        <div><div class="acta-metric-label">Monat</div><div class="fz-kpi">${mr.month}</div></div>
+        <div><div class="acta-metric-label">Sparquote</div><div class="fz-kpi">${pct(mr.savings_rate)}</div><div class="fz-sub"><span class="fz-badge ${ampelCls(mr.savings_ampel)}">${mr.savings_ampel}</span></div></div>
+        <div><div class="acta-metric-label">Fixkostenquote</div><div class="fz-kpi">${pct(mr.fixed_share)}</div><div class="fz-sub"><span class="fz-badge ${ampelCls(mr.fixed_ampel)}">${mr.fixed_ampel}</span></div></div>
+        <div><div class="acta-metric-label">Diskretionär</div><div class="fz-kpi">${fmt0(mr.discretionary)}</div></div>` : '<div class="fz-sub">keine Daten</div>';
+    }
+
+    function renderFixAbos() {
+      const f = DATA.fixkosten||{}, a = DATA.abos||{};
+      document.getElementById('fzFix').innerHTML = (f.components||[]).map(c=>`
+        <tr><td>${c.merchant}</td><td class="fz-num">${fmt(c.monthly)}</td>
+        <td>${deltaBadge(c.price_change)}</td><td class="fz-sub">${c.last_seen||'—'}</td></tr>`).join('')
+        || '<tr><td colspan="4" class="fz-sub">keine Daten</td></tr>';
+      document.getElementById('fzAboCount').textContent = (a.count||0)+' aktiv';
+      document.getElementById('fzAbos').innerHTML = (a.items||[]).map(x=>`
+        <tr><td>${x.merchant}</td><td class="fz-num">${fmt(x.monthly)}</td>
+        <td>${deltaBadge(x.price_change)}</td>
+        <td>${x.active? '<span class="fz-badge fz-b-green">aktiv</span>':'<span class="fz-badge fz-b-neutral">alt</span>'}</td></tr>`).join('')
+        || '<tr><td colspan="4" class="fz-sub">keine Daten</td></tr>';
+    }
+
+    load().catch(e=>{ console.error(e);
+      document.getElementById('fzKpis').innerHTML = '<div class="acta-card">Fehler beim Laden — Pipeline gelaufen?</div>'; });
+  </script>
+</body>
+</html>
