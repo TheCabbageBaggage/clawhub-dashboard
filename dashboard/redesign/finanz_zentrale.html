@@ -38,6 +38,10 @@
     @media (max-width: 820px){ .fz-two { grid-template-columns: 1fr; } }
     .fz-range { width: 100%; }
     .fz-note { font-size: 0.75rem; color: var(--acta-slate, #8A9BA8); margin-top: 0.5rem; }
+    .fz-proto { font-size: 0.78rem; color: var(--acta-slate, #8A9BA8); background: var(--acta-surface-alt, #F2F6F8); border-radius: 6px; padding: 8px 10px; margin-top: 0.6rem; }
+    .fz-proto b { color: var(--acta-ink, #11181A); }
+    .fz-yr { font-weight: 700; color: var(--acta-petrol, #2C5F7C); }
+    .fz-yoy { font-size: 0.72rem; color: var(--acta-slate, #8A9BA8); }
   </style>
 </head>
 <body>
@@ -85,14 +89,15 @@
             <div><div class="acta-metric-label">Status</div><div class="fz-kpi" id="fzStatus">—</div><div class="fz-sub">ggü. Jahresziel</div></div>
           </div>
           <div class="acta-table-wrap" style="margin-top:1rem;"><table class="acta-table">
-            <thead><tr><th>Kalenderjahr</th><th>Gespart</th><th>davon Sparplan</th><th>Einmal-Umbuchung</th><th>Prognose</th></tr></thead>
+            <thead><tr><th>Kalenderjahr</th><th>Gespart (Summe)</th><th>Sparplan</th><th>Abschöpfung</th><th>Einmal-Umbuchung</th><th>vs. Vorjahr</th><th>Prognose</th></tr></thead>
             <tbody id="fzYears"></tbody></table></div>
+          <div class="fz-note">Massgeblich ist die <b>Summe</b>, die pro Kalenderjahr aufs Sparkonto/Depot fliesst — die Aufschlüsselung nach Ausführungsart dient nur der Herkunft (Sparplan-Dauerauftrag, Abschöpfungsauftrag, händische Einzelbuchung).</div>
           <div class="fz-note" id="fzFreed"></div>
         </div>
         <div class="acta-card" style="margin-top:1.25rem;">
           <div class="acta-card-title">Vermögensentwicklung &amp; Forecast</div>
           <canvas id="fzChart" height="220"></canvas>
-          <div class="fz-note">Kumuliertes Sparen („Sparen &amp; Veranlagung"). Forecast ab letztem Monat mit aktueller Run-Rate; gestrichelt = Kurs zum 50k-Jahresziel.</div>
+          <div class="fz-note">Kumuliertes Sparen („Sparen &amp; Veranlagung"), X-Achse = Kalenderjahre (Jahresgrenzen fett). Forecast ab letztem Monat mit aktueller Run-Rate; gestrichelt = Kurs zum 50k-Jahresziel.</div>
         </div>
       </div>
 
@@ -102,7 +107,8 @@
           <div class="acta-card">
             <div class="acta-card-title">Hebel aktivieren</div>
             <div id="fzLevers"></div>
-            <div class="fz-note">Nur Simulation — es wird nichts umgesetzt. Jeder Hebel erhöht die Sparrate, der Karenz-Effekt greift ab 02/2027.</div>
+            <div class="fz-proto" id="fzProtected"></div>
+            <div class="fz-note">Nur Simulation — es wird nichts umgesetzt. Jeder Hebel erhöht die Sparrate; der Karenz-Effekt greift ab 02/2027 (standardmässig aktiv). Geschützte Dienste (Internet, Clowie-Tooling) sind fest ausgenommen.</div>
           </div>
           <div class="acta-card">
             <div class="acta-card-title">Wirkung</div>
@@ -217,7 +223,7 @@
       bar.style.width = Math.min(100,yp)+'%';
       bar.className = yp>=100?'':(yp>=60?'':'warn');
       document.getElementById('fzYtdSplit').innerHTML =
-        `davon regelmaessiger Sparplan <b>${fmt0(t.ytd_regular)}</b> · Einmal-Umbuchungen <b>${fmt0(t.ytd_one_off)}</b>` +
+        Object.entries(t.ytd_by_type||{}).map(([k,v])=>`${k} <b>${fmt0(v)}</b>`).join(' · ') +
         (t.projection_calendar_year!=null?` · Prognose Kalenderjahr: <b>${fmt0(t.projection_calendar_year)}</b>`:'');
       renderYears();
       document.getElementById('fzRunrate').textContent = fmt0(t.structural_runrate_yearly);
@@ -260,34 +266,51 @@
         {label:'Forecast (Run-Rate)', data:vP, borderColor:'#2C5F7C', borderDash:[6,4], tension:.2, pointRadius:0, fill:false},
         {label:'Kurs 50k-Jahresziel', data:vG, borderColor:'#D4A24A', borderDash:[2,3], tension:.2, pointRadius:0, fill:false}
       ]}, options:{ responsive:true, interaction:{mode:'index',intersect:false},
-        plugins:{legend:{position:'bottom'}}, scales:{ y:{ ticks:{ callback:v=>fmt0(v) } } } }});
+        plugins:{legend:{position:'bottom'}}, scales:{
+          x:{ ticks:{ maxRotation:0, autoSkip:true, maxTicksLimit:12,
+            callback:function(val,idx){ const l=this.getLabelForValue(val)||'';
+              return l.endsWith('-01') ? l.slice(0,4) : l.slice(5); } } },
+          y:{ ticks:{ callback:v=>fmt0(v) } } } }});
     }
 
     function renderYears() {
       const t = DATA.savings_tracker||{}, rows = t.by_year||[];
       const goalMonth = (t.goal_monthly||4167);
       const curYear = String(t.year||'');
-      document.getElementById('fzYears').innerHTML = rows.map(r=>{
+      const yearEnd = {};  // Gespart je Kalenderjahr (für Vorjahres-Vergleich)
+      rows.forEach(r=>{ yearEnd[r.year]=r.total; });
+      document.getElementById('fzYears').innerHTML = rows.map((r,i)=>{
         const proj = r.year===curYear && t.projection_calendar_year!=null ? fmt0(t.projection_calendar_year) : '—';
         const months = r.year===curYear ? (new Date().getMonth()+1) : 12;
         const badge = r.total>=(goalMonth*months) ? 'fz-b-green' : (r.total>=goalMonth*months*0.6?'fz-b-yellow':'fz-b-red');
-        return `<tr><td>${r.year}</td>
+        const prev = i>0 ? rows[i-1].total : null;
+        const yoy = prev!=null ? ((r.total-prev)/prev*100) : null;
+        const yoyHtml = yoy==null ? '<td class="fz-yoy">–</td>' :
+          `<td class="fz-yoy">${yoy>0?'+':''}${yoy.toFixed(0)} %</td>`;
+        const bt = r.by_type||{};
+        return `<tr><td class="fz-yr">${r.year}${r.year===curYear?' (YTD)':''}</td>
           <td class="fz-num"><span class="fz-badge ${badge}">${fmt0(r.total)}</span></td>
-          <td class="fz-num">${fmt0(r.regular)}</td>
-          <td class="fz-num">${fmt0(r.one_off)}</td>
+          <td class="fz-num">${fmt0(bt['Sparplan']||0)}</td>
+          <td class="fz-num">${fmt0(bt['Abschöpfungsauftrag']||0)}</td>
+          <td class="fz-num">${fmt0(bt['Einmal-Umbuchung']||0)}</td>
+          ${yoyHtml}
           <td class="fz-num">${proj}</td></tr>`;
-      }).join('') || '<tr><td colspan="5" class="fz-sub">keine Daten</td></tr>';
+      }).join('') || '<tr><td colspan="7" class="fz-sub">keine Daten</td></tr>';
     }
 
     function renderWhatIf() {
       const w = DATA.what_if||{};
       const el = document.getElementById('fzLevers');
       el.innerHTML = (w.levers||[]).map((l,i)=>`
-        <label class="fz-lever"><input type="checkbox" data-lid="${l.id}" data-m="${l.monthly}">
+        <label class="fz-lever"><input type="checkbox" data-lid="${l.id}" data-m="${l.monthly}" ${l.default?'checked':''}>
           <span style="flex:1">${l.label}</span>
           <span class="fz-pot">+${fmt(l.monthly)}/Mo</span></label>`).join('') ||
         '<div class="fz-sub">keine Hebel</div>';
       el.querySelectorAll('input').forEach(cb => cb.onchange = computeWhatIf);
+      const prot = w.protected||[];
+      document.getElementById('fzProtected').innerHTML = prot.length
+        ? `<b>Geschützt — kein Sparhebel:</b> ` + prot.map(p=>`${p.item} (${fmt(p.monthly)}/Mo)`).join(' · ')
+        : '';
       computeWhatIf();
     }
 
@@ -295,26 +318,31 @@
       const w = DATA.what_if||{}, nw = DATA.net_worth||{};
       let extra = 0;
       document.querySelectorAll('#fzLevers input:checked').forEach(cb=>{ extra += Number(cb.dataset.m)||0; });
-      const baseM = (w.base_structural_monthly||0);
-      const rate = baseM + extra;
-      const yearly = rate*12;
-      document.getElementById('wiRate').textContent = fmt0(yearly);
-      const g = document.getElementById('wiGoal');
-      g.textContent = yearly >= (w.goal_yearly||50000) ? 'erreicht ✓':'nicht erreicht';
-      g.style.color = yearly >= (w.goal_yearly||50000) ? '#387359':'#BF3939';
-      const start = nw.cumulative_now||0;
-      // Karenz-Effekt zeitlich: ab 02/2027. Einfache Monatsprojektion.
-      let c = start, y=null,m=null; const base=(nw.series||[]).slice(-1)[0]?.month||DATA.generated_month;
-      y=Number(base.slice(0,4)); m=Number(base.slice(5));
-      const karenz = (w.levers||[]).find(l=>l.id==='karenz_ende');
       const karenzOn = document.querySelector('#fzLevers input[data-lid="karenz_ende"]')?.checked;
-      for (let i=1;i<=36;i++){ m++; if(m>12){m=1;y++;} let r=rate;
-        if (karenzOn && karenz && `${y}-${String(m).padStart(2,'0')}` < '2027-02') r = baseM+extra; else r=rate;
-        c += r/1; if(i===12) document.getElementById('wiNW12').textContent = fmt0(c);
+      const karenz = (w.levers||[]).find(l=>l.id==='karenz_ende');
+      // Sofort-Rate (ohne Karenz): Basis + gewählte Hebel
+      const baseM = (w.base_structural_monthly||0);
+      const extraNoKarenz = extra - (karenzOn && karenz ? karenz.monthly : 0);
+      const rateNow = baseM + extraNoKarenz;          // Jahresrate im 1. Kalenderjahr
+      const rateAfter = baseM + extra;                 // nach Karenz-Ende (02/2027)
+      document.getElementById('wiRate').textContent = fmt0(rateAfter*12);
+      const g = document.getElementById('wiGoal');
+      g.textContent = rateAfter >= (w.goal_yearly||50000) ? 'erreicht ✓':'nicht erreicht';
+      g.style.color = rateAfter >= (w.goal_yearly||50000) ? '#387359':'#BF3939';
+      // Kalenderjahr-Projektion mit Karenz-Sprung ab 2027-02
+      const start = nw.cumulative_now||0;
+      let c = start; const base=(nw.series||[]).slice(-1)[0]?.month||DATA.generated_month;
+      let y=Number(base.slice(0,4)), m=Number(base.slice(5));
+      const karenzYm = w.karenz_from||'2027-02';
+      for (let i=1;i<=36;i++){ m++; if(m>12){m=1;y++;}
+        const ym = `${y}-${String(m).padStart(2,'0')}`;
+        const r = (karenzOn && ym>=karenzYm) ? rateAfter : rateNow;
+        c += r;
+        if(i===12) document.getElementById('wiNW12').textContent = fmt0(c);
         if(i===36) document.getElementById('wiNW36').textContent = fmt0(c); }
       const goalM = (w.goal_yearly||50000)/12;
-      document.getElementById('wiHint').textContent = extra>0
-        ? `Hebel bringen +${fmt0(extra*12)}/Jahr. Verbleibende Lücke zur Zielrate: ${fmt0(Math.max(0,goalM-rate)*12)}/Jahr.`
+      document.getElementById('wiHint').textContent = extraNoKarenz>0
+        ? `Hebel bringen +${fmt0(extraNoKarenz*12)}/Jahr jetzt; Karenz-Ende zusaetzlich +${fmt0((karenzOn&&karenz?karenz.monthly:0)*12)}/Jahr ab 02/2027. Verbleibende Lücke zur Zielrate: ${fmt0(Math.max(0,goalM-rateAfter)*12)}/Jahr.`
         : `Noch kein Hebel aktiv. Heutige strukturelle Rate: ${fmt0(baseM*12)}/Jahr, Ziel ${fmt0(w.goal_yearly||50000)}/Jahr.`;
     }
 
