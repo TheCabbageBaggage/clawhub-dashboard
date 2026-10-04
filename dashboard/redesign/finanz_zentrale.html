@@ -73,16 +73,21 @@
         <div class="acta-card">
           <div class="acta-card-title">Sparziel <span id="fzGoal" class="fz-sub"></span></div>
           <div style="display:flex;justify-content:space-between;align-items:baseline;">
-            <div><span class="fz-kpi" id="fzYtd">—</span> <span class="fz-sub">gespart in <span id="fzYear"></span> (transfers)</span></div>
+            <div><span class="fz-kpi" id="fzYtd">—</span> <span class="fz-sub">gespart in <span id="fzYear"></span> (Kalenderjahr)</span></div>
             <div class="fz-sub" id="fzYtdPct">—</div>
           </div>
           <div class="fz-bar"><span id="fzYtdBar" style="width:0%"></span></div>
+          <div class="fz-sub" id="fzYtdSplit" style="margin-top:.4rem"></div>
           <div class="fz-grid" style="margin-top:1rem;">
             <div><div class="acta-metric-label">Nachhaltige Sparrate</div><div class="fz-kpi" id="fzRunrate">—</div><div class="fz-sub">struktureller Überschuss (12M)</div></div>
             <div><div class="acta-metric-label">Ziel-Rate</div><div class="fz-kpi" id="fzGoalRate">—</div><div class="fz-sub">50.000 €/Jahr</div></div>
             <div><div class="acta-metric-label">Lücke</div><div class="fz-kpi" id="fzGap">—</div><div class="fz-sub">pro Jahr</div></div>
             <div><div class="acta-metric-label">Status</div><div class="fz-kpi" id="fzStatus">—</div><div class="fz-sub">ggü. Jahresziel</div></div>
           </div>
+          <div class="acta-table-wrap" style="margin-top:1rem;"><table class="acta-table">
+            <thead><tr><th>Kalenderjahr</th><th>Gespart</th><th>davon Sparplan</th><th>Einmal-Umbuchung</th><th>Prognose</th></tr></thead>
+            <tbody id="fzYears"></tbody></table></div>
+          <div class="fz-note" id="fzFreed"></div>
         </div>
         <div class="acta-card" style="margin-top:1.25rem;">
           <div class="acta-card-title">Vermögensentwicklung &amp; Forecast</div>
@@ -150,13 +155,13 @@
               <tbody id="fzFix"><tr><td colspan="4" class="fz-sub">Laden…</td></tr></tbody>
             </table></div>
           </div>
-          <div class="acta-card">
-            <div class="acta-card-title">Abos <span class="fz-badge fz-b-neutral" id="fzAboCount">—</span></div>
+          <div class="acta-card" style="margin-top:1.25rem;">
+            <div class="acta-card-title">Abos</div>
             <div class="acta-table-wrap"><table class="acta-table">
-              <thead><tr><th>Abo</th><th>€/Mo</th><th>Δ</th><th>Status</th></tr></thead>
-              <tbody id="fzAbos"><tr><td colspan="4" class="fz-sub">Laden…</td></tr></tbody>
+              <thead><tr><th>Abo</th><th>Dienst</th><th>€/Mo</th><th>Jahres-Scheiben</th><th>Status</th></tr></thead>
+              <tbody id="fzAbos"><tr><td colspan="5" class="fz-sub">Laden…</td></tr></tbody>
             </table></div>
-            <div class="fz-note">Details unter „Fixkosten &amp; Abos" in der Sidebar.</div>
+            <div class="fz-note">Jahres-Scheiben = tatsächlich gezahlter Betrag pro Kalenderjahr. „gekündigt" zählt nicht in die Vorwärts-Sparrate.</div>
           </div>
         </div>
       </div>
@@ -211,12 +216,21 @@
       const bar = document.getElementById('fzYtdBar');
       bar.style.width = Math.min(100,yp)+'%';
       bar.className = yp>=100?'':(yp>=60?'':'warn');
+      document.getElementById('fzYtdSplit').innerHTML =
+        `davon regelmaessiger Sparplan <b>${fmt0(t.ytd_regular)}</b> · Einmal-Umbuchungen <b>${fmt0(t.ytd_one_off)}</b>` +
+        (t.projection_calendar_year!=null?` · Prognose Kalenderjahr: <b>${fmt0(t.projection_calendar_year)}</b>`:'');
+      renderYears();
       document.getElementById('fzRunrate').textContent = fmt0(t.structural_runrate_yearly);
       document.getElementById('fzGoalRate').textContent = fmt0(t.goal_yearly);
       document.getElementById('fzGap').textContent = fmt0(t.gap_yearly);
       const st = document.getElementById('fzStatus');
       st.textContent = t.on_track? 'auf Kurs' : 'Lücke';
       st.style.color = t.on_track? '#387359':'#BF3939';
+      // Bereits realisierter Spielraum (Kündigungen/Ersetzungen dieses Jahres)
+      const rf = d.realized_freed||{};
+      document.getElementById('fzFreed').innerHTML = (rf.items&&rf.items.length)
+        ? `Bereits frei gewordenes Volumen ${fmt0(rf.monthly)}/Monat = <b>${fmt0(rf.yearly)}/Jahr</b> (${rf.items.map(i=>i.item).join(', ')}). Verpflichtungsrate + realisiert = Kapazität <b>${fmt0(rf.capacity_yearly)}/Jahr</b>.`
+        : '';
 
       renderChart();
       renderWhatIf();
@@ -247,6 +261,22 @@
         {label:'Kurs 50k-Jahresziel', data:vG, borderColor:'#D4A24A', borderDash:[2,3], tension:.2, pointRadius:0, fill:false}
       ]}, options:{ responsive:true, interaction:{mode:'index',intersect:false},
         plugins:{legend:{position:'bottom'}}, scales:{ y:{ ticks:{ callback:v=>fmt0(v) } } } }});
+    }
+
+    function renderYears() {
+      const t = DATA.savings_tracker||{}, rows = t.by_year||[];
+      const goalMonth = (t.goal_monthly||4167);
+      const curYear = String(t.year||'');
+      document.getElementById('fzYears').innerHTML = rows.map(r=>{
+        const proj = r.year===curYear && t.projection_calendar_year!=null ? fmt0(t.projection_calendar_year) : '—';
+        const months = r.year===curYear ? (new Date().getMonth()+1) : 12;
+        const badge = r.total>=(goalMonth*months) ? 'fz-b-green' : (r.total>=goalMonth*months*0.6?'fz-b-yellow':'fz-b-red');
+        return `<tr><td>${r.year}</td>
+          <td class="fz-num"><span class="fz-badge ${badge}">${fmt0(r.total)}</span></td>
+          <td class="fz-num">${fmt0(r.regular)}</td>
+          <td class="fz-num">${fmt0(r.one_off)}</td>
+          <td class="fz-num">${proj}</td></tr>`;
+      }).join('') || '<tr><td colspan="5" class="fz-sub">keine Daten</td></tr>';
     }
 
     function renderWhatIf() {
@@ -346,12 +376,22 @@
         <tr><td>${c.merchant}</td><td class="fz-num">${fmt(c.monthly)}</td>
         <td>${deltaBadge(c.price_change)}</td><td class="fz-sub">${c.last_seen||'—'}</td></tr>`).join('')
         || '<tr><td colspan="4" class="fz-sub">keine Daten</td></tr>';
-      document.getElementById('fzAboCount').textContent = (a.count||0)+' aktiv';
-      document.getElementById('fzAbos').innerHTML = (a.items||[]).map(x=>`
-        <tr><td>${x.merchant}</td><td class="fz-num">${fmt(x.monthly)}</td>
-        <td>${deltaBadge(x.price_change)}</td>
-        <td>${x.active? '<span class="fz-badge fz-b-green">aktiv</span>':'<span class="fz-badge fz-b-neutral">alt</span>'}</td></tr>`).join('')
-        || '<tr><td colspan="4" class="fz-sub">keine Daten</td></tr>';
+      const yrRows = (a.items||[]).map(x=>{
+        const slices = Object.keys(x.by_year||{}).sort().map(y=>{
+          const v = x.by_year[y];
+          return `<span title="${y}: ${v.n} Buchung(en)">${y}: ${fmt0(v.total)}</span>`;
+        }).join(' · ') || '—';
+        let status;
+        if (x.cancelled) status = `<span class="fz-badge fz-b-neutral">gekündigt ${x.cancelled_from||''}</span>`;
+        else if (x.replaced_by) status = `<span class="fz-badge fz-b-neutral">ersetzt → ${x.replaced_by}</span>`;
+        else if (x.active) status = '<span class="fz-badge fz-b-green">aktiv</span>';
+        else status = '<span class="fz-badge fz-b-neutral">alt</span>';
+        return `<tr><td>${x.merchant}</td><td class="fz-sub">${x.service||'—'}</td>
+          <td class="fz-num">${fmt(x.monthly)}</td>
+          <td class="fz-sub">${slices}</td>
+          <td>${status}</td></tr>`;
+      }).join('');
+      document.getElementById('fzAbos').innerHTML = yrRows || '<tr><td colspan="5" class="fz-sub">keine Daten</td></tr>';
     }
 
     load().catch(e=>{ console.error(e);
