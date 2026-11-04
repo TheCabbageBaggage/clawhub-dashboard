@@ -14203,3 +14203,10 @@ To github.com:TheCabbageBaggage/clawhub-dashboard.git
  1 file changed, 4 insertions(+)
 To github.com:TheCabbageBaggage/clawhub-dashboard.git
    1e235598..18ea7d23  master -> master
+[master de41c4c1] auto: dashboard sync 2026-11-04 09:45
+ 1 file changed, 4 insertions(+)
+git@github.com: Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
